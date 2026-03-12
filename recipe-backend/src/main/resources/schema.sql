@@ -33,7 +33,11 @@ CREATE TABLE ingredients (
     calcium             NUMERIC NOT NULL DEFAULT 0,
     iron                NUMERIC NOT NULL DEFAULT 0,
     potassium           NUMERIC NOT NULL DEFAULT 0,
-    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    fdcId               BIGINT,
+    dataType            VARCHAR(255),
+    brandName           VARCHAR(255),
+    brandOwner          VARCHAR(255)
 );
 
 
