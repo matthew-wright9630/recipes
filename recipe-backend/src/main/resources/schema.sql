@@ -51,6 +51,8 @@ CREATE TABLE recipes (
     prep_time   INTEGER,   -- in minutes
     cook_time   INTEGER,   -- in minutes
     created_by  INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    deleted     BOOLEAN NOT NULL DEFAULT FALSE,
+    version     INTEGER NOT NULL DEFAULT 1,
     created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
