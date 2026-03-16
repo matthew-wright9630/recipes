@@ -50,17 +50,6 @@ public class Users {
         this.createdAt = createdAt;
     }
 
-    public Users(String id, String username, String email, String passwordHash, UserRole role, boolean deactivated,
-            LocalDateTime createdAt) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.passwordHash = passwordHash;
-        this.role = role;
-        this.deactivated = deactivated;
-        this.createdAt = createdAt;
-    }
-
     public String getId() {
         return id;
     }
