@@ -2,6 +2,10 @@ package com.matthew.recipe_backend.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 
@@ -64,11 +68,14 @@ public class UsdaIngredients {
     @Column(name = "datatype")
     private String datatype;
 
-    @Column(name = "brandName")
+    @Column(name = "brand_name")
     private String brandName;
 
-    @Column(name = "brandOwner")
+    @Column(name = "brand_owner")
     private String brandOwner;
+
+    @OneToMany(mappedBy = "usdaIngredients")
+    private Set<IngredientNutritionMap> ingredientMaps;
 
     public UsdaIngredients() {
     }
@@ -96,6 +103,174 @@ public class UsdaIngredients {
         this.datatype = datatype;
         this.brandName = brandName;
         this.brandOwner = brandOwner;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Long getFdcId() {
+        return fdcId;
+    }
+
+    public void setFdcId(Long fdcId) {
+        this.fdcId = fdcId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getCalories() {
+        return calories;
+    }
+
+    public void setCalories(double calories) {
+        this.calories = calories;
+    }
+
+    public double getTotalFat() {
+        return totalFat;
+    }
+
+    public void setTotalFat(double totalFat) {
+        this.totalFat = totalFat;
+    }
+
+    public double getSaturatedFat() {
+        return saturatedFat;
+    }
+
+    public void setSaturatedFat(double saturatedFat) {
+        this.saturatedFat = saturatedFat;
+    }
+
+    public double getTransFat() {
+        return transFat;
+    }
+
+    public void setTransFat(double transFat) {
+        this.transFat = transFat;
+    }
+
+    public double getCholesterol() {
+        return cholesterol;
+    }
+
+    public void setCholesterol(double cholesterol) {
+        this.cholesterol = cholesterol;
+    }
+
+    public double getSodium() {
+        return sodium;
+    }
+
+    public void setSodium(double sodium) {
+        this.sodium = sodium;
+    }
+
+    public double getTotalCarbohydrates() {
+        return totalCarbohydrates;
+    }
+
+    public void setTotalCarbohydrates(double totalCarbohydrates) {
+        this.totalCarbohydrates = totalCarbohydrates;
+    }
+
+    public double getDietaryFiber() {
+        return dietaryFiber;
+    }
+
+    public void setDietaryFiber(double dietaryFiber) {
+        this.dietaryFiber = dietaryFiber;
+    }
+
+    public double getTotalSugars() {
+        return totalSugars;
+    }
+
+    public void setTotalSugars(double totalSugars) {
+        this.totalSugars = totalSugars;
+    }
+
+    public double getProtein() {
+        return protein;
+    }
+
+    public void setProtein(double protein) {
+        this.protein = protein;
+    }
+
+    public double getVitaminD() {
+        return vitaminD;
+    }
+
+    public void setVitaminD(double vitaminD) {
+        this.vitaminD = vitaminD;
+    }
+
+    public double getCalcium() {
+        return calcium;
+    }
+
+    public void setCalcium(double calcium) {
+        this.calcium = calcium;
+    }
+
+    public double getIron() {
+        return iron;
+    }
+
+    public void setIron(double iron) {
+        this.iron = iron;
+    }
+
+    public double getPotassium() {
+        return potassium;
+    }
+
+    public void setPotassium(double potassium) {
+        this.potassium = potassium;
+    }
+
+    public String getDatatype() {
+        return datatype;
+    }
+
+    public void setDatatype(String datatype) {
+        this.datatype = datatype;
+    }
+
+    public String getBrandName() {
+        return brandName;
+    }
+
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
+    }
+
+    public String getBrandOwner() {
+        return brandOwner;
+    }
+
+    public void setBrandOwner(String brandOwner) {
+        this.brandOwner = brandOwner;
+    }
+
+    public Set<IngredientNutritionMap> getIngredientMaps() {
+        return ingredientMaps;
+    }
+
+    public void setIngredientMaps(Set<IngredientNutritionMap> ingredientMaps) {
+        this.ingredientMaps = ingredientMaps;
     }
 
     @Override
@@ -127,8 +302,7 @@ public class UsdaIngredients {
                 + ", cholesterol=" + cholesterol + ", sodium=" + sodium + ", totalCarbohydrates=" + totalCarbohydrates
                 + ", dietaryFiber=" + dietaryFiber + ", totalSugars=" + totalSugars + ", protein=" + protein
                 + ", vitaminD=" + vitaminD + ", calcium=" + calcium + ", iron=" + iron + ", potassium=" + potassium
-                + ", datatype=" + datatype + ", brandName=" + brandName + ", brandOwner=" + brandOwner + "]";
-    }
-
-    
+                + ", datatype=" + datatype + ", brandName=" + brandName + ", brandOwner=" + brandOwner
+                + ", ingredientMaps=" + ingredientMaps + "]";
+    }    
 }

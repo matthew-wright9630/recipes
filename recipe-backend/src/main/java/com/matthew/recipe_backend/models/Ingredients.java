@@ -1,10 +1,12 @@
 package com.matthew.recipe_backend.models;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Ingredients {
@@ -17,6 +19,9 @@ public class Ingredients {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "ingredient")
+    private Set<IngredientNutritionMap> nutritionMaps;
 
     public Ingredients() {
     }
@@ -50,6 +55,14 @@ public class Ingredients {
         this.createdAt = createdAt;
     }
 
+    public Set<IngredientNutritionMap> getNutritionMaps() {
+        return nutritionMaps;
+    }
+
+    public void setNutritionMaps(Set<IngredientNutritionMap> nutritionMaps) {
+        this.nutritionMaps = nutritionMaps;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -77,6 +90,7 @@ public class Ingredients {
 
     @Override
     public String toString() {
-        return "Ingredients [id=" + id + ", name=" + name + ", createdAt=" + createdAt + "]";
+        return "Ingredients [id=" + id + ", name=" + name + ", createdAt=" + createdAt + ", nutritionMaps="
+                + nutritionMaps + "]";
     }
 }

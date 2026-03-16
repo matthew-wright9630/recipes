@@ -48,7 +48,7 @@ CREATE TABLE usda_ingredients (
 CREATE TABLE ingredient_nutrition_map (
     ingredient_id INTEGER REFERENCES ingredients(id),
     usda_id INTEGER REFERENCES usda_ingredients(id),
-    PRIMARY KEY (ingredient_id)
+    PRIMARY KEY (ingredient_id, usda_id)
 );
 
 -- RECIPES
