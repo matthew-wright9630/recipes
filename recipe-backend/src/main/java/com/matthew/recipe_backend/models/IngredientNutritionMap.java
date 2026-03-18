@@ -1,7 +1,9 @@
 package com.matthew.recipe_backend.models;
 
+import com.matthew.recipe_backend.keys.IngredientNutritionKey;
+
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
@@ -10,8 +12,8 @@ import jakarta.persistence.Table;
 @Table(name = "ingredient_nutrition_map")
 public class IngredientNutritionMap {
 
-    @Id
-    private long id;
+    @EmbeddedId
+    private IngredientNutritionKey id;
 
     @ManyToOne
     @MapsId("ingredientId")
@@ -29,11 +31,11 @@ public class IngredientNutritionMap {
         this.usdaIngredients = usdaIngredients;
     }
 
-    public long getId() {
+    public IngredientNutritionKey getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(IngredientNutritionKey id) {
         this.id = id;
     }
 
@@ -57,7 +59,7 @@ public class IngredientNutritionMap {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (int) (id ^ (id >>> 32));
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 
@@ -70,7 +72,10 @@ public class IngredientNutritionMap {
         if (getClass() != obj.getClass())
             return false;
         IngredientNutritionMap other = (IngredientNutritionMap) obj;
-        if (id != other.id)
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
             return false;
         return true;
     }
