@@ -4,12 +4,14 @@ import java.time.Instant;
 
 import com.matthew.recipe_backend.keys.CookbookRecipeKey;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 
+@Entity
 public class CookbookRecipe {
     
     @EmbeddedId

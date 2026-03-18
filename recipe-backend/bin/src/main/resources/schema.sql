@@ -85,10 +85,6 @@ CREATE TABLE cookbooks (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-ALTER TABLE cookbooks
-ADD CONSTRAINT unique_owner_name
-UNIQUE (owner_id, name);
-
 -- Cookbook <-> Recipe join table
 CREATE TABLE cookbook_recipes (
     cookbook_id INTEGER NOT NULL REFERENCES cookbooks(id) ON DELETE CASCADE,
@@ -107,7 +103,7 @@ CREATE TABLE cookbook_access (
 );
 
 CREATE VIEW active_cookbooks AS
-  SELECT id, name, created_at FROM cookbooks WHERE deleted = FALSE;
+  SELECT * FROM cookbooks WHERE deleted = FALSE;
 
 CREATE VIEW active_recipes AS
-  SELECT id, name, description, created_at, version FROM recipes WHERE deleted = FALSE;
+  SELECT * FROM recipes WHERE deleted = FALSE;

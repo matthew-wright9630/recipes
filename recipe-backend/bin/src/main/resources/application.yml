@@ -1,0 +1,64 @@
+server:
+  port: 8083
+
+cors:
+  allowed-origins: "${CORS_ALLOWED_ORIGINS:http://localhost:4200}"
+
+spring:
+  profiles:
+    active: dev
+  datasource:
+    url: "${DB_URL:jdbc:postgresql://127.0.0.1:5432/identity?ssl=false&serverTimezone=UTC}"
+    username: "${DB_USER}"
+    password: "${DB_PASS}"
+    driver-class-name: org.postgresql.Driver
+
+  web:
+    resources:
+      add-mappings: false
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          time_zone: UTC
+
+  servlet:
+    multipart:
+      max-file-size: "${MAX_FILE_SIZE:25MB}"
+      max-request-size: "${MAX_REQUEST_SIZE:25MB}"
+
+  sql:
+    init:
+      mode: "${SQL_INIT_MODE:never}"
+      platform: postgresql
+      continue-on-error: false
+
+frontend:
+  frontend_url: "${FRONTEND_URL:http://localhost:4200}"
+
+jwt:
+  public-key:
+  private-key:
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,env,configprops
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+
+logging:
+  level:
+    com.zaxxer.hikari: ERROR
+    org.springframework.jdbc.datasource: ERROR
+    root: ERROR
+    com.finsight: ERROR
