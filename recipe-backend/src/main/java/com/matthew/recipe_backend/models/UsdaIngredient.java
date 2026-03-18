@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "usda_ingredients")
-public class UsdaIngredients {
+public class UsdaIngredient {
 
     @Id
     @Column(name = "id")
@@ -77,10 +77,10 @@ public class UsdaIngredients {
     @OneToMany(mappedBy = "usdaIngredients")
     private Set<IngredientNutritionMap> ingredientMaps;
 
-    public UsdaIngredients() {
+    public UsdaIngredient() {
     }
 
-    public UsdaIngredients(Long fdcId, String name, double calories, double totalFat, double saturatedFat,
+    public UsdaIngredient(Long fdcId, String name, double calories, double totalFat, double saturatedFat,
             double transFat, double cholesterol, double sodium, double totalCarbohydrates, double dietaryFiber,
             double totalSugars, double protein, double vitaminD, double calcium, double iron, double potassium,
             String datatype, String brandName, String brandOwner) {
@@ -289,7 +289,7 @@ public class UsdaIngredients {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        UsdaIngredients other = (UsdaIngredients) obj;
+        UsdaIngredient other = (UsdaIngredient) obj;
         if (id != other.id)
             return false;
         return true;

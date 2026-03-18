@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "ingredients")
-public class Ingredients {
+public class Ingredient {
     
     @Id
     private long id;
@@ -25,10 +25,10 @@ public class Ingredients {
     @OneToMany(mappedBy = "ingredient")
     private Set<IngredientNutritionMap> nutritionMaps;
 
-    public Ingredients() {
+    public Ingredient() {
     }
 
-    public Ingredients(String name, LocalDateTime createdAt) {
+    public Ingredient(String name, LocalDateTime createdAt) {
         this.name = name;
         this.createdAt = createdAt;
     }
@@ -81,7 +81,7 @@ public class Ingredients {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Ingredients other = (Ingredients) obj;
+        Ingredient other = (Ingredient) obj;
         if (id == 0) {
             if (other.id != 0)
                 return false;

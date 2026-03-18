@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "recipes")
-public class Recipes {
+public class Recipe {
 
     @Id
     @Column(name = "id")
@@ -44,10 +44,10 @@ public class Recipes {
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 
-    public Recipes() {
+    public Recipe() {
     }
 
-    public Recipes(String name, String description, String notes, Integer servings, Integer prepTime,
+    public Recipe(String name, String description, String notes, Integer servings, Integer prepTime,
             Integer cookTime, Integer createdBy, Boolean deleted, Integer version, OffsetDateTime createdAt) {
         this.name = name;
         this.description = description;
@@ -165,7 +165,7 @@ public class Recipes {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Recipes other = (Recipes) obj;
+        Recipe other = (Recipe) obj;
         if (id != other.id)
             return false;
         return true;

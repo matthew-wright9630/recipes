@@ -17,16 +17,16 @@ public class IngredientNutritionMap {
 
     @ManyToOne
     @MapsId("ingredientId")
-    private Ingredients ingredient;
+    private Ingredient ingredient;
 
     @ManyToOne
     @MapsId("usdaId")
-    private UsdaIngredients usdaIngredients;
+    private UsdaIngredient usdaIngredients;
 
     public IngredientNutritionMap() {
     }
 
-    public IngredientNutritionMap(Ingredients ingredient, UsdaIngredients usdaIngredients) {
+    public IngredientNutritionMap(Ingredient ingredient, UsdaIngredient usdaIngredients) {
         this.ingredient = ingredient;
         this.usdaIngredients = usdaIngredients;
     }
@@ -39,19 +39,19 @@ public class IngredientNutritionMap {
         this.id = id;
     }
 
-    public Ingredients getIngredient() {
+    public Ingredient getIngredient() {
         return ingredient;
     }
 
-    public void setIngredient(Ingredients ingredient) {
+    public void setIngredient(Ingredient ingredient) {
         this.ingredient = ingredient;
     }
 
-    public UsdaIngredients getUsdaIngredients() {
+    public UsdaIngredient getUsdaIngredients() {
         return usdaIngredients;
     }
 
-    public void setUsdaIngredients(UsdaIngredients usdaIngredients) {
+    public void setUsdaIngredients(UsdaIngredient usdaIngredients) {
         this.usdaIngredients = usdaIngredients;
     }
 

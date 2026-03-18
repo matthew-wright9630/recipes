@@ -17,7 +17,7 @@ public class Cookbook {
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
-    private Users owner;
+    private User owner;
 
     @Column
     private boolean deleted;
@@ -28,7 +28,7 @@ public class Cookbook {
     public Cookbook() {
     }
 
-    public Cookbook(String name, Users owner, boolean deleted, Instant createdAt) {
+    public Cookbook(String name, User owner, boolean deleted, Instant createdAt) {
         this.name = name;
         this.owner = owner;
         this.deleted = deleted;
@@ -51,11 +51,11 @@ public class Cookbook {
         this.name = name;
     }
 
-    public Users getOwner() {
+    public User getOwner() {
         return owner;
     }
 
-    public void setOwner(Users owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
     }
 

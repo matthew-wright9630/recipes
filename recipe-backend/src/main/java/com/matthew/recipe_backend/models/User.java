@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class Users {
+public class User {
     
     @Id
     private long id;
@@ -37,10 +37,10 @@ public class Users {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    public Users() {
+    public User() {
     }
 
-    public Users(String username, String email, String passwordHash, UserRole role, boolean deactivated,
+    public User(String username, String email, String passwordHash, UserRole role, boolean deactivated,
             LocalDateTime createdAt) {
         this.username = username;
         this.email = email;
@@ -122,7 +122,7 @@ public class Users {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Users other = (Users) obj;
+        User other = (User) obj;
         if (id == 0) {
             if (other.id != 0)
                 return false;

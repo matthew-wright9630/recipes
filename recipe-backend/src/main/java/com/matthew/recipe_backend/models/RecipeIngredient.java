@@ -15,7 +15,7 @@ import com.matthew.recipe_backend.keys.RecipeIngredientKey;
 
 @Entity
 @Table(name = "recipe_ingredients")
-public class RecipeIngredients {
+public class RecipeIngredient {
 
 	@EmbeddedId
 	private RecipeIngredientKey id;
@@ -23,12 +23,12 @@ public class RecipeIngredients {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("recipeId")
 	@JoinColumn(name = "recipe_id")
-	private Recipes recipe;
+	private Recipe recipe;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("ingredientId")
 	@JoinColumn(name = "ingredient_id")
-	private Ingredients ingredient;
+	private Ingredient ingredient;
 
 	@Column(name = "quantity")
 	private BigDecimal quantity;
@@ -36,10 +36,10 @@ public class RecipeIngredients {
 	@Column(name = "unit")
 	private String unit;
 
-	public RecipeIngredients() {
+	public RecipeIngredient() {
 	}
 
-	public RecipeIngredients(Recipes recipe, Ingredients ingredient, BigDecimal quantity, String unit) {
+	public RecipeIngredient(Recipe recipe, Ingredient ingredient, BigDecimal quantity, String unit) {
 		this.recipe = recipe;
 		this.ingredient = ingredient;
 		this.quantity = quantity;
@@ -57,19 +57,19 @@ public class RecipeIngredients {
 		this.id = id;
 	}
 
-	public Recipes getRecipe() {
+	public Recipe getRecipe() {
 		return recipe;
 	}
 
-	public void setRecipe(Recipes recipe) {
+	public void setRecipe(Recipe recipe) {
 		this.recipe = recipe;
 	}
 
-	public Ingredients getIngredient() {
+	public Ingredient getIngredient() {
 		return ingredient;
 	}
 
-	public void setIngredient(Ingredients ingredient) {
+	public void setIngredient(Ingredient ingredient) {
 		this.ingredient = ingredient;
 	}
 
@@ -102,7 +102,7 @@ public class RecipeIngredients {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		RecipeIngredients other = (RecipeIngredients) obj;
+		RecipeIngredient other = (RecipeIngredient) obj;
 		return Objects.equals(id, other.id);
 	}
 
