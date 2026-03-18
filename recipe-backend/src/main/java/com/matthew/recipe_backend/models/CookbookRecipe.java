@@ -6,6 +6,7 @@ import com.matthew.recipe_backend.keys.CookbookRecipeKey;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 
@@ -14,11 +15,11 @@ public class CookbookRecipe {
     @EmbeddedId
     private CookbookRecipeKey id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("cookbookId")
     private Cookbook cookbook;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("recipeId")
     private Recipe recipe;
 
@@ -28,8 +29,13 @@ public class CookbookRecipe {
     public CookbookRecipe() {
     }
 
-    public CookbookRecipe(Instant addedAt) {
+    public CookbookRecipe(Cookbook cookbook, Recipe recipe, Instant addedAt) {
+        this.cookbook = cookbook;
+        this.recipe = recipe;
         this.addedAt = addedAt;
+        if (cookbook != null && recipe != null) {
+            this.id = new CookbookRecipeKey(cookbook.getId(), recipe.getId());
+        }
     }
 
     public CookbookRecipeKey getId() {
@@ -38,6 +44,22 @@ public class CookbookRecipe {
 
     public void setId(CookbookRecipeKey id) {
         this.id = id;
+    }
+
+    public Cookbook getCookbook() {
+        return cookbook;
+    }
+
+    public void setCookbook(Cookbook cookbook) {
+        this.cookbook = cookbook;
+    }
+
+    public Recipe getRecipe() {
+        return recipe;
+    }
+
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
     }
 
     public Instant getAddedAt() {

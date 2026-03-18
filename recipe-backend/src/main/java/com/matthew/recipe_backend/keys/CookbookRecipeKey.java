@@ -1,8 +1,6 @@
 package com.matthew.recipe_backend.keys;
 
 import java.io.Serializable;
-import java.util.Objects;
-
 import jakarta.persistence.Embeddable;
 
 @Embeddable

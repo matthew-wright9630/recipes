@@ -4,6 +4,7 @@ import com.matthew.recipe_backend.keys.IngredientNutritionKey;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
@@ -15,11 +16,11 @@ public class IngredientNutritionMap {
     @EmbeddedId
     private IngredientNutritionKey id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("ingredientId")
     private Ingredient ingredient;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("usdaId")
     private UsdaIngredient usdaIngredients;
 
