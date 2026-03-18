@@ -14,32 +14,42 @@ CREATE TABLE users (
     created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-
--- INGREDIENTS
 CREATE TABLE ingredients (
-    id                  SERIAL PRIMARY KEY,
-    name                VARCHAR(255) NOT NULL UNIQUE,
-    calories            NUMERIC NOT NULL DEFAULT 0,
-    total_fat           NUMERIC NOT NULL DEFAULT 0,
-    saturated_fat       NUMERIC NOT NULL DEFAULT 0,
-    trans_fat           NUMERIC NOT NULL DEFAULT 0,
-    cholesterol         NUMERIC NOT NULL DEFAULT 0,
-    sodium              NUMERIC NOT NULL DEFAULT 0,
-    total_carbohydrates NUMERIC NOT NULL DEFAULT 0,
-    dietary_fiber       NUMERIC NOT NULL DEFAULT 0,
-    total_sugars        NUMERIC NOT NULL DEFAULT 0,
-    protein             NUMERIC NOT NULL DEFAULT 0,
-    vitamin_d           NUMERIC NOT NULL DEFAULT 0,
-    calcium             NUMERIC NOT NULL DEFAULT 0,
-    iron                NUMERIC NOT NULL DEFAULT 0,
-    potassium           NUMERIC NOT NULL DEFAULT 0,
-    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    fdcId               BIGINT,
-    dataType            VARCHAR(255),
-    brandName           VARCHAR(255),
-    brandOwner          VARCHAR(255)
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- INGREDIENTS
+CREATE TABLE usda_ingredients (
+    id SERIAL PRIMARY KEY,
+    fdc_id BIGINT UNIQUE,
+    name TEXT,
+    calories NUMERIC,
+    total_fat NUMERIC,
+    saturated_fat NUMERIC,
+    trans_fat NUMERIC,
+    cholesterol NUMERIC,
+    sodium NUMERIC,
+    total_carbohydrates NUMERIC,
+    dietary_fiber NUMERIC,
+    total_sugars NUMERIC,
+    protein NUMERIC,
+    vitamin_d NUMERIC,
+    calcium NUMERIC,
+    iron NUMERIC,
+    potassium NUMERIC,
+    datatype VARCHAR(50),
+    brandName VARCHAR(255),
+    brandOwner VARCHAR(255)
+);
+
+-- Mapping table to link our ingredients to USDA data (if available)
+CREATE TABLE ingredient_nutrition_map (
+    ingredient_id INTEGER REFERENCES ingredients(id),
+    usda_id INTEGER REFERENCES usda_ingredients(id),
+    PRIMARY KEY (ingredient_id, usda_id)
+);
 
 -- RECIPES
 CREATE TABLE recipes (
@@ -75,6 +85,10 @@ CREATE TABLE cookbooks (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE cookbooks
+ADD CONSTRAINT unique_owner_name
+UNIQUE (owner_id, name);
+
 -- Cookbook <-> Recipe join table
 CREATE TABLE cookbook_recipes (
     cookbook_id INTEGER NOT NULL REFERENCES cookbooks(id) ON DELETE CASCADE,
@@ -93,4 +107,7 @@ CREATE TABLE cookbook_access (
 );
 
 CREATE VIEW active_cookbooks AS
-  SELECT * FROM cookbooks WHERE deleted = FALSE;
+  SELECT id, name, created_at FROM cookbooks WHERE deleted = FALSE;
+
+CREATE VIEW active_recipes AS
+  SELECT id, name, description, created_at, version FROM recipes WHERE deleted = FALSE;
