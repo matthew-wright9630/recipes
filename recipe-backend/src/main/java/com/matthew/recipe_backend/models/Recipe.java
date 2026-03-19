@@ -3,8 +3,10 @@ package com.matthew.recipe_backend.models;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "recipes")
@@ -44,11 +46,14 @@ public class Recipe {
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 
+    @OneToMany(mappedBy = "recipe")
+    private List<RecipeIngredient> recipeIngredients;
+
     public Recipe() {
     }
 
     public Recipe(String name, String description, String notes, Integer servings, Integer prepTime,
-            Integer cookTime, Integer createdBy, Boolean deleted, Integer version, OffsetDateTime createdAt) {
+            Integer cookTime, Integer createdBy, Boolean deleted, Integer version, OffsetDateTime createdAt, List<RecipeIngredient> recipeIngredients) {
         this.name = name;
         this.description = description;
         this.notes = notes;
@@ -59,6 +64,7 @@ public class Recipe {
         this.deleted = deleted;
         this.version = version;
         this.createdAt = createdAt;
+        this.recipeIngredients = recipeIngredients;
     }
 
     public long getId() {
@@ -149,6 +155,14 @@ public class Recipe {
         this.createdAt = createdAt;
     }
 
+    public List<RecipeIngredient> getRecipeIngredients() {
+        return recipeIngredients;
+    }
+
+    public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
+        this.recipeIngredients = recipeIngredients;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -173,8 +187,9 @@ public class Recipe {
 
     @Override
     public String toString() {
-        return "Recipes [id=" + id + ", name=" + name + ", description=" + description + ", notes=" + notes
+        return "Recipe [id=" + id + ", name=" + name + ", description=" + description + ", notes=" + notes
                 + ", servings=" + servings + ", prepTime=" + prepTime + ", cookTime=" + cookTime + ", createdBy="
-                + createdBy + ", deleted=" + deleted + ", version=" + version + ", createdAt=" + createdAt + "]";
+                + createdBy + ", deleted=" + deleted + ", version=" + version + ", createdAt=" + createdAt
+                + ", recipeIngredients=" + recipeIngredients + "]";
     }
 }

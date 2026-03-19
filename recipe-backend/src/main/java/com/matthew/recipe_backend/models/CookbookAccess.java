@@ -35,7 +35,6 @@ public class CookbookAccess {
 	private User user;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "permission")
 	private CookbookPermission permission;
 
 	@Column(name = "granted_at")

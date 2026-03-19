@@ -3,7 +3,9 @@ package com.matthew.recipe_backend.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.matthew.recipe_backend.mappers.RecipeMapper;
 import com.matthew.recipe_backend.models.Recipe;
+import com.matthew.recipe_backend.responseDtos.RecipeResponse;
 import com.matthew.recipe_backend.services.RecipeService;
 
 import java.util.List;
@@ -26,17 +28,16 @@ public class RecipeController {
     }
     
     @GetMapping
-    public ResponseEntity<List<Recipe>> getAllRecipes() {
+    public ResponseEntity<List<RecipeResponse>> getAllRecipes() {
         List<Recipe> recipes = recipeService.findAllRecipes();
-        return ResponseEntity.ok(recipes);
+        List<RecipeResponse> RecipeResponses = recipes.stream().map(RecipeMapper::toDto).toList();
+        return ResponseEntity.ok(RecipeResponses);
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<Recipe> getRecipeById(@PathVariable long id) {
+    public ResponseEntity<RecipeResponse> getRecipeById(@PathVariable long id) {
         Optional<Recipe> foundRecipe = recipeService.findRecipeById(id);
-        return recipeService.findRecipeById(id)
-                        .map(ResponseEntity::ok)
-                        .orElseGet(() -> ResponseEntity.notFound().build());
+        return foundRecipe.map(r -> ResponseEntity.ok(RecipeMapper.toDto(r))).orElseGet(() -> ResponseEntity.notFound().build());
     }
     
     

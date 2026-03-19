@@ -19,6 +19,7 @@ public class RecipeService {
 
     public List<Recipe> findAllRecipes() {
         return recipeRepository.findAll();
+        
     }
 
     public Optional<Recipe> findRecipeById(long id) {
