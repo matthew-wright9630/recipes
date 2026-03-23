@@ -3,6 +3,8 @@ package com.matthew.recipe_backend.models;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -14,7 +16,7 @@ import java.util.List;
 public class Recipe {
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "name", nullable = false)
@@ -27,22 +29,22 @@ public class Recipe {
     private String notes;
 
     @Column
-    private Integer servings;
+    private int servings;
 
     @Column(name = "prep_time")
-    private Integer prepTime;
+    private int prepTime;
 
     @Column(name = "cook_time")
-    private Integer cookTime;
+    private int cookTime;
 
     @Column(name = "created_by")
-    private Integer createdBy;
+    private long createdBy;
 
     @Column(nullable = false)
     private Boolean deleted;
 
     @Column(nullable = false)
-    private Integer version;
+    private int version;
 
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
@@ -53,8 +55,8 @@ public class Recipe {
     public Recipe() {
     }
 
-    public Recipe(String name, String description, String notes, Integer servings, Integer prepTime,
-            Integer cookTime, Integer createdBy, Boolean deleted, Integer version, OffsetDateTime createdAt, List<RecipeIngredient> recipeIngredients) {
+    public Recipe(String name, String description, String notes, int servings, int prepTime,
+            int cookTime, long createdBy, Boolean deleted, int version, OffsetDateTime createdAt, List<RecipeIngredient> recipeIngredients) {
         this.name = name;
         this.description = description;
         this.notes = notes;
@@ -100,35 +102,35 @@ public class Recipe {
         this.notes = notes;
     }
 
-    public Integer getServings() {
+    public int getServings() {
         return servings;
     }
 
-    public void setServings(Integer servings) {
+    public void setServings(int servings) {
         this.servings = servings;
     }
 
-    public Integer getPrepTime() {
+    public int getPrepTime() {
         return prepTime;
     }
 
-    public void setPrepTime(Integer prepTime) {
+    public void setPrepTime(int prepTime) {
         this.prepTime = prepTime;
     }
 
-    public Integer getCookTime() {
+    public int getCookTime() {
         return cookTime;
     }
 
-    public void setCookTime(Integer cookTime) {
+    public void setCookTime(int cookTime) {
         this.cookTime = cookTime;
     }
 
-    public Integer getCreatedBy() {
+    public long getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(Integer createdBy) {
+    public void setCreatedBy(long createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -140,11 +142,11 @@ public class Recipe {
         this.deleted = deleted;
     }
 
-    public Integer getVersion() {
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(Integer version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 

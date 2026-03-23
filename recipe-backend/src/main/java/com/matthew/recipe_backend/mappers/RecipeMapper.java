@@ -2,6 +2,7 @@ package com.matthew.recipe_backend.mappers;
 
 import com.matthew.recipe_backend.models.Recipe;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.matthew.recipe_backend.dtos.RecipeDto;
@@ -10,7 +11,8 @@ import com.matthew.recipe_backend.dtos.RecipeIngredientDto;
 public class RecipeMapper {
 
     public static RecipeDto toDto(Recipe recipe) {
-        List<RecipeIngredientDto> ingredientDtos = recipe.getRecipeIngredients().stream()
+        List<RecipeIngredientDto> ingredientDtos = recipe.getRecipeIngredients() == null ? Collections.emptyList() 
+            : recipe.getRecipeIngredients().stream()
             .map(ri -> new RecipeIngredientDto(
                 ri.getIngredient().getName(),
                 ri.getQuantity(),

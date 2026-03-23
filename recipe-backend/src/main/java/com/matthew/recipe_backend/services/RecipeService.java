@@ -1,5 +1,6 @@
 package com.matthew.recipe_backend.services;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,5 +35,17 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findByIdWithIngredients(id).orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
         RecipeDto recipeDto = RecipeMapper.toDto(recipe);
         return recipeDto;
+    }
+
+    public RecipeDto createDraftRecipe(long createdById, String name) {
+        Recipe recipe = new Recipe();
+        recipe.setName(name);
+        recipe.setCreatedBy(createdById);
+        recipe.setCreatedAt(OffsetDateTime.now());
+        recipe.setDeleted(false);
+        recipe.setVersion(0);
+        System.out.println(recipe);
+        recipeRepository.save(recipe);
+        return RecipeMapper.toDto(recipe);
     }
 }
