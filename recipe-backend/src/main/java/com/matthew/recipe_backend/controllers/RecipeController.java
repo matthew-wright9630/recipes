@@ -11,7 +11,9 @@ import com.matthew.recipe_backend.services.RecipeService;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,6 +54,18 @@ public class RecipeController {
     public ResponseEntity<RecipeDto> editRecipe(@PathVariable long id, @RequestBody UpdateRecipeDto request) {
         RecipeDto recipe = recipeService.updateRecipe(id, request);        
         return ResponseEntity.ok(recipe);
+    }
+
+    @PatchMapping("reactivate/{id}")
+    public ResponseEntity<Object> reactivateRecipe(@PathVariable long id) {
+        recipeService.reActivateRecipe(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("deactivate/{id}")
+    public ResponseEntity<Object> deactivateRecipe(@PathVariable long id) {
+        recipeService.deactivateRecipe(id);
+        return ResponseEntity.noContent().build();
     }
     
 }

@@ -42,7 +42,7 @@ public class RecipeService {
         recipe.setName(name);
         recipe.setCreatedBy(createdById);
         recipe.setCreatedAt(OffsetDateTime.now());
-        recipe.setDeleted(false);
+        recipe.setActive(true);
         recipe.setVersion(0);
         recipeRepository.save(recipe);
         return RecipeMapper.toDto(recipe);
@@ -60,5 +60,15 @@ public class RecipeService {
         return RecipeMapper.toDto(savedRecipe);
     }
 
-    
+    public RecipeDto deactivateRecipe(long id) {
+        Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id).orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
+        foundRecipe.setActive(false);
+        return RecipeMapper.toDto(foundRecipe);
+    }
+
+    public RecipeDto reActivateRecipe(long id) {
+        Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id).orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
+        foundRecipe.setActive(true);
+        return RecipeMapper.toDto(foundRecipe);
+    }
 }

@@ -27,7 +27,7 @@ public class RecipeMapper {
             recipe.getServings(),
             recipe.getPrepTime(),
             recipe.getCookTime(),
-            recipe.getDeleted(),
+            recipe.getActive(),
             recipe.getVersion(),
             ingredientDtos
         );

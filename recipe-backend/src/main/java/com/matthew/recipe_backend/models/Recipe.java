@@ -40,8 +40,8 @@ public class Recipe {
     @Column(name = "created_by")
     private long createdBy;
 
-    @Column(nullable = false)
-    private Boolean deleted;
+    @Column(nullable = true)
+    private Boolean active;
 
     @Column(nullable = false)
     private int version;
@@ -56,7 +56,7 @@ public class Recipe {
     }
 
     public Recipe(String name, String description, String notes, int servings, int prepTime,
-            int cookTime, long createdBy, Boolean deleted, int version, OffsetDateTime createdAt, List<RecipeIngredient> recipeIngredients) {
+            int cookTime, long createdBy, Boolean active, int version, OffsetDateTime createdAt, List<RecipeIngredient> recipeIngredients) {
         this.name = name;
         this.description = description;
         this.notes = notes;
@@ -64,7 +64,7 @@ public class Recipe {
         this.prepTime = prepTime;
         this.cookTime = cookTime;
         this.createdBy = createdBy;
-        this.deleted = deleted;
+        this.active = active;
         this.version = version;
         this.createdAt = createdAt;
         this.recipeIngredients = recipeIngredients;
@@ -134,12 +134,12 @@ public class Recipe {
         this.createdBy = createdBy;
     }
 
-    public Boolean getDeleted() {
-        return deleted;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public int getVersion() {
@@ -192,7 +192,7 @@ public class Recipe {
     public String toString() {
         return "Recipe [id=" + id + ", name=" + name + ", description=" + description + ", notes=" + notes
                 + ", servings=" + servings + ", prepTime=" + prepTime + ", cookTime=" + cookTime + ", createdBy="
-                + createdBy + ", deleted=" + deleted + ", version=" + version + ", createdAt=" + createdAt
+                + createdBy + ", active=" + active + ", version=" + version + ", createdAt=" + createdAt
                 + ", recipeIngredients=" + recipeIngredients + "]";
     }
 }
