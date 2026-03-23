@@ -1,12 +1,24 @@
 package com.matthew.recipe_backend.mappers;
 
 import com.matthew.recipe_backend.models.Recipe;
-import com.matthew.recipe_backend.responseDtos.RecipeResponse;
+
+import java.util.List;
+
+import com.matthew.recipe_backend.dtos.RecipeDto;
+import com.matthew.recipe_backend.dtos.RecipeIngredientDto;
 
 public class RecipeMapper {
-    
-    public static RecipeResponse toDto(Recipe recipe) {
-        return new RecipeResponse(
+
+    public static RecipeDto toDto(Recipe recipe) {
+        List<RecipeIngredientDto> ingredientDtos = recipe.getRecipeIngredients().stream()
+            .map(ri -> new RecipeIngredientDto(
+                ri.getIngredient().getName(),
+                ri.getQuantity(),
+                ri.getUnit()
+            ))
+            .toList();
+
+        return new RecipeDto(
             recipe.getName(),
             recipe.getDescription(),
             recipe.getNotes(),
@@ -14,7 +26,8 @@ public class RecipeMapper {
             recipe.getPrepTime(),
             recipe.getCookTime(),
             recipe.getDeleted(),
-            recipe.getVersion()
+            recipe.getVersion(),
+            ingredientDtos
         );
     }
 }

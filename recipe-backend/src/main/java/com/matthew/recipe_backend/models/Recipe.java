@@ -2,6 +2,7 @@ package com.matthew.recipe_backend.models;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -46,7 +47,7 @@ public class Recipe {
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
     private List<RecipeIngredient> recipeIngredients;
 
     public Recipe() {
