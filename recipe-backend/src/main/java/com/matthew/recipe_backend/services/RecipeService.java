@@ -2,11 +2,11 @@ package com.matthew.recipe_backend.services;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.matthew.recipe_backend.dtos.RecipeDto;
+import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
 import com.matthew.recipe_backend.mappers.RecipeMapper;
 import com.matthew.recipe_backend.models.Recipe;
 import com.matthew.recipe_backend.repositories.RecipeRepository;
@@ -44,8 +44,21 @@ public class RecipeService {
         recipe.setCreatedAt(OffsetDateTime.now());
         recipe.setDeleted(false);
         recipe.setVersion(0);
-        System.out.println(recipe);
         recipeRepository.save(recipe);
         return RecipeMapper.toDto(recipe);
     }
+
+    public RecipeDto updateRecipe(long id, UpdateRecipeDto recipeDto) {
+        Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id).orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
+        foundRecipe.setName(recipeDto.name());
+        foundRecipe.setDescription(recipeDto.description());
+        foundRecipe.setNotes(recipeDto.notes());
+        foundRecipe.setServings(recipeDto.servings());
+        foundRecipe.setPrepTime(recipeDto.prepTime());
+        foundRecipe.setCookTime(recipeDto.cookTime());
+        Recipe savedRecipe = recipeRepository.save(foundRecipe);
+        return RecipeMapper.toDto(savedRecipe);
+    }
+
+    
 }

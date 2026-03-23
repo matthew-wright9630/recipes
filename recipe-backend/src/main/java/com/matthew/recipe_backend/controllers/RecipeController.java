@@ -3,21 +3,20 @@ package com.matthew.recipe_backend.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.matthew.recipe_backend.mappers.RecipeMapper;
-import com.matthew.recipe_backend.models.Recipe;
 import com.matthew.recipe_backend.dtos.CreateRecipeDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
+import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
 import com.matthew.recipe_backend.services.RecipeService;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -45,8 +44,13 @@ public class RecipeController {
     
     @PostMapping
     public ResponseEntity<RecipeDto> postRecipe(@RequestBody CreateRecipeDto request) {
-        System.out.print(request);
         RecipeDto recipe = recipeService.createDraftRecipe(request.createdById(), request.name());        
+        return ResponseEntity.ok(recipe);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<RecipeDto> editRecipe(@PathVariable long id, @RequestBody UpdateRecipeDto request) {
+        RecipeDto recipe = recipeService.updateRecipe(id, request);        
         return ResponseEntity.ok(recipe);
     }
     
