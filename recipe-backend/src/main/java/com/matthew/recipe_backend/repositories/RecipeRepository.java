@@ -11,19 +11,20 @@ import com.matthew.recipe_backend.models.Recipe;
 
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
-    
-    @Query("""
-        SELECT DISTINCT r FROM Recipe r
-        LEFT JOIN FETCH r.recipeIngredients ri
-        LEFT JOIN FETCH ri.ingredient
-        WHERE r.id = :id
-    """)
-    Optional<Recipe> findByIdWithIngredients(@Param("id") Long id);
 
-    @Query("""
-        SELECT DISTINCT r FROM Recipe r
-        LEFT JOIN FETCH r.recipeIngredients ri
-        LEFT JOIN FETCH ri.ingredient
-    """)
-    List<Recipe> findAllWithIngredients();
+	@Query("""
+			    SELECT DISTINCT r FROM Recipe r
+			    LEFT JOIN FETCH r.recipeIngredients ri
+			    LEFT JOIN FETCH ri.ingredient
+			    WHERE r.id = :id
+			""")
+	Optional<Recipe> findByIdWithIngredients(@Param("id") Long id);
+
+	@Query("""
+			    SELECT DISTINCT r FROM Recipe r
+			    LEFT JOIN FETCH r.recipeIngredients ri
+			    LEFT JOIN FETCH ri.ingredient
+			""")
+	List<Recipe> findAllWithIngredients();
+
 }

@@ -8,27 +8,31 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public class IngredientNutritionKey implements Serializable {
 
-    private Long ingredientId;
-    private Long usdaId;
+	private Long ingredientId;
 
-    public IngredientNutritionKey() {}
+	private Long usdaId;
 
-    public IngredientNutritionKey(Long ingredientId, Long usdaId) {
-        this.ingredientId = ingredientId;
-        this.usdaId = usdaId;
-    }
+	public IngredientNutritionKey() {
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof IngredientNutritionKey)) return false;
-        IngredientNutritionKey that = (IngredientNutritionKey) o;
-        return Objects.equals(ingredientId, that.ingredientId) &&
-               Objects.equals(usdaId, that.usdaId);
-    }
+	public IngredientNutritionKey(Long ingredientId, Long usdaId) {
+		this.ingredientId = ingredientId;
+		this.usdaId = usdaId;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(ingredientId, usdaId);
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof IngredientNutritionKey))
+			return false;
+		IngredientNutritionKey that = (IngredientNutritionKey) o;
+		return Objects.equals(ingredientId, that.ingredientId) && Objects.equals(usdaId, that.usdaId);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(ingredientId, usdaId);
+	}
+
 }

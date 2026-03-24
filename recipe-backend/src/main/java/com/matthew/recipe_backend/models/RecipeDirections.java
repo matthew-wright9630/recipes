@@ -13,86 +13,87 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "recipe_directions")
 public class RecipeDirections {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipe_id")
-    private Recipe recipe;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 
-    @Column
-    private String description;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "recipe_id")
+	private Recipe recipe;
 
-    @Column(name="step_number")
-    private int stepNumber;
+	@Column
+	private String description;
 
-    public RecipeDirections() {
-    }
+	@Column(name = "step_number")
+	private int stepNumber;
 
-    public RecipeDirections(Recipe recipe, String description, int stepNumber) {
-        this.recipe = recipe;
-        this.description = description;
-        this.stepNumber = stepNumber;
-    }
+	public RecipeDirections() {
+	}
 
-    public long getId() {
-        return id;
-    }
+	public RecipeDirections(Recipe recipe, String description, int stepNumber) {
+		this.recipe = recipe;
+		this.description = description;
+		this.stepNumber = stepNumber;
+	}
 
-    public void setId(long id) {
-        this.id = id;
-    }
+	public long getId() {
+		return id;
+	}
 
-    public Recipe getRecipe() {
-        return recipe;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public void setRecipe(Recipe recipe) {
-        this.recipe = recipe;
-    }
+	public Recipe getRecipe() {
+		return recipe;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public void setRecipe(Recipe recipe) {
+		this.recipe = recipe;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public int getStepNumber() {
-        return stepNumber;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public void setStepNumber(int stepNumber) {
-        this.stepNumber = stepNumber;
-    }
+	public int getStepNumber() {
+		return stepNumber;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (int) (id ^ (id >>> 32));
-        return result;
-    }
+	public void setStepNumber(int stepNumber) {
+		this.stepNumber = stepNumber;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        RecipeDirections other = (RecipeDirections) obj;
-        if (id != other.id)
-            return false;
-        return true;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
+	}
 
-    @Override
-    public String toString() {
-        return "RecipeDirections [description=" + description + ", stepNumber=" + stepNumber + "]";
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RecipeDirections other = (RecipeDirections) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "RecipeDirections [description=" + description + ", stepNumber=" + stepNumber + "]";
+	}
+
 }

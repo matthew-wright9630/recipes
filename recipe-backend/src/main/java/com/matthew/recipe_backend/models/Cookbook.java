@@ -12,98 +12,99 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Cookbook {
-    
-    @Id
-    @GeneratedValue
-    private long id;
 
-    @Column
-    private String name;
+	@Id
+	@GeneratedValue
+	private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
+	@Column
+	private String name;
 
-    @Column
-    private boolean deleted;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "owner_id", nullable = false)
+	private User owner;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
+	@Column
+	private boolean deleted;
 
-    public Cookbook() {
-    }
+	@Column(name = "created_at")
+	private Instant createdAt;
 
-    public Cookbook(String name, User owner, boolean deleted, Instant createdAt) {
-        this.name = name;
-        this.owner = owner;
-        this.deleted = deleted;
-        this.createdAt = createdAt;
-    }
+	public Cookbook() {
+	}
 
-    public long getId() {
-        return id;
-    }
+	public Cookbook(String name, User owner, boolean deleted, Instant createdAt) {
+		this.name = name;
+		this.owner = owner;
+		this.deleted = deleted;
+		this.createdAt = createdAt;
+	}
 
-    public void setId(long id) {
-        this.id = id;
-    }
+	public long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public User getOwner() {
-        return owner;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
+	public User getOwner() {
+		return owner;
+	}
 
-    public boolean isDeleted() {
-        return deleted;
-    }
+	public void setOwner(User owner) {
+		this.owner = owner;
+	}
 
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
+	public boolean isDeleted() {
+		return deleted;
+	}
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (int) (id ^ (id >>> 32));
-        return result;
-    }
+	public void setCreatedAt(Instant createdAt) {
+		this.createdAt = createdAt;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Cookbook other = (Cookbook) obj;
-        if (id != other.id)
-            return false;
-        return true;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
+	}
 
-    @Override
-    public String toString() {
-        return "Cookbook [id=" + id + ", name=" + name + ", deleted=" + deleted + ", createdAt=" + createdAt + "]";
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Cookbook other = (Cookbook) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Cookbook [id=" + id + ", name=" + name + ", deleted=" + deleted + ", createdAt=" + createdAt + "]";
+	}
+
 }

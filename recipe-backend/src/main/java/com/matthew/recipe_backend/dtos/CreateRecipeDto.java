@@ -1,8 +1,5 @@
 package com.matthew.recipe_backend.dtos;
 
-public record CreateRecipeDto(
-    long createdById,
-    String name
-) {
-    
+public record CreateRecipeDto(long createdById, String name) {
+
 }

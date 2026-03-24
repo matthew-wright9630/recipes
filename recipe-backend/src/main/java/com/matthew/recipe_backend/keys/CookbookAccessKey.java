@@ -9,9 +9,11 @@ import jakarta.persistence.Embeddable;
 public class CookbookAccessKey implements Serializable {
 
 	private Long cookbookId;
+
 	private Long userId;
 
-	public CookbookAccessKey() {}
+	public CookbookAccessKey() {
+	}
 
 	public CookbookAccessKey(Long cookbookId, Long userId) {
 		this.cookbookId = cookbookId;
@@ -55,4 +57,5 @@ public class CookbookAccessKey implements Serializable {
 	public String toString() {
 		return "CookbookAccessKey [cookbookId=" + cookbookId + ", userId=" + userId + "]";
 	}
+
 }

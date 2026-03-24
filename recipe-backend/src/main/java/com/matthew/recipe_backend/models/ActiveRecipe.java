@@ -9,98 +9,99 @@ import jakarta.persistence.Id;
 
 @Entity
 public class ActiveRecipe {
-    
-    @Id
-    @GeneratedValue
-    private long id;
 
-    @Column
-    private String name;
+	@Id
+	@GeneratedValue
+	private long id;
 
-    @Column
-    private String description;
+	@Column
+	private String name;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
+	@Column
+	private String description;
 
-    @Column
-    private int version;
+	@Column(name = "created_at")
+	private Instant createdAt;
 
-    public ActiveRecipe() {
-    }
+	@Column
+	private int version;
 
-    public ActiveRecipe(String name, String description, Instant createdAt, int version) {
-        this.name = name;
-        this.description = description;
-        this.createdAt = createdAt;
-        this.version = version;
-    }
+	public ActiveRecipe() {
+	}
 
-    public long getId() {
-        return id;
-    }
+	public ActiveRecipe(String name, String description, Instant createdAt, int version) {
+		this.name = name;
+		this.description = description;
+		this.createdAt = createdAt;
+		this.version = version;
+	}
 
-    public void setId(long id) {
-        this.id = id;
-    }
+	public long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
 
-    public int getVersion() {
-        return version;
-    }
+	public void setCreatedAt(Instant createdAt) {
+		this.createdAt = createdAt;
+	}
 
-    public void setVersion(int version) {
-        this.version = version;
-    }
+	public int getVersion() {
+		return version;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (int) (id ^ (id >>> 32));
-        return result;
-    }
+	public void setVersion(int version) {
+		this.version = version;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ActiveRecipe other = (ActiveRecipe) obj;
-        if (id != other.id)
-            return false;
-        return true;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
+	}
 
-    @Override
-    public String toString() {
-        return "ActiveRecipes [id=" + id + ", name=" + name + ", description=" + description + ", createdAt="
-                + createdAt + ", version=" + version + "]";
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ActiveRecipe other = (ActiveRecipe) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "ActiveRecipes [id=" + id + ", name=" + name + ", description=" + description + ", createdAt="
+				+ createdAt + ", version=" + version + "]";
+	}
+
 }

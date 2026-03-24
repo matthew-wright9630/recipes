@@ -15,128 +15,128 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "users")
 public class User {
-    
-    @Id
-    @GeneratedValue
-    private long id;
 
-    @Column(unique = true)
-    private String username;
+	@Id
+	@GeneratedValue
+	private long id;
 
-    @Column(unique = true)
-    private String email;
+	@Column(unique = true)
+	private String username;
 
-    @Column(name = "password_hash")
-    private String passwordHash;
+	@Column(unique = true)
+	private String email;
 
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
+	@Column(name = "password_hash")
+	private String passwordHash;
 
-    @Column
-    private boolean deactivated;
+	@Enumerated(EnumType.STRING)
+	private UserRole role;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+	@Column
+	private boolean deactivated;
 
-    public User() {
-    }
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
 
-    public User(String username, String email, String passwordHash, UserRole role, boolean deactivated,
-            LocalDateTime createdAt) {
-        this.username = username;
-        this.email = email;
-        this.passwordHash = passwordHash;
-        this.role = role;
-        this.deactivated = deactivated;
-        this.createdAt = createdAt;
-    }
+	public User() {
+	}
 
-    public long getId() {
-        return id;
-    }
+	public User(String username, String email, String passwordHash, UserRole role, boolean deactivated,
+			LocalDateTime createdAt) {
+		this.username = username;
+		this.email = email;
+		this.passwordHash = passwordHash;
+		this.role = role;
+		this.deactivated = deactivated;
+		this.createdAt = createdAt;
+	}
 
-    public void setId(long id) {
-        this.id = id;
-    }
+	public long getId() {
+		return id;
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getPasswordHash() {
-        return passwordHash;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
+	public String getPasswordHash() {
+		return passwordHash;
+	}
 
-    public UserRole getRole() {
-        return role;
-    }
+	public void setPasswordHash(String passwordHash) {
+		this.passwordHash = passwordHash;
+	}
 
-    public void setRole(UserRole role) {
-        this.role = role;
-    }
+	public UserRole getRole() {
+		return role;
+	}
 
-    public boolean isDeactivated() {
-        return deactivated;
-    }
+	public void setRole(UserRole role) {
+		this.role = role;
+	}
 
-    public void setDeactivated(boolean deactivated) {
-        this.deactivated = deactivated;
-    }
+	public boolean isDeactivated() {
+		return deactivated;
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public void setDeactivated(boolean deactivated) {
+		this.deactivated = deactivated;
+	}
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (int) (id ^ (id >>> 32));
-        return result;
-    }
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        User other = (User) obj;
-        if (id == 0) {
-            if (other.id != 0)
-                return false;
-        } else if (id != other.id)
-            return false;
-        return true;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
+	}
 
-    @Override
-    public String toString() {
-        return "Users [id=" + id + ", username=" + username + ", email=" + email + ", passwordHash=" + passwordHash
-                + ", deactivated=" + deactivated + ", createdAt=" + createdAt + "]";
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (id == 0) {
+			if (other.id != 0)
+				return false;
+		}
+		else if (id != other.id)
+			return false;
+		return true;
+	}
 
-    
+	@Override
+	public String toString() {
+		return "Users [id=" + id + ", username=" + username + ", email=" + email + ", passwordHash=" + passwordHash
+				+ ", deactivated=" + deactivated + ", createdAt=" + createdAt + "]";
+	}
+
 }

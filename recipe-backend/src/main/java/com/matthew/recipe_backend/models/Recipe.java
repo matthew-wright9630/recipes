@@ -18,208 +18,240 @@ import java.util.List;
 @Table(name = "recipes")
 public class Recipe {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+	@Column(name = "name", nullable = false)
+	private String name;
 
-    @Column
-    private String description;
+	@Column
+	private String description;
 
-    @Column
-    private String notes;
+	@Column
+	private String notes;
 
-    @Column
-    private int servings;
+	@Column
+	private int servings;
 
-    @Column(name = "prep_time")
-    private int prepTime;
+	@Column(name = "prep_time")
+	private int prepTime;
 
-    @Column(name = "cook_time")
-    private int cookTime;
+	@Column(name = "cook_time")
+	private int cookTime;
 
-    @Column(name = "created_by")
-    private long createdBy;
+	@Column(name = "created_by")
+	private long createdBy;
 
-    @Column(nullable = true)
-    private Boolean active;
+	@Column(nullable = true)
+	private Boolean active;
 
-    @Column(nullable = false)
-    private int version;
+	@Column(nullable = false)
+	private int version;
 
-    @Column(name = "created_at", nullable = false)
-    private OffsetDateTime createdAt;
+	@Column(name = "created_at", nullable = false)
+	private OffsetDateTime createdAt;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RecipeDirections> recipeDirections;
+	@Column
+	private Boolean published;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_recipe_id")
-    private Recipe parentRecipe;
+	@OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<RecipeDirections> recipeDirections;
 
-    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
-    private List<RecipeIngredient> recipeIngredients;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "parent_recipe_id")
+	private Recipe parentRecipe;
 
-    public Recipe() {
-    }
+	@OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
+	private List<RecipeIngredient> recipeIngredients;
 
-    public Recipe(String name, String description, String notes, int servings, int prepTime,
-            int cookTime, long createdBy, Boolean active, int version, OffsetDateTime createdAt, List<RecipeDirections> recipeDirections, List<RecipeIngredient> recipeIngredients) {
-        this.name = name;
-        this.description = description;
-        this.notes = notes;
-        this.servings = servings;
-        this.prepTime = prepTime;
-        this.cookTime = cookTime;
-        this.createdBy = createdBy;
-        this.active = active;
-        this.version = version;
-        this.createdAt = createdAt;
-        this.recipeDirections = recipeDirections;
-        this.recipeIngredients = recipeIngredients;
-    }
+	protected Recipe() { // for JPA use
 
-    public long getId() {
-        return id;
-    }
+	}
 
-    public void setId(long id) {
-        this.id = id;
-    }
+	public Recipe(long createdBy, String name) {
+		this.name = name;
+		this.description = null;
+		this.notes = null;
+		this.servings = 0;
+		this.prepTime = 0;
+		this.cookTime = 0;
+		this.createdBy = createdBy;
+		this.active = true;
+		this.version = 0;
+		this.createdAt = OffsetDateTime.now();
+		this.published = false;
+		this.recipeDirections = null;
+		this.recipeIngredients = null;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public Recipe(String name, String description, String notes, int servings, int prepTime, int cookTime,
+			long createdBy, Boolean active, int version, OffsetDateTime createdAt, Boolean published,
+			List<RecipeDirections> recipeDirections, List<RecipeIngredient> recipeIngredients) {
+		this.name = name;
+		this.description = description;
+		this.notes = notes;
+		this.servings = servings;
+		this.prepTime = prepTime;
+		this.cookTime = cookTime;
+		this.createdBy = createdBy;
+		this.active = active;
+		this.version = version;
+		this.createdAt = createdAt;
+		this.published = published;
+		this.recipeDirections = recipeDirections;
+		this.recipeIngredients = recipeIngredients;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public long getId() {
+		return id;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getNotes() {
-        return notes;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public int getServings() {
-        return servings;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public void setServings(int servings) {
-        this.servings = servings;
-    }
+	public String getNotes() {
+		return notes;
+	}
 
-    public int getPrepTime() {
-        return prepTime;
-    }
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
 
-    public void setPrepTime(int prepTime) {
-        this.prepTime = prepTime;
-    }
+	public int getServings() {
+		return servings;
+	}
 
-    public int getCookTime() {
-        return cookTime;
-    }
+	public void setServings(int servings) {
+		this.servings = servings;
+	}
 
-    public void setCookTime(int cookTime) {
-        this.cookTime = cookTime;
-    }
+	public int getPrepTime() {
+		return prepTime;
+	}
 
-    public long getCreatedBy() {
-        return createdBy;
-    }
+	public void setPrepTime(int prepTime) {
+		this.prepTime = prepTime;
+	}
 
-    public void setCreatedBy(long createdBy) {
-        this.createdBy = createdBy;
-    }
+	public int getCookTime() {
+		return cookTime;
+	}
 
-    public Boolean getActive() {
-        return active;
-    }
+	public void setCookTime(int cookTime) {
+		this.cookTime = cookTime;
+	}
 
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
+	public long getCreatedBy() {
+		return createdBy;
+	}
 
-    public int getVersion() {
-        return version;
-    }
+	public void setCreatedBy(long createdBy) {
+		this.createdBy = createdBy;
+	}
 
-    public void setVersion(int version) {
-        this.version = version;
-    }
+	public Boolean getPublished() {
+		return published;
+	}
 
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public void setPublished(Boolean published) {
+		this.published = published;
+	}
 
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+	public Boolean getActive() {
+		return active;
+	}
 
-    public List<RecipeDirections> getRecipeDirections() {
-        return recipeDirections;
-    }
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
 
-    public void setRecipeDirections(List<RecipeDirections> recipeDirections) {
-        this.recipeDirections = recipeDirections;
-    }
+	public int getVersion() {
+		return version;
+	}
 
-    public Recipe getParentRecipe() {
-        return parentRecipe;
-    }
+	public void setVersion(int version) {
+		this.version = version;
+	}
 
-    public void setParentRecipe(Recipe parentRecipe) {
-        this.parentRecipe = parentRecipe;
-    }
+	public OffsetDateTime getCreatedAt() {
+		return createdAt;
+	}
 
-    public List<RecipeIngredient> getRecipeIngredients() {
-        return recipeIngredients;
-    }
+	public void setCreatedAt(OffsetDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
 
-    public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
-        this.recipeIngredients = recipeIngredients;
-    }
+	public List<RecipeDirections> getRecipeDirections() {
+		return recipeDirections;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (int) (id ^ (id >>> 32));
-        return result;
-    }
+	public void setRecipeDirections(List<RecipeDirections> recipeDirections) {
+		this.recipeDirections = recipeDirections;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Recipe other = (Recipe) obj;
-        if (id != other.id)
-            return false;
-        return true;
-    }
+	public Recipe getParentRecipe() {
+		return parentRecipe;
+	}
 
-    @Override
-    public String toString() {
-        return "Recipe [id=" + id + ", name=" + name + ", description=" + description + ", notes=" + notes
-                + ", servings=" + servings + ", prepTime=" + prepTime + ", cookTime=" + cookTime + ", createdBy="
-                + createdBy + ", active=" + active + ", version=" + version + ", createdAt=" + createdAt
-                + ", recipeDirections=" + recipeDirections + ", recipeIngredients=" + recipeIngredients + "]";
-    }
+	public void setParentRecipe(Recipe parentRecipe) {
+		this.parentRecipe = parentRecipe;
+	}
+
+	public List<RecipeIngredient> getRecipeIngredients() {
+		return recipeIngredients;
+	}
+
+	public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
+		this.recipeIngredients = recipeIngredients;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Recipe other = (Recipe) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Recipe [id=" + id + ", name=" + name + ", description=" + description + ", notes=" + notes
+				+ ", servings=" + servings + ", prepTime=" + prepTime + ", cookTime=" + cookTime + ", createdBy="
+				+ createdBy + ", active=" + active + ", version=" + version + ", createdAt=" + createdAt
+				+ ", published=" + published + ", recipeDirections=" + recipeDirections + ", recipeIngredients="
+				+ recipeIngredients + "]";
+	}
+
 }

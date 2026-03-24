@@ -20,7 +20,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "cookbook_access")
 public class CookbookAccess {
-    
+
 	@EmbeddedId
 	private CookbookAccessKey id;
 
@@ -40,7 +40,8 @@ public class CookbookAccess {
 	@Column(name = "granted_at")
 	private Instant grantedAt;
 
-	public CookbookAccess() {}
+	public CookbookAccess() {
+	}
 
 	public CookbookAccess(Cookbook cookbook, User user, CookbookPermission permission, Instant grantedAt) {
 		this.cookbook = cookbook;
@@ -113,4 +114,5 @@ public class CookbookAccess {
 	public String toString() {
 		return "CookbookAccess [id=" + id + ", permission=" + permission + ", grantedAt=" + grantedAt + "]";
 	}
+
 }
