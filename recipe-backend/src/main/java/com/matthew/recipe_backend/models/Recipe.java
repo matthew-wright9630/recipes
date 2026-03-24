@@ -1,11 +1,14 @@
 package com.matthew.recipe_backend.models;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
@@ -49,6 +52,13 @@ public class Recipe {
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecipeDirections> recipeDirections;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_recipe_id")
+    private Recipe parentRecipe;
+
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
     private List<RecipeIngredient> recipeIngredients;
 
@@ -56,7 +66,7 @@ public class Recipe {
     }
 
     public Recipe(String name, String description, String notes, int servings, int prepTime,
-            int cookTime, long createdBy, Boolean active, int version, OffsetDateTime createdAt, List<RecipeIngredient> recipeIngredients) {
+            int cookTime, long createdBy, Boolean active, int version, OffsetDateTime createdAt, List<RecipeDirections> recipeDirections, List<RecipeIngredient> recipeIngredients) {
         this.name = name;
         this.description = description;
         this.notes = notes;
@@ -67,6 +77,7 @@ public class Recipe {
         this.active = active;
         this.version = version;
         this.createdAt = createdAt;
+        this.recipeDirections = recipeDirections;
         this.recipeIngredients = recipeIngredients;
     }
 
@@ -158,6 +169,22 @@ public class Recipe {
         this.createdAt = createdAt;
     }
 
+    public List<RecipeDirections> getRecipeDirections() {
+        return recipeDirections;
+    }
+
+    public void setRecipeDirections(List<RecipeDirections> recipeDirections) {
+        this.recipeDirections = recipeDirections;
+    }
+
+    public Recipe getParentRecipe() {
+        return parentRecipe;
+    }
+
+    public void setParentRecipe(Recipe parentRecipe) {
+        this.parentRecipe = parentRecipe;
+    }
+
     public List<RecipeIngredient> getRecipeIngredients() {
         return recipeIngredients;
     }
@@ -193,6 +220,6 @@ public class Recipe {
         return "Recipe [id=" + id + ", name=" + name + ", description=" + description + ", notes=" + notes
                 + ", servings=" + servings + ", prepTime=" + prepTime + ", cookTime=" + cookTime + ", createdBy="
                 + createdBy + ", active=" + active + ", version=" + version + ", createdAt=" + createdAt
-                + ", recipeIngredients=" + recipeIngredients + "]";
+                + ", recipeDirections=" + recipeDirections + ", recipeIngredients=" + recipeIngredients + "]";
     }
 }
