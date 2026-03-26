@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
+import com.matthew.recipe_backend.enums.RecipeStatus;
 import com.matthew.recipe_backend.mappers.RecipeMapper;
 import com.matthew.recipe_backend.models.Recipe;
 import com.matthew.recipe_backend.repositories.RecipeRepository;
@@ -59,17 +60,33 @@ public class RecipeService {
 		return RecipeMapper.toDto(savedRecipe);
 	}
 
+	public RecipeDto updateRecipeStatus(Long id, RecipeStatus newStatus) {
+		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
+				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
+
+		RecipeStatus currentStatus = foundRecipe.getStatus();
+		RecipeValidator.validateStatusTransition(currentStatus, newStatus);
+
+		if (newStatus.equals(RecipeStatus.PUBLISHED)) {
+			RecipeValidator.validateRecipePublish(foundRecipe);
+			foundRecipe.setVersion(foundRecipe.getVersion() + 1);
+		}
+
+		foundRecipe.setStatus(newStatus);
+		return RecipeMapper.toDto(foundRecipe);
+	}
+
 	public RecipeDto deactivateRecipe(Long id) {
 		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
 				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
-		foundRecipe.setActive(false);
+		foundRecipe.setStatus(RecipeStatus.ARCHIVED);
 		return RecipeMapper.toDto(foundRecipe);
 	}
 
 	public RecipeDto reActivateRecipe(Long id) {
 		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
 				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
-		foundRecipe.setActive(true);
+		foundRecipe.setStatus(RecipeStatus.PUBLISHED);
 		return RecipeMapper.toDto(foundRecipe);
 	}
 
@@ -77,10 +94,8 @@ public class RecipeService {
 		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
 				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
 		RecipeValidator.validateRecipePublish(foundRecipe);
-		foundRecipe.setPublished(true);
+		foundRecipe.setStatus(RecipeStatus.PUBLISHED);
 		foundRecipe.setVersion(foundRecipe.getVersion() + 1);
 		return RecipeMapper.toDto(foundRecipe);
-
 	}
-
 }

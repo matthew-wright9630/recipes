@@ -3,6 +3,8 @@ package com.matthew.recipe_backend.models;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +15,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
 import java.util.Set;
+
+import com.matthew.recipe_backend.enums.RecipeStatus;
+
 import java.util.Objects;
 
 @Entity
@@ -44,17 +49,15 @@ public class Recipe {
 	@Column(name = "created_by")
 	private Long createdBy;
 
-	@Column(nullable = true)
-	private Boolean active;
-
 	@Column(nullable = false)
 	private Integer version;
 
 	@Column(name = "created_at", nullable = false)
 	private OffsetDateTime createdAt;
 
-	@Column
-	private Boolean published;
+	@Enumerated(EnumType.STRING)
+	@Column(columnDefinition = "recipe_status")
+	private RecipeStatus status;
 
 	@OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<RecipeDirection> recipeDirections;
@@ -78,16 +81,15 @@ public class Recipe {
 		this.prepTime = 0;
 		this.cookTime = 0;
 		this.createdBy = createdBy;
-		this.active = true;
 		this.version = 0;
 		this.createdAt = OffsetDateTime.now();
-		this.published = false;
+		this.status = RecipeStatus.DRAFT;
 		this.recipeDirections = null;
 		this.recipeIngredients = null;
 	}
 
 	public Recipe(String name, String description, String notes, Integer servings, Integer prepTime, Integer cookTime,
-			Long createdBy, Boolean active, Integer version, OffsetDateTime createdAt, Boolean published,
+			Long createdBy, Integer version, OffsetDateTime createdAt, RecipeStatus status,
 			Set<RecipeDirection> recipeDirections, Set<RecipeIngredient> recipeIngredients) {
 		this.name = name;
 		this.description = description;
@@ -96,10 +98,9 @@ public class Recipe {
 		this.prepTime = prepTime;
 		this.cookTime = cookTime;
 		this.createdBy = createdBy;
-		this.active = active;
 		this.version = version;
 		this.createdAt = createdAt;
-		this.published = published;
+		this.status = status;
 		this.recipeDirections = recipeDirections;
 		this.recipeIngredients = recipeIngredients;
 	}
@@ -168,20 +169,12 @@ public class Recipe {
 		this.createdBy = createdBy;
 	}
 
-	public Boolean getPublished() {
-		return published;
+	public RecipeStatus getStatus() {
+		return status;
 	}
 
-	public void setPublished(Boolean published) {
-		this.published = published;
-	}
-
-	public Boolean getActive() {
-		return active;
-	}
-
-	public void setActive(Boolean active) {
-		this.active = active;
+	public void setStatus(RecipeStatus status) {
+		this.status = status;
 	}
 
 	public Integer getVersion() {
@@ -245,8 +238,8 @@ public class Recipe {
 	public String toString() {
 		return "Recipe [id=" + id + ", name=" + name + ", description=" + description + ", notes=" + notes
 				+ ", servings=" + servings + ", prepTime=" + prepTime + ", cookTime=" + cookTime + ", createdBy="
-				+ createdBy + ", active=" + active + ", version=" + version + ", createdAt=" + createdAt
-				+ ", published=" + published + ", recipeDirections=" + recipeDirections + ", recipeIngredients="
+				+ createdBy + ", version=" + version + ", createdAt=" + createdAt
+				+ ", status=" + status + ", recipeDirections=" + recipeDirections + ", recipeIngredients="
 				+ recipeIngredients + "]";
 	}
 

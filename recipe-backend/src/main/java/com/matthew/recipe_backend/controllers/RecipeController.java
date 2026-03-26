@@ -5,7 +5,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.matthew.recipe_backend.dtos.CreateRecipeDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
+import com.matthew.recipe_backend.dtos.StatusUpdateRequestDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
+import com.matthew.recipe_backend.enums.RecipeStatus;
 import com.matthew.recipe_backend.services.RecipeService;
 
 import java.util.List;
@@ -62,6 +64,13 @@ public class RecipeController {
 	public ResponseEntity<Object> deactivateRecipe(@PathVariable long id) {
 		recipeService.deactivateRecipe(id);
 		return ResponseEntity.noContent().build();
+	}
+
+	@PatchMapping("{id}/status")
+	public ResponseEntity<RecipeDto> updateRecipeStatus(@PathVariable long id,
+			@RequestBody StatusUpdateRequestDto request) {
+		RecipeDto recipe = recipeService.updateRecipeStatus(id, request.getStatus());
+		return ResponseEntity.ok(recipe);
 	}
 
 }

@@ -23,7 +23,6 @@ public class RecipeMapper {
 		List<RecipeDirectionsDto> directionsDtos = recipe.getRecipeDirection() == null ? Collections.emptyList()
 				: recipe.getRecipeDirection().stream()
 						.map(rd -> {
-							System.out.println(rd.getRecipeIngredients());
 							List<RecipeIngredientDto> ingredientDto = rd.getRecipeIngredients() == null
 									? Collections.emptyList()
 									: rd.getRecipeIngredients().stream()
@@ -34,8 +33,8 @@ public class RecipeMapper {
 						.toList();
 
 		return new RecipeDto(recipe.getName(), recipe.getDescription(), recipe.getNotes(), recipe.getServings(),
-				recipe.getPrepTime(), recipe.getCookTime(), recipe.getActive(), recipe.getVersion(),
-				recipe.getPublished(), directionsDtos, ingredientDtos);
+				recipe.getPrepTime(), recipe.getCookTime(), recipe.getVersion(),
+				recipe.getStatus(), directionsDtos, ingredientDtos);
 	}
 
 	private static RecipeIngredientDto toIngredientDto(RecipeIngredient ri) {
