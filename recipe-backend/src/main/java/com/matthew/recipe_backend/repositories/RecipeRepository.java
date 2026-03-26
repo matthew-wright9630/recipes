@@ -14,6 +14,14 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
 	@Query("""
 			    SELECT DISTINCT r FROM Recipe r
+			    LEFT JOIN FETCH r.recipeDirections rd
+			    LEFT JOIN FETCH rd.recipeIngredients rdi
+			    WHERE r.id = :id
+			""")
+	Optional<Recipe> findByIdWithDirections(@Param("id") Long id);
+
+	@Query("""
+			    SELECT DISTINCT r FROM Recipe r
 			    LEFT JOIN FETCH r.recipeIngredients ri
 			    LEFT JOIN FETCH ri.ingredient
 			    WHERE r.id = :id
@@ -26,5 +34,12 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 			    LEFT JOIN FETCH ri.ingredient
 			""")
 	List<Recipe> findAllWithIngredients();
+
+	@Query("""
+			    SELECT DISTINCT r FROM Recipe r
+			    LEFT JOIN FETCH r.recipeDirections rd
+			    LEFT JOIN FETCH rd.recipeIngredients rdi
+			""")
+	List<Recipe> findAllWithDirections();
 
 }

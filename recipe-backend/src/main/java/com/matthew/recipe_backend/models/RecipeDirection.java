@@ -1,5 +1,7 @@
 package com.matthew.recipe_backend.models;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -8,40 +10,44 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "recipe_directions")
-public class RecipeDirections {
+public class RecipeDirection {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "recipe_id")
 	private Recipe recipe;
 
+	@OneToMany(mappedBy = "recipeDirections", fetch = FetchType.LAZY)
+	private List<RecipeIngredient> recipeIngredients;
+
 	@Column
 	private String description;
 
 	@Column(name = "step_number")
-	private int stepNumber;
+	private Integer stepNumber;
 
-	public RecipeDirections() {
+	public RecipeDirection() {
 	}
 
-	public RecipeDirections(Recipe recipe, String description, int stepNumber) {
+	public RecipeDirection(Recipe recipe, String description, Integer stepNumber) {
 		this.recipe = recipe;
 		this.description = description;
 		this.stepNumber = stepNumber;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -61,12 +67,20 @@ public class RecipeDirections {
 		this.description = description;
 	}
 
-	public int getStepNumber() {
+	public Integer getStepNumber() {
 		return stepNumber;
 	}
 
-	public void setStepNumber(int stepNumber) {
+	public void setStepNumber(Integer stepNumber) {
 		this.stepNumber = stepNumber;
+	}
+
+	public List<RecipeIngredient> getRecipeIngredients() {
+		return recipeIngredients;
+	}
+
+	public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
+		this.recipeIngredients = recipeIngredients;
 	}
 
 	@Override
@@ -85,7 +99,7 @@ public class RecipeDirections {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		RecipeDirections other = (RecipeDirections) obj;
+		RecipeDirection other = (RecipeDirection) obj;
 		if (id != other.id)
 			return false;
 		return true;
@@ -93,7 +107,7 @@ public class RecipeDirections {
 
 	@Override
 	public String toString() {
-		return "RecipeDirections [description=" + description + ", stepNumber=" + stepNumber + "]";
+		return "Recipedirection [description=" + description + ", stepNumber=" + stepNumber + "]";
 	}
 
 }

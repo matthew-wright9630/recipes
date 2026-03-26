@@ -10,32 +10,32 @@ import jakarta.persistence.Embeddable;
 public class RecipeIngredientKey implements Serializable {
 
 	@Column(name = "recipe_id")
-	private Integer recipeId;
+	private Long recipeId;
 
 	@Column(name = "ingredient_id")
-	private Integer ingredientId;
+	private Long ingredientId;
 
 	public RecipeIngredientKey() {
 	}
 
-	public RecipeIngredientKey(Integer recipeId, Integer ingredientId) {
+	public RecipeIngredientKey(Long recipeId, Long ingredientId) {
 		this.recipeId = recipeId;
 		this.ingredientId = ingredientId;
 	}
 
-	public Integer getRecipeId() {
+	public Long getRecipeId() {
 		return recipeId;
 	}
 
-	public void setRecipeId(Integer recipeId) {
+	public void setRecipeId(Long recipeId) {
 		this.recipeId = recipeId;
 	}
 
-	public Integer getIngredientId() {
+	public Long getIngredientId() {
 		return ingredientId;
 	}
 
-	public void setIngredientId(Integer ingredientId) {
+	public void setIngredientId(Long ingredientId) {
 		this.ingredientId = ingredientId;
 	}
 

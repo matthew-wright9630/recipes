@@ -10,6 +10,7 @@ import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
 import com.matthew.recipe_backend.mappers.RecipeMapper;
 import com.matthew.recipe_backend.models.Recipe;
 import com.matthew.recipe_backend.repositories.RecipeRepository;
+import com.matthew.recipe_backend.validators.RecipeValidator;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -31,22 +32,23 @@ public class RecipeService {
 
 	}
 
-	public RecipeDto findRecipeById(long id) {
-		Recipe recipe = recipeRepository.findByIdWithIngredients(id)
-			.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
+	public RecipeDto findRecipeById(Long id) {
+		Recipe recipe = recipeRepository.findByIdWithDirections(id)
+				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
+		recipeRepository.findByIdWithIngredients(id);
 		RecipeDto recipeDto = RecipeMapper.toDto(recipe);
 		return recipeDto;
 	}
 
-	public RecipeDto createDraftRecipe(long createdById, String name) {
+	public RecipeDto createDraftRecipe(Long createdById, String name) {
 		Recipe recipe = new Recipe(createdById, name);
 		recipeRepository.save(recipe);
 		return RecipeMapper.toDto(recipe);
 	}
 
-	public RecipeDto updateRecipe(long id, UpdateRecipeDto recipeDto) {
+	public RecipeDto updateRecipe(Long id, UpdateRecipeDto recipeDto) {
 		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
-			.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
+				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
 		foundRecipe.setName(recipeDto.name());
 		foundRecipe.setDescription(recipeDto.description());
 		foundRecipe.setNotes(recipeDto.notes());
@@ -57,18 +59,28 @@ public class RecipeService {
 		return RecipeMapper.toDto(savedRecipe);
 	}
 
-	public RecipeDto deactivateRecipe(long id) {
+	public RecipeDto deactivateRecipe(Long id) {
 		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
-			.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
+				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
 		foundRecipe.setActive(false);
 		return RecipeMapper.toDto(foundRecipe);
 	}
 
-	public RecipeDto reActivateRecipe(long id) {
+	public RecipeDto reActivateRecipe(Long id) {
 		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
-			.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
+				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
 		foundRecipe.setActive(true);
 		return RecipeMapper.toDto(foundRecipe);
+	}
+
+	public RecipeDto publishRecipe(Long id) {
+		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
+				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
+		RecipeValidator.validateRecipePublish(foundRecipe);
+		foundRecipe.setPublished(true);
+		foundRecipe.setVersion(foundRecipe.getVersion() + 1);
+		return RecipeMapper.toDto(foundRecipe);
+
 	}
 
 }

@@ -12,7 +12,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
-import java.util.List;
+import java.util.Set;
+import java.util.Objects;
 
 @Entity
 @Table(name = "recipes")
@@ -20,7 +21,7 @@ public class Recipe {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 
 	@Column(name = "name", nullable = false)
 	private String name;
@@ -32,22 +33,22 @@ public class Recipe {
 	private String notes;
 
 	@Column
-	private int servings;
+	private Integer servings;
 
 	@Column(name = "prep_time")
-	private int prepTime;
+	private Integer prepTime;
 
 	@Column(name = "cook_time")
-	private int cookTime;
+	private Integer cookTime;
 
 	@Column(name = "created_by")
-	private long createdBy;
+	private Long createdBy;
 
 	@Column(nullable = true)
 	private Boolean active;
 
 	@Column(nullable = false)
-	private int version;
+	private Integer version;
 
 	@Column(name = "created_at", nullable = false)
 	private OffsetDateTime createdAt;
@@ -56,20 +57,20 @@ public class Recipe {
 	private Boolean published;
 
 	@OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<RecipeDirections> recipeDirections;
+	private Set<RecipeDirection> recipeDirections;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_recipe_id")
 	private Recipe parentRecipe;
 
 	@OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
-	private List<RecipeIngredient> recipeIngredients;
+	private Set<RecipeIngredient> recipeIngredients;
 
 	protected Recipe() { // for JPA use
 
 	}
 
-	public Recipe(long createdBy, String name) {
+	public Recipe(Long createdBy, String name) {
 		this.name = name;
 		this.description = null;
 		this.notes = null;
@@ -85,9 +86,9 @@ public class Recipe {
 		this.recipeIngredients = null;
 	}
 
-	public Recipe(String name, String description, String notes, int servings, int prepTime, int cookTime,
-			long createdBy, Boolean active, int version, OffsetDateTime createdAt, Boolean published,
-			List<RecipeDirections> recipeDirections, List<RecipeIngredient> recipeIngredients) {
+	public Recipe(String name, String description, String notes, Integer servings, Integer prepTime, Integer cookTime,
+			Long createdBy, Boolean active, Integer version, OffsetDateTime createdAt, Boolean published,
+			Set<RecipeDirection> recipeDirections, Set<RecipeIngredient> recipeIngredients) {
 		this.name = name;
 		this.description = description;
 		this.notes = notes;
@@ -103,11 +104,11 @@ public class Recipe {
 		this.recipeIngredients = recipeIngredients;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -135,35 +136,35 @@ public class Recipe {
 		this.notes = notes;
 	}
 
-	public int getServings() {
+	public Integer getServings() {
 		return servings;
 	}
 
-	public void setServings(int servings) {
+	public void setServings(Integer servings) {
 		this.servings = servings;
 	}
 
-	public int getPrepTime() {
+	public Integer getPrepTime() {
 		return prepTime;
 	}
 
-	public void setPrepTime(int prepTime) {
+	public void setPrepTime(Integer prepTime) {
 		this.prepTime = prepTime;
 	}
 
-	public int getCookTime() {
+	public Integer getCookTime() {
 		return cookTime;
 	}
 
-	public void setCookTime(int cookTime) {
+	public void setCookTime(Integer cookTime) {
 		this.cookTime = cookTime;
 	}
 
-	public long getCreatedBy() {
+	public Long getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(long createdBy) {
+	public void setCreatedBy(Long createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -183,11 +184,11 @@ public class Recipe {
 		this.active = active;
 	}
 
-	public int getVersion() {
+	public Integer getVersion() {
 		return version;
 	}
 
-	public void setVersion(int version) {
+	public void setVersion(Integer version) {
 		this.version = version;
 	}
 
@@ -199,11 +200,11 @@ public class Recipe {
 		this.createdAt = createdAt;
 	}
 
-	public List<RecipeDirections> getRecipeDirections() {
+	public Set<RecipeDirection> getRecipeDirection() {
 		return recipeDirections;
 	}
 
-	public void setRecipeDirections(List<RecipeDirections> recipeDirections) {
+	public void setRecipeDirection(Set<RecipeDirection> recipeDirections) {
 		this.recipeDirections = recipeDirections;
 	}
 
@@ -215,20 +216,17 @@ public class Recipe {
 		this.parentRecipe = parentRecipe;
 	}
 
-	public List<RecipeIngredient> getRecipeIngredients() {
+	public Set<RecipeIngredient> getRecipeIngredients() {
 		return recipeIngredients;
 	}
 
-	public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
+	public void setRecipeIngredients(Set<RecipeIngredient> recipeIngredients) {
 		this.recipeIngredients = recipeIngredients;
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
-		return result;
+		return Objects.hashCode(id);
 	}
 
 	@Override
@@ -240,9 +238,7 @@ public class Recipe {
 		if (getClass() != obj.getClass())
 			return false;
 		Recipe other = (Recipe) obj;
-		if (id != other.id)
-			return false;
-		return true;
+		return Objects.equals(id, other.id);
 	}
 
 	@Override
