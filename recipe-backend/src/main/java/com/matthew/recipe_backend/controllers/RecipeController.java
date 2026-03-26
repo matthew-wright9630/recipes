@@ -13,6 +13,7 @@ import com.matthew.recipe_backend.services.RecipeService;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,15 +55,9 @@ public class RecipeController {
 		return ResponseEntity.ok(recipe);
 	}
 
-	@PatchMapping("reactivate/{id}")
-	public ResponseEntity<Object> reactivateRecipe(@PathVariable long id) {
-		recipeService.reActivateRecipe(id);
-		return ResponseEntity.noContent().build();
-	}
-
-	@PatchMapping("deactivate/{id}")
-	public ResponseEntity<Object> deactivateRecipe(@PathVariable long id) {
-		recipeService.deactivateRecipe(id);
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Object> deleteRecipe(@PathVariable long id) {
+		recipeService.deleteDraftRecipe(id);
 		return ResponseEntity.noContent().build();
 	}
 

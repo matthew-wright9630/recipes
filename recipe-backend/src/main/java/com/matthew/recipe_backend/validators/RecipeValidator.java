@@ -42,4 +42,10 @@ public class RecipeValidator {
 		}
 	}
 
+	public static void validateDraftStatus(Recipe recipe) {
+		if (!recipe.getStatus().equals(RecipeStatus.DRAFT))
+			throw new IllegalStateException(
+					"Only draft recipes can be deleted. Please either mark this as removed, or contact an administrator for more help.");
+	}
+
 }

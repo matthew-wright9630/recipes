@@ -61,7 +61,7 @@ public class RecipeService {
 	}
 
 	public RecipeDto updateRecipeStatus(Long id, RecipeStatus newStatus) {
-		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
+		Recipe foundRecipe = recipeRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
 
 		RecipeStatus currentStatus = foundRecipe.getStatus();
@@ -76,26 +76,10 @@ public class RecipeService {
 		return RecipeMapper.toDto(foundRecipe);
 	}
 
-	public RecipeDto deactivateRecipe(Long id) {
-		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
+	public void deleteDraftRecipe(Long id) {
+		Recipe foundRecipe = recipeRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
-		foundRecipe.setStatus(RecipeStatus.ARCHIVED);
-		return RecipeMapper.toDto(foundRecipe);
-	}
-
-	public RecipeDto reActivateRecipe(Long id) {
-		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
-				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
-		foundRecipe.setStatus(RecipeStatus.PUBLISHED);
-		return RecipeMapper.toDto(foundRecipe);
-	}
-
-	public RecipeDto publishRecipe(Long id) {
-		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
-				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
-		RecipeValidator.validateRecipePublish(foundRecipe);
-		foundRecipe.setStatus(RecipeStatus.PUBLISHED);
-		foundRecipe.setVersion(foundRecipe.getVersion() + 1);
-		return RecipeMapper.toDto(foundRecipe);
+		RecipeValidator.validateDraftStatus(foundRecipe);
+		recipeRepository.delete(foundRecipe);
 	}
 }
