@@ -60,6 +60,14 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(IllegalStateException.class)
+	public ResponseEntity<Object> handleIllegalStateEntity(IllegalStateException ex, WebRequest request) {
+		Map<String, Object> body = new HashMap<>();
+		body.put("error", "Invalid State Entity");
+		body.put("message", ex.getMessage());
+		return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+	}
+
 	@ExceptionHandler(EntityNotFoundException.class)
 	public ResponseEntity<Object> handleNotFound(EntityNotFoundException ex) {
 		Map<String, Object> body = new HashMap<>();
@@ -74,8 +82,8 @@ public class GlobalExceptionHandler {
 		Map<String, String> fieldErrors = new HashMap<>();
 
 		ex.getBindingResult()
-			.getFieldErrors()
-			.forEach(error -> fieldErrors.put(error.getField(), error.getDefaultMessage()));
+				.getFieldErrors()
+				.forEach(error -> fieldErrors.put(error.getField(), error.getDefaultMessage()));
 
 		body.put("error", "Validation Error");
 		body.put("fields", fieldErrors);
