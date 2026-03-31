@@ -44,7 +44,7 @@ public class RecipeValidator {
 		if (recipe.getRecipeIngredients() == null || recipe.getRecipeIngredients().isEmpty())
 			errors.add("At least one ingredient is required");
 
-		if (recipe.getRecipeDirection() == null || recipe.getRecipeDirection().isEmpty())
+		if (recipe.getRecipeDirections() == null || recipe.getRecipeDirections().isEmpty())
 			errors.add("At least one direction is required");
 
 		// Throw a single exception containing all violations rather than failing on the
@@ -117,15 +117,11 @@ public class RecipeValidator {
 					"Only draft recipes can be deleted. Please either mark this as removed, or contact an administrator for more help.");
 	}
 
-	public static void recipeBelongsToUser(Recipe recipe) {
-		System.out.println(SecurityContextHolder.getContext().getAuthentication()
-				.getPrincipal());
-		CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
-				.getPrincipal();
-		Long userId = user.getId();
-
+	public static void recipeBelongsToUser(Recipe recipe, Long userId) {
+		System.out.println(
+				recipe.getCreatedBy().getId() + ", " + userId + ", " + recipe.getCreatedBy().getId().equals(userId));
 		if (!recipe.getCreatedBy().getId().equals(userId)) {
-			throw new IllegalStateException("Direction does not belong to the recipe");
+			throw new IllegalStateException("Direction does not belong to this user");
 		}
 	}
 }

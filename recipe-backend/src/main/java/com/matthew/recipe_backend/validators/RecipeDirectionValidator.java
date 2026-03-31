@@ -1,8 +1,12 @@
 package com.matthew.recipe_backend.validators;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.matthew.recipe_backend.dtos.ReorderDirectionDto;
+import com.matthew.recipe_backend.exceptions.ValidationException;
 import com.matthew.recipe_backend.models.Recipe;
 import com.matthew.recipe_backend.models.RecipeDirection;
 
@@ -72,8 +76,19 @@ public class RecipeDirectionValidator {
 
         // Exclude the current direction by ID to allow updates without self-conflict,
         // then check if any remaining step shares the same step number
-        return recipe.getRecipeDirection().stream().filter(rd -> !rd.getId().equals(recipeDirection.getId()))
+        return recipe.getRecipeDirections().stream().filter(rd -> !rd.getId().equals(recipeDirection.getId()))
                 .anyMatch(rd -> rd.getStepNumber().equals(stepNumber));
     }
 
+    public static void validateReorder(List<ReorderDirectionDto> request) {
+        List<Integer> stepNumbers = request.stream()
+                .map(ReorderDirectionDto::stepNumber)
+                .toList();
+
+        Set<Integer> uniqueStepNumbers = new HashSet<>(stepNumbers);
+
+        if (uniqueStepNumbers.size() != stepNumbers.size()) {
+            throw new ValidationException("Duplicate step numbers found in reorder request");
+        }
+    }
 }

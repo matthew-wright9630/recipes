@@ -20,8 +20,8 @@ public class RecipeMapper {
 								ri.getUnit()))
 						.toList();
 
-		List<RecipeDirectionsDto> directionsDtos = recipe.getRecipeDirection() == null ? Collections.emptyList()
-				: recipe.getRecipeDirection().stream()
+		List<RecipeDirectionsDto> directionsDtos = recipe.getRecipeDirections() == null ? Collections.emptyList()
+				: recipe.getRecipeDirections().stream()
 						.map(rd -> {
 							List<RecipeIngredientDto> ingredientDto = rd.getRecipeIngredients() == null
 									? Collections.emptyList()

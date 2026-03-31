@@ -194,11 +194,11 @@ public class Recipe {
 		this.createdAt = createdAt;
 	}
 
-	public Set<RecipeDirection> getRecipeDirection() {
+	public Set<RecipeDirection> getRecipeDirections() {
 		return recipeDirections;
 	}
 
-	public void setRecipeDirection(Set<RecipeDirection> recipeDirections) {
+	public void setRecipeDirections(Set<RecipeDirection> recipeDirections) {
 		this.recipeDirections = recipeDirections;
 	}
 

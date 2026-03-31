@@ -1,5 +1,7 @@
 package com.matthew.recipe_backend.controllers;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.matthew.recipe_backend.dtos.CreateDirectionDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
+import com.matthew.recipe_backend.dtos.ReorderDirectionDto;
 import com.matthew.recipe_backend.services.RecipeDirectionService;
 import com.matthew.recipe_backend.dtos.UpdateDirectionDto;
 
@@ -44,5 +47,12 @@ public class RecipeDirectionController {
     public ResponseEntity<Object> deleteRecipeDirection(@PathVariable Long recipeId, @PathVariable Long directionId) {
         recipeDirectionService.deleteRecipeDirection(recipeId, directionId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/reorder")
+    public ResponseEntity<RecipeDto> reorderDirections(@PathVariable Long recipeId,
+            @RequestBody List<ReorderDirectionDto> request) {
+        RecipeDto recipe = recipeDirectionService.reorderDirections(recipeId, request);
+        return ResponseEntity.ok(recipe);
     }
 }
