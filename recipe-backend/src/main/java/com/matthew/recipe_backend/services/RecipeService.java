@@ -3,14 +3,18 @@ package com.matthew.recipe_backend.services;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.matthew.recipe_backend.Utils.CustomUserDetails;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
 import com.matthew.recipe_backend.enums.RecipeStatus;
 import com.matthew.recipe_backend.mappers.RecipeMapper;
 import com.matthew.recipe_backend.models.Recipe;
+import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.repositories.RecipeRepository;
+import com.matthew.recipe_backend.services.UserService;
 import com.matthew.recipe_backend.validators.RecipeValidator;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -28,14 +32,16 @@ import jakarta.transaction.Transactional;
 public class RecipeService {
 
 	private final RecipeRepository recipeRepository;
+	private final UserService userService;
 
 	/**
 	 * Constructs a {@code RecipeService} with the required repository dependency.
 	 *
 	 * @param recipeRepository the repository used for recipe persistence operations
 	 */
-	public RecipeService(RecipeRepository recipeRepository) {
+	public RecipeService(RecipeRepository recipeRepository, UserService userService) {
 		this.recipeRepository = recipeRepository;
+		this.userService = userService;
 	}
 
 	/**
@@ -81,8 +87,14 @@ public class RecipeService {
 	 * @param name        the initial name for the recipe
 	 * @return the newly created {@link RecipeDto}
 	 */
-	public RecipeDto createDraftRecipe(Long createdById, String name) {
-		Recipe recipe = new Recipe(createdById, name);
+	public RecipeDto createDraftRecipe(String name) {
+		CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
+		Long userId = user.getId();
+
+		User createdBy = userService.findById(userId);
+
+		Recipe recipe = new Recipe(createdBy, name);
 		recipeRepository.save(recipe);
 		return RecipeMapper.toDto(recipe);
 	}

@@ -46,8 +46,9 @@ public class Recipe {
 	@Column(name = "cook_time")
 	private Integer cookTime;
 
-	@Column(name = "created_by")
-	private Long createdBy;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "created_by", referencedColumnName = "id")
+	private User createdBy;
 
 	@Column(nullable = false)
 	private Integer version;
@@ -73,7 +74,7 @@ public class Recipe {
 
 	}
 
-	public Recipe(Long createdBy, String name) {
+	public Recipe(User createdBy, String name) {
 		this.name = name;
 		this.description = null;
 		this.notes = null;
@@ -89,7 +90,7 @@ public class Recipe {
 	}
 
 	public Recipe(String name, String description, String notes, Integer servings, Integer prepTime, Integer cookTime,
-			Long createdBy, Integer version, OffsetDateTime createdAt, RecipeStatus status,
+			User createdBy, Integer version, OffsetDateTime createdAt, RecipeStatus status,
 			Set<RecipeDirection> recipeDirections, Set<RecipeIngredient> recipeIngredients) {
 		this.name = name;
 		this.description = description;
@@ -161,11 +162,11 @@ public class Recipe {
 		this.cookTime = cookTime;
 	}
 
-	public Long getCreatedBy() {
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(Long createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -237,8 +238,8 @@ public class Recipe {
 	@Override
 	public String toString() {
 		return "Recipe [id=" + id + ", name=" + name + ", description=" + description + ", notes=" + notes
-				+ ", servings=" + servings + ", prepTime=" + prepTime + ", cookTime=" + cookTime + ", createdBy="
-				+ createdBy + ", version=" + version + ", createdAt=" + createdAt
+				+ ", servings=" + servings + ", prepTime=" + prepTime + ", cookTime=" + cookTime + ", version="
+				+ version + ", createdAt=" + createdAt
 				+ ", status=" + status + ", recipeDirections=" + recipeDirections + ", recipeIngredients="
 				+ recipeIngredients + "]";
 	}

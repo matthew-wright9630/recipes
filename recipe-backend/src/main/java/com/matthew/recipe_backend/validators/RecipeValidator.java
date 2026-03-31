@@ -3,6 +3,9 @@ package com.matthew.recipe_backend.validators;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.matthew.recipe_backend.Utils.CustomUserDetails;
 import com.matthew.recipe_backend.enums.RecipeStatus;
 import com.matthew.recipe_backend.models.Recipe;
 
@@ -112,5 +115,17 @@ public class RecipeValidator {
 		if (!recipe.getStatus().equals(RecipeStatus.DRAFT))
 			throw new IllegalStateException(
 					"Only draft recipes can be deleted. Please either mark this as removed, or contact an administrator for more help.");
+	}
+
+	public static void recipeBelongsToUser(Recipe recipe) {
+		System.out.println(SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal());
+		CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
+		Long userId = user.getId();
+
+		if (!recipe.getCreatedBy().getId().equals(userId)) {
+			throw new IllegalStateException("Direction does not belong to the recipe");
+		}
 	}
 }

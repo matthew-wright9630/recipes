@@ -1,15 +1,20 @@
 package com.matthew.recipe_backend.models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.matthew.recipe_backend.enums.UserRole;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,7 +23,7 @@ public class User {
 
 	@Id
 	@GeneratedValue
-	private long id;
+	private Long id;
 
 	@Column(unique = true)
 	private String username;
@@ -38,24 +43,28 @@ public class User {
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 
+	@OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Recipe> recipes = new ArrayList<>();
+
 	public User() {
 	}
 
 	public User(String username, String email, String passwordHash, UserRole role, boolean deactivated,
-			LocalDateTime createdAt) {
+			LocalDateTime createdAt, List<Recipe> recipes) {
 		this.username = username;
 		this.email = email;
 		this.passwordHash = passwordHash;
 		this.role = role;
 		this.deactivated = deactivated;
 		this.createdAt = createdAt;
+		this.recipes = recipes;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -107,6 +116,14 @@ public class User {
 		this.createdAt = createdAt;
 	}
 
+	public List<Recipe> getRecipes() {
+		return recipes;
+	}
+
+	public void setRecipes(List<Recipe> recipes) {
+		this.recipes = recipes;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -127,8 +144,7 @@ public class User {
 		if (id == 0) {
 			if (other.id != 0)
 				return false;
-		}
-		else if (id != other.id)
+		} else if (id != other.id)
 			return false;
 		return true;
 	}
@@ -136,7 +152,7 @@ public class User {
 	@Override
 	public String toString() {
 		return "Users [id=" + id + ", username=" + username + ", email=" + email + ", passwordHash=" + passwordHash
-				+ ", deactivated=" + deactivated + ", createdAt=" + createdAt + "]";
+				+ ", deactivated=" + deactivated + ", createdAt=" + createdAt + ", recipes=" + recipes + "]";
 	}
 
 }

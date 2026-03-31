@@ -45,7 +45,7 @@ public class RecipeController {
 
 	@PostMapping
 	public ResponseEntity<RecipeDto> postRecipe(@RequestBody CreateRecipeDto request) {
-		RecipeDto recipe = recipeService.createDraftRecipe(request.createdById(), request.name());
+		RecipeDto recipe = recipeService.createDraftRecipe(request.name());
 		return ResponseEntity.ok(recipe);
 	}
 
