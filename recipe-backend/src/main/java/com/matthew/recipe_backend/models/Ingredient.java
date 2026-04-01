@@ -15,99 +15,101 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "ingredients")
 public class Ingredient {
-    
-    @Id
-    @GeneratedValue
-    private long id;
 
-    @Column(unique = true)
-    private String name;
+	@Id
+	@GeneratedValue
+	private long id;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+	@Column(unique = true)
+	private String name;
 
-    @OneToMany(mappedBy = "ingredient")
-    private Set<IngredientNutritionMap> nutritionMaps;
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "ingredient", fetch = FetchType.LAZY)
-    private List<RecipeIngredient> recipeIngredients;
+	@OneToMany(mappedBy = "ingredient")
+	private Set<IngredientNutritionMap> nutritionMaps;
 
-    public Ingredient() {
-    }
+	@OneToMany(mappedBy = "ingredient", fetch = FetchType.LAZY)
+	private List<RecipeIngredient> recipeIngredients;
 
-    public Ingredient(String name, LocalDateTime createdAt) {
-        this.name = name;
-        this.createdAt = createdAt;
-    }
+	public Ingredient() {
+	}
 
-    public long getId() {
-        return id;
-    }
+	public Ingredient(String name, LocalDateTime createdAt) {
+		this.name = name;
+		this.createdAt = createdAt;
+	}
 
-    public void setId(long id) {
-        this.id = id;
-    }
+	public long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
 
-    public Set<IngredientNutritionMap> getNutritionMaps() {
-        return nutritionMaps;
-    }
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
 
-    public void setNutritionMaps(Set<IngredientNutritionMap> nutritionMaps) {
-        this.nutritionMaps = nutritionMaps;
-    }
+	public Set<IngredientNutritionMap> getNutritionMaps() {
+		return nutritionMaps;
+	}
 
-    public List<RecipeIngredient> getRecipeIngredients() {
-        return recipeIngredients;
-    }
+	public void setNutritionMaps(Set<IngredientNutritionMap> nutritionMaps) {
+		this.nutritionMaps = nutritionMaps;
+	}
 
-    public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
-        this.recipeIngredients = recipeIngredients;
-    }
+	public List<RecipeIngredient> getRecipeIngredients() {
+		return recipeIngredients;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (int) (id ^ (id >>> 32));
-        return result;
-    }
+	public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
+		this.recipeIngredients = recipeIngredients;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Ingredient other = (Ingredient) obj;
-        if (id == 0) {
-            if (other.id != 0)
-                return false;
-        } else if (id != other.id)
-            return false;
-        return true;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
+	}
 
-    @Override
-    public String toString() {
-        return "Ingredients [id=" + id + ", name=" + name + ", createdAt=" + createdAt + ", nutritionMaps="
-                + nutritionMaps + "]";
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Ingredient other = (Ingredient) obj;
+		if (id == 0) {
+			if (other.id != 0)
+				return false;
+		}
+		else if (id != other.id)
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Ingredients [id=" + id + ", name=" + name + ", createdAt=" + createdAt + ", nutritionMaps="
+				+ nutritionMaps + "]";
+	}
+
 }

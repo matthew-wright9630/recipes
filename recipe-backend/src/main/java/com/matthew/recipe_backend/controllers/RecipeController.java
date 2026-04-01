@@ -5,7 +5,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.matthew.recipe_backend.dtos.CreateRecipeDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
+import com.matthew.recipe_backend.dtos.StatusUpdateRequestDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
+import com.matthew.recipe_backend.enums.RecipeStatus;
 import com.matthew.recipe_backend.services.RecipeService;
 
 import java.util.List;
@@ -19,53 +21,51 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
-
-
 @RestController
 @RequestMapping("/api/recipes")
 public class RecipeController {
 
-    private final RecipeService recipeService;
+	private final RecipeService recipeService;
 
-    public RecipeController(RecipeService recipeService) {
-        this.recipeService = recipeService;
-    }
-    
-    @GetMapping
-    public ResponseEntity<List<RecipeDto>> getAllRecipes() {
-        List<RecipeDto> recipes = recipeService.findAllRecipes();
-        return ResponseEntity.ok(recipes);
-    }
-    
-    @GetMapping("/{id}")
-    public ResponseEntity<RecipeDto> getRecipeById(@PathVariable long id) {
-        RecipeDto recipe = recipeService.findRecipeById(id);
-        return ResponseEntity.ok(recipe);
-    }
-    
-    @PostMapping
-    public ResponseEntity<RecipeDto> postRecipe(@RequestBody CreateRecipeDto request) {
-        RecipeDto recipe = recipeService.createDraftRecipe(request.createdById(), request.name());        
-        return ResponseEntity.ok(recipe);
-    }
+	public RecipeController(RecipeService recipeService) {
+		this.recipeService = recipeService;
+	}
 
-    @PutMapping("/{id}")
-    public ResponseEntity<RecipeDto> editRecipe(@PathVariable long id, @RequestBody UpdateRecipeDto request) {
-        RecipeDto recipe = recipeService.updateRecipe(id, request);        
-        return ResponseEntity.ok(recipe);
-    }
+	@GetMapping
+	public ResponseEntity<List<RecipeDto>> getAllRecipes() {
+		List<RecipeDto> recipes = recipeService.findAllRecipes();
+		return ResponseEntity.ok(recipes);
+	}
 
-    @PatchMapping("reactivate/{id}")
-    public ResponseEntity<Object> reactivateRecipe(@PathVariable long id) {
-        recipeService.reActivateRecipe(id);
-        return ResponseEntity.noContent().build();
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<RecipeDto> getRecipeById(@PathVariable long id) {
+		RecipeDto recipe = recipeService.findRecipeById(id);
+		return ResponseEntity.ok(recipe);
+	}
 
-    @PatchMapping("deactivate/{id}")
-    public ResponseEntity<Object> deactivateRecipe(@PathVariable long id) {
-        recipeService.deactivateRecipe(id);
-        return ResponseEntity.noContent().build();
-    }
-    
+	@PostMapping
+	public ResponseEntity<RecipeDto> postRecipe(@RequestBody CreateRecipeDto request) {
+		RecipeDto recipe = recipeService.createDraftRecipe(request.name());
+		return ResponseEntity.ok(recipe);
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<RecipeDto> editRecipe(@PathVariable long id, @RequestBody UpdateRecipeDto request) {
+		RecipeDto recipe = recipeService.updateRecipe(id, request);
+		return ResponseEntity.ok(recipe);
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Object> deleteRecipe(@PathVariable long id) {
+		recipeService.deleteDraftRecipe(id);
+		return ResponseEntity.noContent().build();
+	}
+
+	@PatchMapping("{id}/status")
+	public ResponseEntity<RecipeDto> updateRecipeStatus(@PathVariable long id,
+			@RequestBody StatusUpdateRequestDto request) {
+		RecipeDto recipe = recipeService.updateRecipeStatus(id, request.getStatus());
+		return ResponseEntity.ok(recipe);
+	}
+
 }

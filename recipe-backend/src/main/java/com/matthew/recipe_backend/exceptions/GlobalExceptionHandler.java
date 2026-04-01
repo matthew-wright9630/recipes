@@ -18,85 +18,94 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("error", "User Not Found");
-        body.put("message", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
-    }
+	@ExceptionHandler(UserNotFoundException.class)
+	public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
+		Map<String, Object> body = new HashMap<>();
+		body.put("error", "User Not Found");
+		body.put("message", ex.getMessage());
+		return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+	}
 
-    @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<Object> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex,
-            WebRequest request) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("error", "Email Already Exists");
-        body.put("message", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
-    }
+	@ExceptionHandler(EmailAlreadyExistsException.class)
+	public ResponseEntity<Object> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex,
+			WebRequest request) {
+		Map<String, Object> body = new HashMap<>();
+		body.put("error", "Email Already Exists");
+		body.put("message", ex.getMessage());
+		return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+	}
 
-    @ExceptionHandler(PasswordNotStrongEnoughException.class)
-    public ResponseEntity<Object> handlePasswordNotStrongEnoughException(PasswordNotStrongEnoughException ex,
-            WebRequest request) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("error", "Password Not Strong Enough");
-        body.put("message", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-    }
+	@ExceptionHandler(PasswordNotStrongEnoughException.class)
+	public ResponseEntity<Object> handlePasswordNotStrongEnoughException(PasswordNotStrongEnoughException ex,
+			WebRequest request) {
+		Map<String, Object> body = new HashMap<>();
+		body.put("error", "Password Not Strong Enough");
+		body.put("message", ex.getMessage());
+		return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+	}
 
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("error", "Bad Credentials");
-        body.put("message", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
-    }
+	@ExceptionHandler(BadCredentialsException.class)
+	public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
+		Map<String, Object> body = new HashMap<>();
+		body.put("error", "Bad Credentials");
+		body.put("message", ex.getMessage());
+		return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+	}
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("error", "Invalid Argument");
-        body.put("message", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-    }
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
+		Map<String, Object> body = new HashMap<>();
+		body.put("error", "Invalid Argument");
+		body.put("message", ex.getMessage());
+		return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+	}
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Object> handleNotFound(EntityNotFoundException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("error", "Entity Not Found");
-        body.put("message", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
-    }
+	@ExceptionHandler(IllegalStateException.class)
+	public ResponseEntity<Object> handleIllegalStateEntity(IllegalStateException ex, WebRequest request) {
+		Map<String, Object> body = new HashMap<>();
+		body.put("error", "Invalid State Entity");
+		body.put("message", ex.getMessage());
+		return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+	}
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleValidationException(MethodArgumentNotValidException ex) {
-        Map<String, Object> body = new HashMap<>();
-        Map<String, String> fieldErrors = new HashMap<>();
+	@ExceptionHandler(EntityNotFoundException.class)
+	public ResponseEntity<Object> handleNotFound(EntityNotFoundException ex) {
+		Map<String, Object> body = new HashMap<>();
+		body.put("error", "Entity Not Found");
+		body.put("message", ex.getMessage());
+		return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+	}
 
-        ex.getBindingResult().getFieldErrors()
-                .forEach(error -> fieldErrors.put(error.getField(), error.getDefaultMessage()));
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<Object> handleValidationException(MethodArgumentNotValidException ex) {
+		Map<String, Object> body = new HashMap<>();
+		Map<String, String> fieldErrors = new HashMap<>();
 
-        body.put("error", "Validation Error");
-        body.put("fields", fieldErrors);
+		ex.getBindingResult()
+				.getFieldErrors()
+				.forEach(error -> fieldErrors.put(error.getField(), error.getDefaultMessage()));
 
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-    }
+		body.put("error", "Validation Error");
+		body.put("fields", fieldErrors);
 
-    @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<Object> handleNoHandlerFoundException(
-            NoHandlerFoundException ex, WebRequest request) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("error", "Not Found");
-        body.put("message", "The requested resource was not found");
-        body.put("path", ex.getRequestURL());
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
-    }
+		return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+	}
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAllOtherExceptions(Exception ex, WebRequest request) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("error", "Internal Server Error");
-        body.put("message", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+	@ExceptionHandler(NoHandlerFoundException.class)
+	public ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, WebRequest request) {
+		Map<String, Object> body = new HashMap<>();
+		body.put("error", "Not Found");
+		body.put("message", "The requested resource was not found");
+		body.put("path", ex.getRequestURL());
+		return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<Object> handleAllOtherExceptions(Exception ex, WebRequest request) {
+		Map<String, Object> body = new HashMap<>();
+		body.put("error", "Internal Server Error");
+		body.put("message", ex.getMessage());
+		return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
 }

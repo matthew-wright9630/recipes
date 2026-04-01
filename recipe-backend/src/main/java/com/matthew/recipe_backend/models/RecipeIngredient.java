@@ -36,6 +36,10 @@ public class RecipeIngredient {
 	@Column(name = "unit")
 	private String unit;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "recipe_direction_id", nullable = true)
+	private RecipeDirection recipeDirections;
+
 	public RecipeIngredient() {
 	}
 
@@ -45,7 +49,7 @@ public class RecipeIngredient {
 		this.quantity = quantity;
 		this.unit = unit;
 		if (recipe != null && ingredient != null) {
-			this.id = new RecipeIngredientKey((int) recipe.getId(), (int) ingredient.getId());
+			this.id = new RecipeIngredientKey((Long) recipe.getId(), (Long) ingredient.getId());
 		}
 	}
 
@@ -87,6 +91,14 @@ public class RecipeIngredient {
 
 	public void setUnit(String unit) {
 		this.unit = unit;
+	}
+
+	public RecipeDirection getRecipeDirection() {
+		return recipeDirections;
+	}
+
+	public void setRecipeDirection(RecipeDirection recipeDirections) {
+		this.recipeDirections = recipeDirections;
 	}
 
 	@Override

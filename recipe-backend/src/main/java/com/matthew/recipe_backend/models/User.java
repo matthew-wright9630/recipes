@@ -1,142 +1,158 @@
 package com.matthew.recipe_backend.models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.matthew.recipe_backend.enums.UserRole;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
 public class User {
-    
-    @Id
-    @GeneratedValue
-    private long id;
 
-    @Column(unique = true)
-    private String username;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-    @Column(unique = true)
-    private String email;
+	@Column(unique = true)
+	private String username;
 
-    @Column(name = "password_hash")
-    private String passwordHash;
+	@Column(unique = true)
+	private String email;
 
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
+	@Column(name = "password_hash")
+	private String passwordHash;
 
-    @Column
-    private boolean deactivated;
+	@Enumerated(EnumType.STRING)
+	private UserRole role;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+	@Column
+	private boolean deactivated;
 
-    public User() {
-    }
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
 
-    public User(String username, String email, String passwordHash, UserRole role, boolean deactivated,
-            LocalDateTime createdAt) {
-        this.username = username;
-        this.email = email;
-        this.passwordHash = passwordHash;
-        this.role = role;
-        this.deactivated = deactivated;
-        this.createdAt = createdAt;
-    }
+	@OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Recipe> recipes = new ArrayList<>();
 
-    public long getId() {
-        return id;
-    }
+	public User() {
+	}
 
-    public void setId(long id) {
-        this.id = id;
-    }
+	public User(String username, String email, String passwordHash, UserRole role, boolean deactivated,
+			LocalDateTime createdAt, List<Recipe> recipes) {
+		this.username = username;
+		this.email = email;
+		this.passwordHash = passwordHash;
+		this.role = role;
+		this.deactivated = deactivated;
+		this.createdAt = createdAt;
+		this.recipes = recipes;
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public String getPasswordHash() {
-        return passwordHash;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public UserRole getRole() {
-        return role;
-    }
+	public String getPasswordHash() {
+		return passwordHash;
+	}
 
-    public void setRole(UserRole role) {
-        this.role = role;
-    }
+	public void setPasswordHash(String passwordHash) {
+		this.passwordHash = passwordHash;
+	}
 
-    public boolean isDeactivated() {
-        return deactivated;
-    }
+	public UserRole getRole() {
+		return role;
+	}
 
-    public void setDeactivated(boolean deactivated) {
-        this.deactivated = deactivated;
-    }
+	public void setRole(UserRole role) {
+		this.role = role;
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public boolean isDeactivated() {
+		return deactivated;
+	}
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+	public void setDeactivated(boolean deactivated) {
+		this.deactivated = deactivated;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (int) (id ^ (id >>> 32));
-        return result;
-    }
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        User other = (User) obj;
-        if (id == 0) {
-            if (other.id != 0)
-                return false;
-        } else if (id != other.id)
-            return false;
-        return true;
-    }
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
 
-    @Override
-    public String toString() {
-        return "Users [id=" + id + ", username=" + username + ", email=" + email + ", passwordHash=" + passwordHash
-                + ", deactivated=" + deactivated + ", createdAt=" + createdAt + "]";
-    }
+	public List<Recipe> getRecipes() {
+		return recipes;
+	}
 
-    
+	public void setRecipes(List<Recipe> recipes) {
+		this.recipes = recipes;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (id == 0) {
+			if (other.id != 0)
+				return false;
+		} else if (id != other.id)
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Users [id=" + id + ", username=" + username + ", email=" + email + ", passwordHash=" + passwordHash
+				+ ", deactivated=" + deactivated + ", createdAt=" + createdAt + ", recipes=" + recipes + "]";
+	}
+
 }
