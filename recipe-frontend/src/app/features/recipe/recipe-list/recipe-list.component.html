@@ -1,1 +1,13 @@
-<p>recipe-list works!</p>
+<article>
+  <div class="recipe-list">
+    <mat-grid-list cols="2" rowHeight="1:1" gutterSize="2vw">
+      @for (recipe of recipeList(); track $index) {
+        <mat-grid-tile>
+          <app-recipe [recipe]="recipe"></app-recipe>
+        </mat-grid-tile>
+      } @empty {
+        <p class="recipe-list__empty">No recipes to display</p>
+      }
+    </mat-grid-list>
+  </div>
+</article>

@@ -1,1 +1,14 @@
-<p>recipe works!</p>
+<section class="recipe-card">
+  <mat-card align="center">
+    <mat-card-title>{{ recipe.name }}</mat-card-title>
+    <mat-card-content>
+      <img
+        mat-card-image
+        [src]="'food-PLACEHOLDER.jpg'"
+        [alt]="recipe.name"
+        class="recipe-card__img"
+      />
+      <p class="recipe__description">{{ recipe.description }}</p>
+    </mat-card-content>
+  </mat-card>
+</section>
