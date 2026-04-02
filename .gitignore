@@ -32,7 +32,12 @@ build/
 ### VS Code ###
 .vscode/
 
+/.vscode/
+
 application-*.yml
 ingredient_list
+
+node_modules
+.angular/
 
 /bin
