@@ -1,8 +1,14 @@
 .recipe-card {
-    // width: 40%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+mat-card-title {
+    margin-bottom: 8px;
 }
 
 .recipe-card__img {
-    width: 90%;
-    height: 40%;
+    width: 80%;
+    aspect-ratio: 16 / 9;
 }

@@ -1,0 +1,30 @@
+<mat-toolbar>
+  <mat-toolbar-row>
+    <div class="logo-container" fxLayout="row" fxLayoutAlign="start center">
+      <img src="../../assets/logo.png" alt="The Three Broomsticks" />
+      <span class="logo-text">The Three Broomsticks</span>
+    </div>
+    <span class="spacer"></span>
+    <!-- Check if the user is an employee. If yes, display the Employee button. If no, display the booking button -->
+    <a mat-raised-button routerLink="/homepage" routerLinkActive="active"
+      >Homepage</a
+    >
+    @if (!employeeUser()) {
+    <a mat-raised-button routerLink="/search" routerLinkActive="active"
+      >Booking</a
+    >
+    } @else {
+    <a mat-raised-button routerLink="/employee" routerLinkActive="active"
+      >Employee<br />
+      Portal</a
+    >
+    } @if (getLoggedInUser() === null) {
+    <button mat-raised-button (click)="login()">Login</button>
+    } @else {
+    <a mat-raised-button routerLink="/profile" routerLinkActive="active"
+      >Profile</a
+    >
+    <button mat-raised-button (click)="logout()">Sign Out</button>
+    }
+  </mat-toolbar-row>
+</mat-toolbar>
