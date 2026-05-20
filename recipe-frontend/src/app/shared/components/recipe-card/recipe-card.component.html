@@ -1,5 +1,5 @@
 <section class="recipe-card">
-  <mat-card align="center">
+  <mat-card align="center" (click)="openRecipe(recipe)">
     <mat-card-title>{{ recipe.name }}</mat-card-title>
     <mat-card-content>
       @if (recipe.name === "test_recipe") {

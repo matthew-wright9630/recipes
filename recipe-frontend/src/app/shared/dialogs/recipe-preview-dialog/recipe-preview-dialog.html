@@ -1,0 +1,35 @@
+<div class="recipe-dialog__header">
+  <h2 mat-dialog-title>{{ recipe.name }}</h2>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Close</button>
+
+    <button
+      mat-raised-button
+      color="primary"
+      [routerLink]="['/recipes', recipe.id]"
+    >
+      Open Full Recipe
+    </button>
+  </mat-dialog-actions>
+</div>
+
+<mat-dialog-content>
+  <div class="recipe-dialog__description">
+    <img
+      class="recipe-dialog__img"
+      [src]="'food-PLACEHOLDER.jpg'"
+      [alt]="recipe.name"
+    />
+
+    <p class="recipe-dialog__p">{{ recipe.description }}</p>
+  </div>
+
+  <h3>Ingredients</h3>
+
+  <ul>
+    @for(ingredient of recipe.recipeIngredients; track $index) {
+    <li>{{ingredient.quantity}} {{ingredient.unit}} of {{ingredient.name}}</li>
+    }
+  </ul>
+</mat-dialog-content>

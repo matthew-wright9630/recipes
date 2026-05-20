@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { Recipe } from '../../models/recipe'
+import { MatDialog } from '@angular/material/dialog';
+import { RecipePreviewDialog } from '../../dialogs/recipe-preview-dialog/recipe-preview-dialog';
 
 @Component({
   selector: 'app-recipe',
@@ -13,5 +15,13 @@ import { Recipe } from '../../models/recipe'
 export class RecipeComponent {
   @Input() recipe!: Recipe
   
-  
+  constructor(private dialog: MatDialog) {}
+  openRecipe(recipe: Recipe) {
+    this.dialog.open(RecipePreviewDialog, {
+      data: recipe,
+      width: '800px',
+      maxWidth: '95vw',
+      autoFocus: false,
+    });
+  }
 }

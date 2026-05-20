@@ -2,6 +2,12 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    cursor: pointer;
+    transition: .3s linear;
+}
+
+.recipe-card:hover {
+    opacity: .7;
 }
 
 mat-card-title {

@@ -4,7 +4,6 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { RecipeService } from '../recipe.service';
 import { Recipe } from '../../../shared/models/recipe';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
 
 @Component({
@@ -18,7 +17,7 @@ export class RecipeListComponent {
   recipeList = signal<Recipe[]>([]);
 
   constructor(
-    private recipeService: RecipeService,
+    private recipeService: RecipeService
   ) {
     effect(() => {
       this.recipeService.getAllRecipes().subscribe((recipes) => {
