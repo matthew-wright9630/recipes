@@ -2,11 +2,14 @@ import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { HeaderService } from '../header.service';
 
 @Component({
   selector: 'app-header-component',
-  imports: [RouterLink, MatToolbarModule, MatButtonModule],
+  imports: [RouterLink, MatToolbarModule, MatButtonModule, MatInputModule, MatFormFieldModule, MatIconModule],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
@@ -29,6 +32,7 @@ export class HeaderComponent {
   }
 
   getLoggedInUser() {
+    return null;
     // return this.dataPassService?.loggedInUser();
   }
 
