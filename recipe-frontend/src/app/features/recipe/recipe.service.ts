@@ -15,4 +15,10 @@ export class RecipeService {
     return this.http.get<Recipe[]>(this.baseURL, { observe: 'response' })
       .pipe(map(res => res.body || []));
   }
+
+  getRecipeById(id: number): Observable<Recipe | null> {
+    console.log(this.baseURL + "/" + id);
+    return this.http.get<Recipe>(this.baseURL + "/" + id, {observe: 'response'})
+      .pipe(map(res => res.body));
+  }
 }

@@ -1,0 +1,79 @@
+@if (recipe()) {
+
+<div class="recipe-page">
+  <mat-card class="recipe-hero">
+    <div class="recipe-hero__content">
+      <div class="recipe-hero__info">
+        <h1>{{ recipe()?.name }}</h1>
+        <p class="recipe-description">{{ recipe()?.description }}</p>
+        <div class="recipe-meta">
+          <mat-chip-set>
+            <mat-chip> Prep: {{ recipe()?.prepTime }} min </mat-chip>
+            <mat-chip> Cook: {{ recipe()?.cookTime }} min </mat-chip>
+            <mat-chip> Serves {{ recipe()?.servings }} </mat-chip>
+            <mat-chip> {{ recipe()?.status }} </mat-chip>
+          </mat-chip-set>
+        </div>
+      </div>
+      <img
+        class="recipe-image"
+        src="food-PLACEHOLDER.jpg"
+        [alt]="recipe()?.name"
+      />
+    </div>
+  </mat-card>
+  <div class="recipe-content">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title> Ingredients </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <ul class="ingredients-list">
+          @for ( ingredient of recipe()?.recipeIngredients; track ingredient.id
+          ) {
+
+          <li>
+            {{ ingredient.quantity }} {{ ingredient.unit }} {{ ingredient.name
+            }}
+          </li>
+
+          }
+        </ul>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title> Directions </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <ol class="directions-list">
+          @for ( direction of recipe()?.recipeDirections; track
+          direction.stepNumber ) {
+
+          <li>{{ direction.description }}</li>
+
+          }
+        </ol>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  @if (recipe()?.notes) {
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Notes </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p>{{ recipe()?.notes }}</p>
+    </mat-card-content>
+  </mat-card>
+
+  }
+</div>
+
+}
