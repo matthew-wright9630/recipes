@@ -1,25 +1,21 @@
-@if (recipe()) {
+@if (recipe(); as r) {
 
 <div class="recipe-page">
   <mat-card class="recipe-hero">
     <div class="recipe-hero__content">
       <div class="recipe-hero__info">
         <h1>{{ recipe()?.name }}</h1>
-        <p class="recipe-description">{{ recipe()?.description }}</p>
+        <p class="recipe-description">{{ r.description }}</p>
         <div class="recipe-meta">
           <mat-chip-set>
-            <mat-chip> Prep: {{ recipe()?.prepTime }} min </mat-chip>
-            <mat-chip> Cook: {{ recipe()?.cookTime }} min </mat-chip>
-            <mat-chip> Serves {{ recipe()?.servings }} </mat-chip>
-            <mat-chip> {{ recipe()?.status }} </mat-chip>
+            <mat-chip> Prep: {{ r.prepTime }} min </mat-chip>
+            <mat-chip> Cook: {{ r.cookTime }} min </mat-chip>
+            <mat-chip> Serves {{ r.servings }} </mat-chip>
+            <mat-chip> {{ r.status }} </mat-chip>
           </mat-chip-set>
         </div>
       </div>
-      <img
-        class="recipe-image"
-        src="food-PLACEHOLDER.jpg"
-        [alt]="recipe()?.name"
-      />
+      <img class="recipe-image" src="food-PLACEHOLDER.jpg" [alt]="r.name" />
     </div>
   </mat-card>
   <div class="recipe-content">
@@ -30,14 +26,15 @@
 
       <mat-card-content>
         <ul class="ingredients-list">
-          @for ( ingredient of recipe()?.recipeIngredients; track ingredient.id
-          ) {
+          @for ( ingredient of r.recipeIngredients; track ingredient.id ) {
 
           <li>
             {{ ingredient.quantity }} {{ ingredient.unit }} {{ ingredient.name
             }}
           </li>
 
+          } @empty {
+          <li>No ingredients listed.</li>
           }
         </ul>
       </mat-card-content>
@@ -50,8 +47,7 @@
 
       <mat-card-content>
         <ol class="directions-list">
-          @for ( direction of recipe()?.recipeDirections; track
-          direction.stepNumber ) {
+          @for ( direction of r.recipeDirections; track direction.stepNumber ) {
 
           <li>{{ direction.description }}</li>
 
@@ -61,7 +57,7 @@
     </mat-card>
   </div>
 
-  @if (recipe()?.notes) {
+  @if (r.notes) {
 
   <mat-card>
     <mat-card-header>
@@ -69,11 +65,13 @@
     </mat-card-header>
 
     <mat-card-content>
-      <p>{{ recipe()?.notes }}</p>
+      <p>{{ r.notes }}</p>
     </mat-card-content>
   </mat-card>
 
   }
 </div>
 
+} @else {
+<div>Recipe does not exist or is not viewable.</div>
 }

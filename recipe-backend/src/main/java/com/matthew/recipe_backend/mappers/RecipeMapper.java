@@ -24,12 +24,7 @@ public class RecipeMapper {
 		List<RecipeDirectionsDto> directionsDtos = recipe.getRecipeDirections() == null ? Collections.emptyList()
 				: recipe.getRecipeDirections().stream()
 						.map(rd -> {
-							List<RecipeIngredientDto> ingredientDto = rd.getRecipeIngredients() == null
-									? Collections.emptyList()
-									: rd.getRecipeIngredients().stream()
-											.map(ri -> toIngredientDto(ri))
-											.toList();
-							return new RecipeDirectionsDto(rd.getDescription(), rd.getStepNumber(), ingredientDto);
+							return new RecipeDirectionsDto(rd.getDescription(), rd.getStepNumber());
 						})
 						.toList();
 

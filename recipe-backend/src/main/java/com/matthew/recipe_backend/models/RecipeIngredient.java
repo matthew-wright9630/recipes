@@ -36,10 +36,6 @@ public class RecipeIngredient {
 	@Column(name = "unit")
 	private String unit;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "recipe_direction_id", nullable = true)
-	private RecipeDirection recipeDirections;
-
 	public RecipeIngredient() {
 	}
 
@@ -91,14 +87,6 @@ public class RecipeIngredient {
 
 	public void setUnit(String unit) {
 		this.unit = unit;
-	}
-
-	public RecipeDirection getRecipeDirection() {
-		return recipeDirections;
-	}
-
-	public void setRecipeDirection(RecipeDirection recipeDirections) {
-		this.recipeDirections = recipeDirections;
 	}
 
 	@Override
