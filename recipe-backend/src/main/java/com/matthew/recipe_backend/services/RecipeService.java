@@ -1,6 +1,5 @@
 package com.matthew.recipe_backend.services;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,7 +13,6 @@ import com.matthew.recipe_backend.mappers.RecipeMapper;
 import com.matthew.recipe_backend.models.Recipe;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.repositories.RecipeRepository;
-import com.matthew.recipe_backend.services.UserService;
 import com.matthew.recipe_backend.validators.RecipeValidator;
 
 import jakarta.persistence.EntityNotFoundException;
