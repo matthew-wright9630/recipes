@@ -30,12 +30,15 @@ public class RecipeDirectionService {
     final private RecipeDirectionRepository recipeDirectionRepository;
     private final RecipeRepository recipeRepository;
     private final UserService userService;
+    private final RecipeIngredientService recipeIngredientService;
 
     public RecipeDirectionService(RecipeDirectionRepository recipeDirectionRepository,
-            RecipeRepository recipeRepository, UserService userService) {
+            RecipeRepository recipeRepository, UserService userService,
+            RecipeIngredientService recipeIngredientService) {
         this.recipeDirectionRepository = recipeDirectionRepository;
         this.recipeRepository = recipeRepository;
         this.userService = userService;
+        this.recipeIngredientService = recipeIngredientService;
     }
 
     public RecipeDto addRecipeDirection(Long recipeId, CreateDirectionDto newDirection) {
@@ -57,6 +60,8 @@ public class RecipeDirectionService {
 
         recipe.getRecipeDirections().add(recipeDirection);
 
+        recipeIngredientService.computeAndSaveSortOrder(recipe);
+
         return RecipeMapper.toDto(recipe);
     }
 
@@ -76,6 +81,8 @@ public class RecipeDirectionService {
         RecipeDirectionValidator.validateRecipeDirection(recipeDirection);
         recipeDirectionRepository.save(recipeDirection);
 
+        recipeIngredientService.computeAndSaveSortOrder(recipe);
+
         return RecipeMapper.toDto(recipe);
     }
 
@@ -88,6 +95,9 @@ public class RecipeDirectionService {
         RecipeValidator.recipeBelongsToUser(recipe, userId);
 
         recipe.getRecipeDirections().removeIf(rd -> rd.getId().equals(directionId));
+
+        recipeIngredientService.computeAndSaveSortOrder(recipe);
+
         recipeRepository.save(recipe);
     }
 
@@ -106,6 +116,9 @@ public class RecipeDirectionService {
         });
 
         Recipe saved = recipeRepository.save(recipe);
+
+        recipeIngredientService.computeAndSaveSortOrder(recipe);
+
         return RecipeMapper.toDto(saved);
     }
 

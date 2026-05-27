@@ -36,6 +36,12 @@ public class RecipeIngredient {
 	@Column(name = "unit")
 	private String unit;
 
+	@Column(name = "notes")
+	private String notes;
+
+	@Column(name = "sort_order")
+	private Integer sortOrder;
+
 	public RecipeIngredient() {
 	}
 
@@ -87,6 +93,22 @@ public class RecipeIngredient {
 
 	public void setUnit(String unit) {
 		this.unit = unit;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public Integer getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(Integer sortOrder) {
+		this.sortOrder = sortOrder;
 	}
 
 	@Override
