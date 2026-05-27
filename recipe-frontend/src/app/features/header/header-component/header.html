@@ -1,0 +1,30 @@
+<mat-toolbar>
+  <mat-toolbar-row>
+    <div class="logo-container" fxLayout="row" fxLayoutAlign="start center">
+      <!-- <img
+        src="../../../../../public/favicon.ico"
+        alt="The Wright Recipe List"
+      /> -->
+      <span class="logo-text">The Wright Recipe List</span>
+    </div>
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search recipes</mat-label>
+      <input matInput placeholder="Chicken Alfredo..." />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </mat-toolbar-row>
+  <mat-toolbar-row>
+    <!-- <span class="spacer"></span> -->
+    <a mat-raised-button routerLink="/homepage" routerLinkActive="active"
+      >Homepage</a
+    >
+    @if (getLoggedInUser() === null) {
+    <button mat-raised-button (click)="login()">Login</button>
+    } @else {
+    <a mat-raised-button routerLink="/profile" routerLinkActive="active"
+      >Profile</a
+    >
+    <button mat-raised-button (click)="logout()">Sign Out</button>
+    }
+  </mat-toolbar-row>
+</mat-toolbar>

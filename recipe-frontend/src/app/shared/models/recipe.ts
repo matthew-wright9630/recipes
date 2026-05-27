@@ -3,6 +3,7 @@ import { RecipeIngredient } from "./recipe-ingredient";
 import { RecipeStatus } from "./recipe-status";
 
 export interface Recipe {
+  id: number;
   name: string;
   description: string;
   notes: string;

@@ -34,9 +34,7 @@ spring:
 
   sql:
     init:
-      mode: "${SQL_INIT_MODE:never}"
-      platform: postgresql
-      continue-on-error: false
+      mode: never
 
 frontend:
   frontend_url: "${FRONTEND_URL:http://localhost:4200}"

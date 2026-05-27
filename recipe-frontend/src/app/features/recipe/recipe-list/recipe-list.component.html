@@ -1,13 +1,11 @@
 <article>
   <div class="recipe-list">
-    <mat-grid-list cols="2" rowHeight="1:1" gutterSize="2vw">
+    <div class="recipe-list__grid">
       @for (recipe of recipeList(); track $index) {
-        <mat-grid-tile>
-          <app-recipe [recipe]="recipe"></app-recipe>
-        </mat-grid-tile>
+        <app-recipe [recipe]="recipe"></app-recipe>
       } @empty {
         <p class="recipe-list__empty">No recipes to display</p>
       }
-    </mat-grid-list>
+    </div>
   </div>
 </article>

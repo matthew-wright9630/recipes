@@ -33,15 +33,18 @@ public class RecipeService {
 
 	private final RecipeRepository recipeRepository;
 	private final UserService userService;
+	private final RecipeIngredientService recipeIngredientService;
 
 	/**
 	 * Constructs a {@code RecipeService} with the required repository dependency.
 	 *
 	 * @param recipeRepository the repository used for recipe persistence operations
 	 */
-	public RecipeService(RecipeRepository recipeRepository, UserService userService) {
+	public RecipeService(RecipeRepository recipeRepository, UserService userService,
+			RecipeIngredientService recipeIngredientService) {
 		this.recipeRepository = recipeRepository;
 		this.userService = userService;
+		this.recipeIngredientService = recipeIngredientService;
 	}
 
 	/**
@@ -126,6 +129,8 @@ public class RecipeService {
 		foundRecipe.setCookTime(recipeDto.cookTime());
 
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
+		// Sort the ingredient list.
+		recipeIngredientService.computeAndSaveSortOrder(savedRecipe);
 		return RecipeMapper.toDto(savedRecipe);
 	}
 

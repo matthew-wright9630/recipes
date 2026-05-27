@@ -1,14 +1,22 @@
 <section class="recipe-card">
-  <mat-card align="center">
+  <mat-card align="center" (click)="openRecipe(recipe)">
     <mat-card-title>{{ recipe.name }}</mat-card-title>
     <mat-card-content>
-      <img
-        mat-card-image
-        [src]="'food-PLACEHOLDER.jpg'"
-        [alt]="recipe.name"
-        class="recipe-card__img"
-      />
-      <p class="recipe__description">{{ recipe.description }}</p>
+      @if (recipe.name === "test_recipe") {
+        <img
+          mat-card-image
+          [src]="'food-second-PLACEHOLDER.jpg'"
+          [alt]="recipe.name"
+          class="recipe-card__img"
+        />
+      } @else {
+        <img
+          mat-card-image
+          [src]="'food-PLACEHOLDER.jpg'"
+          [alt]="recipe.name"
+          class="recipe-card__img"
+        />
+      }
     </mat-card-content>
   </mat-card>
 </section>

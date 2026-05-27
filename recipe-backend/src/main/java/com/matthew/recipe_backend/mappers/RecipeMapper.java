@@ -16,23 +16,22 @@ public class RecipeMapper {
 		List<RecipeIngredientDto> ingredientDtos = recipe.getRecipeIngredients() == null ? Collections.emptyList()
 				: recipe.getRecipeIngredients()
 						.stream()
-						.map(ri -> new RecipeIngredientDto(ri.getIngredient().getName(), ri.getQuantity(),
-								ri.getUnit()))
+						.map(ri -> new RecipeIngredientDto(ri.getIngredient().getId(), ri.getIngredient().getName(),
+								ri.getQuantity(),
+								ri.getUnit(),
+								ri.getNotes(),
+								ri.getSortOrder()))
 						.toList();
 
 		List<RecipeDirectionsDto> directionsDtos = recipe.getRecipeDirections() == null ? Collections.emptyList()
 				: recipe.getRecipeDirections().stream()
 						.map(rd -> {
-							List<RecipeIngredientDto> ingredientDto = rd.getRecipeIngredients() == null
-									? Collections.emptyList()
-									: rd.getRecipeIngredients().stream()
-											.map(ri -> toIngredientDto(ri))
-											.toList();
-							return new RecipeDirectionsDto(rd.getDescription(), rd.getStepNumber(), ingredientDto);
+							return new RecipeDirectionsDto(rd.getDescription(), rd.getStepNumber());
 						})
 						.toList();
 
-		return new RecipeDto(recipe.getName(), recipe.getDescription(), recipe.getNotes(), recipe.getServings(),
+		return new RecipeDto(recipe.getId(), recipe.getName(), recipe.getDescription(), recipe.getNotes(),
+				recipe.getServings(),
 				recipe.getPrepTime(), recipe.getCookTime(), recipe.getVersion(),
 				recipe.getStatus(), directionsDtos, ingredientDtos);
 	}
@@ -41,8 +40,11 @@ public class RecipeMapper {
 		if (ri == null)
 			return null;
 		return new RecipeIngredientDto(
+				ri.getIngredient().getId(),
 				ri.getIngredient().getName(),
 				ri.getQuantity(),
-				ri.getUnit());
+				ri.getUnit(),
+				ri.getNotes(),
+				ri.getSortOrder());
 	}
 }

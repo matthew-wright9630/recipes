@@ -1,0 +1,29 @@
+.recipe-dialog__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+mat-dialog-actions {
+    display: flex;
+    gap: 1vw;
+}
+
+button {
+    cursor: pointer;
+}
+
+.recipe-dialog__description {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+    align-items: center;
+}
+
+.recipe-dialog__img {
+    width: 70%;
+}
+
+.recipe-dialog__p {
+    margin: 0;
+}

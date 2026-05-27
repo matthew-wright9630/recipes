@@ -36,9 +36,11 @@ public class RecipeIngredient {
 	@Column(name = "unit")
 	private String unit;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "recipe_direction_id", nullable = true)
-	private RecipeDirection recipeDirections;
+	@Column(name = "notes")
+	private String notes;
+
+	@Column(name = "sort_order")
+	private Integer sortOrder;
 
 	public RecipeIngredient() {
 	}
@@ -93,12 +95,20 @@ public class RecipeIngredient {
 		this.unit = unit;
 	}
 
-	public RecipeDirection getRecipeDirection() {
-		return recipeDirections;
+	public String getNotes() {
+		return notes;
 	}
 
-	public void setRecipeDirection(RecipeDirection recipeDirections) {
-		this.recipeDirections = recipeDirections;
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public Integer getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(Integer sortOrder) {
+		this.sortOrder = sortOrder;
 	}
 
 	@Override

@@ -26,9 +26,6 @@ public class RecipeDirection {
 	@JoinColumn(name = "recipe_id")
 	private Recipe recipe;
 
-	@OneToMany(mappedBy = "recipeDirections", fetch = FetchType.LAZY)
-	private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
-
 	@Column
 	private String description;
 
@@ -74,14 +71,6 @@ public class RecipeDirection {
 
 	public void setStepNumber(Integer stepNumber) {
 		this.stepNumber = stepNumber;
-	}
-
-	public List<RecipeIngredient> getRecipeIngredients() {
-		return recipeIngredients;
-	}
-
-	public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
-		this.recipeIngredients = recipeIngredients;
 	}
 
 	@Override
