@@ -113,13 +113,6 @@ CREATE TABLE cookbook_access (
     PRIMARY KEY (cookbook_id, user_id)
 );
 
-CREATE TABLE recipe_likes (
-    recipe_id  INTEGER NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
-    user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    liked_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    PRIMARY KEY (recipe_id, user_id)
-);
-
 CREATE VIEW active_cookbooks AS
   SELECT id, name, created_at FROM cookbooks WHERE deleted = FALSE;
 
