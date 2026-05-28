@@ -1,18 +1,20 @@
 package com.matthew.recipe_backend.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.matthew.recipe_backend.dtos.CreateRecipeDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.StatusUpdateRequestDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
-import com.matthew.recipe_backend.enums.RecipeStatus;
+import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.services.RecipeService;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -44,9 +46,11 @@ public class RecipeController {
 	}
 
 	@PostMapping
-	public ResponseEntity<RecipeDto> postRecipe(@RequestBody CreateRecipeDto request) {
-		RecipeDto recipe = recipeService.createDraftRecipe(request.name());
-		return ResponseEntity.ok(recipe);
+	public ResponseEntity<RecipeDto> createDraftRecipe(
+			@RequestParam String name,
+			@AuthenticationPrincipal User user) {
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(recipeService.createDraftRecipe(name, user));
 	}
 
 	@PutMapping("/{id}")

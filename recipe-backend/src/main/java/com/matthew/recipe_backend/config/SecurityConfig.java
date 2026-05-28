@@ -4,46 +4,69 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.matthew.recipe_backend.repositories.UserRepository;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-	@Bean
-	public InMemoryUserDetailsManager userDetailsService() {
-		System.out.println("Test");
-		UserDetails userA = User.withUsername("mwright")
-				.password("{noop}hashed_password") // {noop} = no encoding, just for testing
-				.roles("USER")
-				.build();
+	private final UserRepository userRepository;
+	private final JwtConfig jwtConfig;
 
-		System.out.println(userA);
-
-		UserDetails userB = User.withUsername("ljw")
-				.password("{noop}hashed_password")
-				.roles("USER")
-				.build();
-
-		return new InMemoryUserDetailsManager(userA, userB);
+	public SecurityConfig(UserRepository userRepository, @Lazy JwtConfig jwtConfig) {
+		this.userRepository = userRepository;
+		this.jwtConfig = jwtConfig;
 	}
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http.csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults()).authorizeHttpRequests(auth -> auth
 				.requestMatchers("/api/recipes/{recipeId}/directions").authenticated()
+				.requestMatchers("/auth/register", "/auth/login").permitAll()
+				.requestMatchers("/api/users/me").authenticated()
 				.anyRequest().permitAll())
-				.httpBasic(Customizer.withDefaults())
+				.sessionManagement(session -> session
+						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.addFilterBefore(jwtConfig, UsernamePasswordAuthenticationFilter.class)
 				.build();
+	}
+
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public UserDetailsService userDetailsService() {
+		return email -> userRepository.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+	}
+
+	@Bean
+	AuthenticationManager authenticationManager(
+			UserDetailsService userDetailsService,
+			PasswordEncoder passwordEncoder) {
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
+		provider.setPasswordEncoder(passwordEncoder);
+		return new ProviderManager(provider);
 	}
 
 	@Bean

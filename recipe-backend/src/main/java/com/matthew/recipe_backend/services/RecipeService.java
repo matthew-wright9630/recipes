@@ -2,10 +2,8 @@ package com.matthew.recipe_backend.services;
 
 import java.util.List;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.matthew.recipe_backend.Utils.CustomUserDetails;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
 import com.matthew.recipe_backend.enums.RecipeStatus;
@@ -88,14 +86,8 @@ public class RecipeService {
 	 * @param name        the initial name for the recipe
 	 * @return the newly created {@link RecipeDto}
 	 */
-	public RecipeDto createDraftRecipe(String name) {
-		CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
-				.getPrincipal();
-		Long userId = user.getId();
-
-		User createdBy = userService.findById(userId);
-
-		Recipe recipe = new Recipe(createdBy, name);
+	public RecipeDto createDraftRecipe(String name, User user) {
+		Recipe recipe = new Recipe(user, name);
 		recipeRepository.save(recipe);
 		return RecipeMapper.toDto(recipe);
 	}

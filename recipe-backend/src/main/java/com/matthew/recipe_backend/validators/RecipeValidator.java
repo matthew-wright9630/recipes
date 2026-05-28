@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.matthew.recipe_backend.Utils.CustomUserDetails;
 import com.matthew.recipe_backend.enums.RecipeStatus;
 import com.matthew.recipe_backend.models.Recipe;
 

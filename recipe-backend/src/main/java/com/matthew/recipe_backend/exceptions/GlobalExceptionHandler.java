@@ -68,6 +68,38 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(body, HttpStatus.CONFLICT);
 	}
 
+	@ExceptionHandler(UsernameAlreadyExistsException.class)
+	public ResponseEntity<Object> handleUsernameAlreadyExists(UsernameAlreadyExistsException ex, WebRequest request) {
+		Map<String, Object> body = new HashMap<>();
+		body.put("error", "Username Already Exists");
+		body.put("message", ex.getMessage());
+		return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+	}
+
+	@ExceptionHandler(InvalidCredentialsException.class)
+	public ResponseEntity<Object> handleInvalidCredentials(InvalidCredentialsException ex, WebRequest request) {
+		Map<String, Object> body = new HashMap<>();
+		body.put("error", "Invalid Credentials");
+		body.put("message", ex.getMessage());
+		return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+	}
+
+	@ExceptionHandler(AccountDeactivatedException.class)
+	public ResponseEntity<Object> handleAccountDeactivated(AccountDeactivatedException ex, WebRequest request) {
+		Map<String, Object> body = new HashMap<>();
+		body.put("error", "Account Deactivated");
+		body.put("message", ex.getMessage());
+		return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
+	}
+
+	@ExceptionHandler(InvalidTokenException.class)
+	public ResponseEntity<Object> handleInvalidToken(InvalidTokenException ex, WebRequest request) {
+		Map<String, Object> body = new HashMap<>();
+		body.put("error", "Invalid Token");
+		body.put("message", ex.getMessage());
+		return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+	}
+
 	@ExceptionHandler(EntityNotFoundException.class)
 	public ResponseEntity<Object> handleNotFound(EntityNotFoundException ex) {
 		Map<String, Object> body = new HashMap<>();

@@ -2,16 +2,26 @@ package com.matthew.recipe_backend.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.matthew.recipe_backend.Utils.CustomUserDetails;
+import com.matthew.recipe_backend.dtos.ChangePasswordDto;
+import com.matthew.recipe_backend.dtos.UserDto;
+import com.matthew.recipe_backend.dtos.UserUpdateDto;
+import com.matthew.recipe_backend.exceptions.InvalidCredentialsException;
+import com.matthew.recipe_backend.exceptions.InvalidRequestException;
 import com.matthew.recipe_backend.exceptions.UserNotFoundException;
+import com.matthew.recipe_backend.exceptions.UsernameAlreadyExistsException;
+import com.matthew.recipe_backend.mappers.UserMapper;
+import com.matthew.recipe_backend.models.Cookbook;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.repositories.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -33,13 +43,46 @@ public class UserService {
     }
 
     public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByUsername(username)
+        return userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        return new CustomUserDetails(
-                user.getId(),
-                user.getUsername(),
-                user.getPasswordHash(),
-                List.of(new SimpleGrantedAuthority(user.getRole().name())));
+    }
+
+    public Page<UserDto> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(UserMapper::toDto);
+    }
+
+    public UserDto getCurrentUser(User user) {
+        System.out.println("TEST" + user);
+        return UserMapper.toDto(user);
+    }
+
+    public UserDto updateUser(User user, UserUpdateDto updateUserDto) {
+        User foundUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        // Check if username is already taken by another user
+        if (!foundUser.getDisplayUsername().equals(updateUserDto.username()) &&
+                userRepository.existsByUsername(updateUserDto.username())) {
+            throw new UsernameAlreadyExistsException("Username is already in use");
+        }
+
+        foundUser.setUsername(updateUserDto.username());
+
+        User savedUser = userRepository.save(foundUser);
+        return UserMapper.toDto(savedUser);
+    }
+
+    public UserDto createUser(User user) {
+        User saved = userRepository.save(user);
+        UserDto response = UserMapper.toDto(saved);
+
+        // Cookbook likedRecipes = new Cookbook();
+        // likedRecipes.setName("Liked Recipes");
+        // likedRecipes.setOwner(saved);
+        // cookbookRepository.save(likedRecipes);
+
+        return response;
     }
 }
