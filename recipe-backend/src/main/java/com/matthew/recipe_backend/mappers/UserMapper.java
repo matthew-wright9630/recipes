@@ -12,8 +12,7 @@ public class UserMapper {
                 user.getDisplayUsername(),
                 user.getEmail(),
                 user.getRole().name(),
-                user.isDeactivated(),
-                user.getCreatedAt());
+                user.isDeactivated());
     }
 
     public static UserSummaryDto toSummaryDto(User user) {

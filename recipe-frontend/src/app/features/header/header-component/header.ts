@@ -6,18 +6,37 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { HeaderService } from '../header.service';
+import { MatDialog } from '@angular/material/dialog';
+import { LoginDialogComponent } from '../../../shared/dialogs/login-dialog/login-dialog';
 
 @Component({
   selector: 'app-header-component',
-  imports: [RouterLink, MatToolbarModule, MatButtonModule, MatInputModule, MatFormFieldModule, MatIconModule],
+  imports: [
+    RouterLink,
+    MatToolbarModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatIconModule,
+  ],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
 export class HeaderComponent {
   constructor(
     private headerService: HeaderService,
+    private dialog: MatDialog,
   ) {
     this.getLoginDetails();
+  }
+
+  openLogin() {
+    console.log('Test');
+    this.dialog.open(LoginDialogComponent, {
+      width: '800px',
+      maxWidth: '95vw',
+      autoFocus: false,
+    });
   }
 
   login() {
@@ -45,13 +64,13 @@ export class HeaderComponent {
   employeeUser = signal(false);
 
   checkRoleType() {
-  //   if (
-  //     this.dataPassService.loggedInUser()?.role === 'manager' ||
-  //     this.dataPassService.loggedInUser()?.role === 'admin'
-  //   ) {
-  //     this.employeeUser.set(true);
-  //   } else {
-  //     this.employeeUser.set(false);
-  //   }
+    //   if (
+    //     this.dataPassService.loggedInUser()?.role === 'manager' ||
+    //     this.dataPassService.loggedInUser()?.role === 'admin'
+    //   ) {
+    //     this.employeeUser.set(true);
+    //   } else {
+    //     this.employeeUser.set(false);
+    //   }
   }
 }
