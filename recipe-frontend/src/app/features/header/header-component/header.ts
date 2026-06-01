@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { HeaderService } from '../header.service';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginDialogComponent } from '../../../shared/dialogs/login-dialog/login-dialog';
+import { AuthStateService } from '../../../shared/services/auth-state.service';
 
 @Component({
   selector: 'app-header-component',
@@ -30,8 +31,9 @@ export class HeaderComponent {
     this.getLoginDetails();
   }
 
+  authState = inject(AuthStateService);
+
   openLogin() {
-    console.log('Test');
     this.dialog.open(LoginDialogComponent, {
       width: '800px',
       maxWidth: '95vw',
@@ -39,11 +41,9 @@ export class HeaderComponent {
     });
   }
 
-  login() {
-    // window.location.href = '/oauth2/authorization/google';
-  }
-
   getLoginDetails() {
+    // this.authState.restoreSession();
+    // return this.authState.currentUser();
     // this.httpService.getUserInfo().subscribe((data) => {
     //   this.dataPassService.loggedInUser.set(data);
     //   this.checkRoleType();
@@ -51,11 +51,11 @@ export class HeaderComponent {
   }
 
   getLoggedInUser() {
-    return null;
-    // return this.dataPassService?.loggedInUser();
+    return this.authState.currentUser();
   }
 
   logout() {
+    this.authState.logout();
     // this.httpService.logout();
     // this.dataPassService.loggedInUser.set(null);
   }
