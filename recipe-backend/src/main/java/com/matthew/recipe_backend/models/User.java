@@ -2,7 +2,13 @@ package com.matthew.recipe_backend.models;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.matthew.recipe_backend.enums.UserRole;
 
@@ -19,7 +25,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
 	@Id
 	@GeneratedValue
@@ -43,21 +49,17 @@ public class User {
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 
-	@OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<Recipe> recipes = new ArrayList<>();
-
 	public User() {
 	}
 
 	public User(String username, String email, String passwordHash, UserRole role, boolean deactivated,
-			LocalDateTime createdAt, List<Recipe> recipes) {
+			LocalDateTime createdAt) {
 		this.username = username;
 		this.email = email;
 		this.passwordHash = passwordHash;
 		this.role = role;
 		this.deactivated = deactivated;
 		this.createdAt = createdAt;
-		this.recipes = recipes;
 	}
 
 	public Long getId() {
@@ -68,7 +70,7 @@ public class User {
 		this.id = id;
 	}
 
-	public String getUsername() {
+	public String getDisplayUsername() {
 		return username;
 	}
 
@@ -116,14 +118,6 @@ public class User {
 		this.createdAt = createdAt;
 	}
 
-	public List<Recipe> getRecipes() {
-		return recipes;
-	}
-
-	public void setRecipes(List<Recipe> recipes) {
-		this.recipes = recipes;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -152,7 +146,42 @@ public class User {
 	@Override
 	public String toString() {
 		return "Users [id=" + id + ", username=" + username + ", email=" + email + ", passwordHash=" + passwordHash
-				+ ", deactivated=" + deactivated + ", createdAt=" + createdAt + ", recipes=" + recipes + "]";
+				+ ", deactivated=" + deactivated + ", createdAt=" + createdAt + "]";
 	}
 
+	// UserDetails interface methods
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	@Override
+	public String getPassword() {
+		return passwordHash;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return !deactivated; // ties your deactivated flag into Spring Security
+	}
 }

@@ -1,0 +1,65 @@
+<div class="login-dialog__header">
+  <h2 mat-dialog-title>Sign In</h2>
+  <button mat-icon-button mat-dialog-close class="login-dialog__close">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="loginForm" class="login-dialog__form">
+    <mat-form-field class="login-dialog__input" appearance="outline">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        type="email"
+        formControlName="email"
+        placeholder="you@example.com"
+      />
+      @if(loginForm.get('email')?.hasError('required')) {
+      <mat-error>Email is Required</mat-error>
+      } @if(loginForm.get('email')?.hasError('email')) {
+      <mat-error>Email is Required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="login-dialog__input" appearance="outline">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        [type]="hidePassword ? 'password' : 'text'"
+        formControlName="password"
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="hidePassword = !hidePassword"
+        type="button"
+      >
+        <mat-icon
+          >{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon
+        >
+      </button>
+      @if (loginForm.get('password')?.hasError('required')) {
+      <mat-error>Password is required</mat-error>
+      }
+    </mat-form-field>
+
+    @if (errorMessage) {
+    <p class="login-dialog__error">{{ errorMessage }}</p>
+    }
+
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onLogin()"
+      [disabled]="loginForm.invalid"
+      class="login-dialog__submit"
+    >
+      Sign In
+    </button>
+
+    <div class="login-dialog__footer">
+      <span>Don't have an account? <a (click)="onRegister()">Register</a></span>
+    </div>
+  </form>
+</mat-dialog-content>

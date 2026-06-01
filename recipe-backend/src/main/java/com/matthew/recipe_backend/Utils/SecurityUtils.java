@@ -3,6 +3,7 @@ package com.matthew.recipe_backend.Utils;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.matthew.recipe_backend.exceptions.AccessDeniedException;
+import com.matthew.recipe_backend.models.User;
 
 public class SecurityUtils {
 
@@ -11,7 +12,7 @@ public class SecurityUtils {
                 .getAuthentication()
                 .getPrincipal();
 
-        if (principal instanceof CustomUserDetails user) {
+        if (principal instanceof User user) {
             return user.getId();
         }
 
