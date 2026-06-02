@@ -32,16 +32,6 @@ export class RecipeListComponent {
           })),
         );
       });
-
-      this.route.queryParamMap.subscribe((params) => {
-        if (params.get('loginRequired') === 'true') {
-          this.dialog.open(LoginDialogComponent, {
-            width: '800px',
-            maxWidth: '95vw',
-            autoFocus: false,
-          });
-        }
-      });
     });
   }
 }

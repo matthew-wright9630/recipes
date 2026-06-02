@@ -15,9 +15,7 @@
   </mat-toolbar-row>
   <mat-toolbar-row>
     <!-- <span class="spacer"></span> -->
-    <a mat-raised-button routerLink="/homepage" routerLinkActive="active"
-      >Homepage</a
-    >
+    <a mat-raised-button routerLink="/" routerLinkActive="active">Homepage</a>
     @if (getLoggedInUser() === null) {
     <button mat-raised-button (click)="openLogin()">Login</button>
     } @else {

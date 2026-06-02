@@ -1,23 +1,21 @@
 import { CanActivateFn } from '@angular/router';
 import { AuthStateService } from './shared/services/auth-state.service';
 import { inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { LoginDialogComponent } from './shared/dialogs/login-dialog/login-dialog';
-import { map } from 'rxjs';
 import { Router } from '@angular/router';
+import { filter, map, take } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
 
-export const authGuard: CanActivateFn = (route, state) => {
+export const authGuard: CanActivateFn = (route) => {
   const authService: AuthStateService = inject(AuthStateService);
-  const dialog = inject(MatDialog);
   const router: Router = inject(Router);
 
-  if (authService.isLoggedIn()) {
-    return true;
-  }
+  const state = authService.authState();
 
-  dialog.open(LoginDialogComponent);
-
-  return router.createUrlTree(['/homepage'], {
-    queryParams: { loginRequired: 'true' },
-  });
+  return toObservable(authService.authState).pipe(
+    filter((state) => state !== 'loading'),
+    take(1),
+    map((state) =>
+      state === 'authenticated' ? true : router.createUrlTree(['/']),
+    ),
+  );
 };

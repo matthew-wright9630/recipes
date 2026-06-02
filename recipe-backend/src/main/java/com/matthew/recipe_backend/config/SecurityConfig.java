@@ -41,7 +41,7 @@ public class SecurityConfig {
 		return http.csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults()).authorizeHttpRequests(auth -> auth
 				.requestMatchers("/api/recipes/{recipeId}/directions").authenticated()
 				.requestMatchers("/auth/register", "/auth/login").permitAll()
-				.requestMatchers("/api/users/me").authenticated()
+				// .requestMatchers("/api/users/me").authenticated()
 				.anyRequest().permitAll())
 				.sessionManagement(session -> session
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
