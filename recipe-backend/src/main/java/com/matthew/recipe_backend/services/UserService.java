@@ -54,7 +54,6 @@ public class UserService {
     }
 
     public UserDto getCurrentUser(User user) {
-        System.out.println("TEST" + user);
         return UserMapper.toDto(user);
     }
 

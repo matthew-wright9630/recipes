@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -27,6 +27,7 @@ export class HeaderComponent {
   constructor(
     private headerService: HeaderService,
     private dialog: MatDialog,
+    private router: Router,
   ) {
     this.getLoginDetails();
   }
@@ -42,7 +43,7 @@ export class HeaderComponent {
   }
 
   getLoginDetails() {
-    // this.authState.restoreSession();
+    this.authState.restoreSession();
     // return this.authState.currentUser();
     // this.httpService.getUserInfo().subscribe((data) => {
     //   this.dataPassService.loggedInUser.set(data);
@@ -72,5 +73,9 @@ export class HeaderComponent {
     //   } else {
     //     this.employeeUser.set(false);
     //   }
+  }
+
+  profileClick() {
+    this.router.navigate(['/profile']);
   }
 }

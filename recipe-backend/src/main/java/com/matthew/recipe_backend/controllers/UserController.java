@@ -9,15 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.matthew.recipe_backend.dtos.ChangePasswordDto;
 import com.matthew.recipe_backend.dtos.UserDto;
 import com.matthew.recipe_backend.dtos.UserUpdateDto;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.services.UserService;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/api/users")

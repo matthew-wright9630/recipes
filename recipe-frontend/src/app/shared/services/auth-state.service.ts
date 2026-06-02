@@ -7,6 +7,10 @@ import {
 } from '@angular/core';
 import { User } from '../models/user';
 import { isPlatformBrowser } from '@angular/common';
+import { AuthServiceService } from './auth-service.service';
+import { UserService } from './user.service';
+import { map, Observable, of, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -15,17 +19,28 @@ export class AuthStateService {
   private _currentUser = signal<User | null>(null);
   private _accessToken = signal<string | null>(null);
   private platformId = inject(PLATFORM_ID);
+  private userService = inject(UserService);
+  private http = inject(HttpClient);
 
   private isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
   }
 
+  private _initialized = signal(false);
+  initialized = this._initialized.asReadonly();
+
   currentUser = this._currentUser.asReadonly();
-  isLoggedIn = computed(() => this._currentUser() !== null);
+  isLoggedIn = computed(() => {
+    return this._initialized() && this._currentUser() !== null;
+  });
   accessToken = this._accessToken.asReadonly();
 
+  authState = computed(() => {
+    if (!this._initialized()) return 'loading';
+    return this._currentUser() ? 'authenticated' : 'unauthenticated';
+  });
+
   login(token: string, user: User): void {
-    console.log(user);
     this._accessToken.set(token);
     this._currentUser.set(user);
     if (this.isBrowser()) localStorage.setItem('accessToken', token);
@@ -40,10 +55,33 @@ export class AuthStateService {
   }
 
   restoreSession(): void {
-    if (!this.isBrowser()) return;
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      this._accessToken.set(token);
+    this.http.get<User>('http://localhost:8083/api/users/me').subscribe({
+      next: (user: User) => {
+        this._currentUser.set(user);
+        this._initialized.set(true);
+      },
+      error: () => {
+        this._currentUser.set(null);
+        this._initialized.set(true);
+      },
+    });
+  }
+
+  initialize(): Observable<void> {
+    if (!this.isBrowser()) {
+      return of(void 0);
     }
+    const token = localStorage.getItem('accessToken');
+
+    if (!token) {
+      return of(void 0);
+    }
+
+    this._accessToken.set(token);
+
+    return this.userService.getCurrentUser().pipe(
+      tap((user) => this._currentUser.set(user)),
+      map(() => void 0),
+    );
   }
 }
