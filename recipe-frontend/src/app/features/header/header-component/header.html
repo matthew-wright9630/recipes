@@ -16,7 +16,7 @@
   <mat-toolbar-row>
     <!-- <span class="spacer"></span> -->
     <a mat-raised-button routerLink="/" routerLinkActive="active">Homepage</a>
-    @if (getLoggedInUser() === null) {
+    @if (this.authState.currentUser() === null) {
     <button mat-raised-button (click)="openLogin()">Login</button>
     } @else {
     <a mat-raised-button routerLink="/profile" routerLinkActive="active"

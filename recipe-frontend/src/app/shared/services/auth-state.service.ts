@@ -9,7 +9,7 @@ import { User } from '../models/user';
 import { isPlatformBrowser } from '@angular/common';
 import { AuthServiceService } from './auth-service.service';
 import { UserService } from './user.service';
-import { map, Observable, of, tap } from 'rxjs';
+import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -54,19 +54,6 @@ export class AuthStateService {
     }
   }
 
-  restoreSession(): void {
-    this.http.get<User>('http://localhost:8083/api/users/me').subscribe({
-      next: (user: User) => {
-        this._currentUser.set(user);
-        this._initialized.set(true);
-      },
-      error: () => {
-        this._currentUser.set(null);
-        this._initialized.set(true);
-      },
-    });
-  }
-
   initialize(): Observable<void> {
     if (!this.isBrowser()) {
       return of(void 0);
@@ -82,6 +69,14 @@ export class AuthStateService {
     return this.userService.getCurrentUser().pipe(
       tap((user) => this._currentUser.set(user)),
       map(() => void 0),
+      catchError((error) => {
+        if (error.status === 401) {
+          this.logout();
+          return of(void 0);
+        }
+
+        return throwError(() => error);
+      }),
     );
   }
 }

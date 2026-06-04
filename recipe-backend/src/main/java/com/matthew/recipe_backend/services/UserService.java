@@ -3,11 +3,13 @@ package com.matthew.recipe_backend.services;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.matthew.recipe_backend.dtos.ChangePasswordDto;
 import com.matthew.recipe_backend.dtos.UserDto;
