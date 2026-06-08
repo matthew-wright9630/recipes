@@ -6,11 +6,14 @@ import org.springframework.stereotype.Service;
 
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
+import com.matthew.recipe_backend.dtos.UserDto;
 import com.matthew.recipe_backend.enums.RecipeStatus;
+import com.matthew.recipe_backend.exceptions.UserNotFoundException;
 import com.matthew.recipe_backend.mappers.RecipeMapper;
 import com.matthew.recipe_backend.models.Recipe;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.repositories.RecipeRepository;
+import com.matthew.recipe_backend.repositories.UserRepository;
 import com.matthew.recipe_backend.validators.RecipeValidator;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -28,7 +31,7 @@ import jakarta.transaction.Transactional;
 public class RecipeService {
 
 	private final RecipeRepository recipeRepository;
-	private final UserService userService;
+	private final UserRepository userRepository;
 	private final RecipeIngredientService recipeIngredientService;
 
 	/**
@@ -36,10 +39,10 @@ public class RecipeService {
 	 *
 	 * @param recipeRepository the repository used for recipe persistence operations
 	 */
-	public RecipeService(RecipeRepository recipeRepository, UserService userService,
+	public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository,
 			RecipeIngredientService recipeIngredientService) {
 		this.recipeRepository = recipeRepository;
-		this.userService = userService;
+		this.userRepository = userRepository;
 		this.recipeIngredientService = recipeIngredientService;
 	}
 
@@ -77,6 +80,16 @@ public class RecipeService {
 
 		RecipeDto recipeDto = RecipeMapper.toDto(recipe);
 		return recipeDto;
+	}
+
+	public List<RecipeDto> findRecipeByCreatedBy(String username) {
+		User user = userRepository.findByEmail(username)
+				.orElseThrow(() -> new UserNotFoundException(username));
+
+		return recipeRepository.findByCreatedBy(user)
+				.stream()
+				.map(RecipeMapper::toDto)
+				.toList();
 	}
 
 	/**

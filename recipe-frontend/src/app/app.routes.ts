@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { RecipeListComponent } from './features/recipe/recipe-list/recipe-list.component';
 import { RecipeDetail } from './features/recipe/recipe-detail/recipe-detail';
-import { Profile } from './features/profile/profile';
+import { Profile } from './features/profile/profile-component/profile';
 import { authGuard } from './auth-guard';
 
 export const routes: Routes = [

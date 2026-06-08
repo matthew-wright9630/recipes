@@ -25,12 +25,7 @@ export class RecipeListComponent {
   ) {
     effect(() => {
       this.recipeService.getAllRecipes().subscribe((recipes) => {
-        this.recipeList.set(
-          recipes.map((r, i) => ({
-            ...r,
-            _uid: '${r.name}-${i}-${Date.now()}',
-          })),
-        );
+        this.recipeList.set(recipes);
       });
     });
   }

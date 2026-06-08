@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.StatusUpdateRequestDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
+import com.matthew.recipe_backend.dtos.UserDto;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.services.RecipeService;
 
@@ -43,6 +44,12 @@ public class RecipeController {
 	public ResponseEntity<RecipeDto> getRecipeById(@PathVariable long id) {
 		RecipeDto recipe = recipeService.findRecipeById(id);
 		return ResponseEntity.ok(recipe);
+	}
+
+	@GetMapping("/me")
+	public ResponseEntity<List<RecipeDto>> getRecipeByUser(@AuthenticationPrincipal User user) {
+		List<RecipeDto> recipes = recipeService.findRecipeByCreatedBy(user.getUsername());
+		return ResponseEntity.ok(recipes);
 	}
 
 	@PostMapping

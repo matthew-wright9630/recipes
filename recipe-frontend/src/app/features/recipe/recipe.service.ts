@@ -22,4 +22,10 @@ export class RecipeService {
       .get<Recipe>(this.baseURL + '/' + id, { observe: 'response' })
       .pipe(map((res) => res.body));
   }
+
+  getRecipesByUser() {
+    return this.http
+      .get<Recipe[]>(this.baseURL + '/me', { observe: 'response' })
+      .pipe(map((res) => res.body));
+  }
 }
