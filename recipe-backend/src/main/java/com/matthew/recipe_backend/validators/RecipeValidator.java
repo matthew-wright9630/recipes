@@ -117,8 +117,6 @@ public class RecipeValidator {
 	}
 
 	public static void recipeBelongsToUser(Recipe recipe, Long userId) {
-		System.out.println(
-				recipe.getCreatedBy().getId() + ", " + userId + ", " + recipe.getCreatedBy().getId().equals(userId));
 		if (!recipe.getCreatedBy().getId().equals(userId)) {
 			throw new IllegalStateException("Direction does not belong to this user");
 		}
