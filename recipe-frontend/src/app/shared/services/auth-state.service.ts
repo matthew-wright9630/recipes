@@ -7,10 +7,11 @@ import {
 } from '@angular/core';
 import { User } from '../models/user';
 import { isPlatformBrowser } from '@angular/common';
-import { AuthServiceService } from './auth-service.service';
+import { AuthService } from './auth.service';
 import { UserService } from './user.service';
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +22,7 @@ export class AuthStateService {
   private platformId = inject(PLATFORM_ID);
   private userService = inject(UserService);
   private http = inject(HttpClient);
+  private router = inject(Router);
 
   private isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
@@ -52,6 +54,7 @@ export class AuthStateService {
     if (this.isBrowser()) {
       localStorage.removeItem('accessToken');
     }
+    this.router.navigate(['/']);
   }
 
   initialize(): Observable<void> {

@@ -7,7 +7,7 @@ import { AuthResponse } from '../models/auth-response';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthServiceService {
+export class AuthService {
   baseURL: string = 'http://localhost:8083/auth';
 
   constructor(private http: HttpClient) {}

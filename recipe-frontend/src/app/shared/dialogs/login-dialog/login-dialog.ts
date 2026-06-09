@@ -21,7 +21,7 @@ import {
   MatLabel,
 } from '@angular/material/input';
 import { RouterLink } from '@angular/router';
-import { AuthServiceService } from '../../services/auth-service.service';
+import { AuthService } from '../../services/auth.service';
 import { AuthStateService } from '../../services/auth-state.service';
 import { User } from '../../models/user';
 
@@ -50,7 +50,7 @@ export class LoginDialogComponent {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<LoginDialogComponent>,
-    private authService: AuthServiceService,
+    private authService: AuthService,
     private authStateService: AuthStateService,
   ) {
     this.loginForm = this.fb.group({
