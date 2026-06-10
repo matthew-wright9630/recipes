@@ -1,6 +1,17 @@
 <article>
   <div class="profile">
-    <div class="profile__header"></div>
+    <div class="profile__header">
+      @if (authState.currentUser()?.avatarUrl) {
+      <img
+        class="profile__img"
+        [src]="authState.currentUser()?.avatarUrl"
+        alt="authState.currentUser()?.username"
+      />
+      }
+      <img class="profile__img" src="/default-avatar.svg" />
+      <p class="profile__p">{{authState.currentUser()?.username}}</p>
+      <p class="profile__p">{{authState.currentUser()?.email}}</p>
+    </div>
     <div class="profile__cookbooks"></div>
     <div class="profile__recipes">
       <p>Recent Recipes:</p>

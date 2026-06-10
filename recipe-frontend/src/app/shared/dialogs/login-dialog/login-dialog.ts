@@ -70,6 +70,7 @@ export class LoginDialogComponent {
           email: response.email,
           username: response.username,
           userRole: response.role,
+          avatarUrl: response.avatarUrl,
         };
         this.authStateService.login(response.accessToken, user);
         this.dialogRef.close(true);

@@ -1,5 +1,31 @@
+div {
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  gap: 5vh;
+}
+
+.profile__header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile__p {
+  margin: 1vh;
+}
+
+.profile__img {
+  width: 50px;
+  height: 50px;
+}
+
 .profile__recipes {
-  min-height: 70vh;
+  // min-height: 70vh;
 }
 
 .profile__recipes__grid {
