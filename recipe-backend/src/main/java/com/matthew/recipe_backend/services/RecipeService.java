@@ -2,15 +2,21 @@ package com.matthew.recipe_backend.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
+import com.matthew.recipe_backend.dtos.UserDto;
 import com.matthew.recipe_backend.enums.RecipeStatus;
+import com.matthew.recipe_backend.exceptions.UserNotFoundException;
 import com.matthew.recipe_backend.mappers.RecipeMapper;
 import com.matthew.recipe_backend.models.Recipe;
+import com.matthew.recipe_backend.models.RecipeView;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.repositories.RecipeRepository;
+import com.matthew.recipe_backend.repositories.RecipeViewRepository;
+import com.matthew.recipe_backend.repositories.UserRepository;
 import com.matthew.recipe_backend.validators.RecipeValidator;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -28,19 +34,24 @@ import jakarta.transaction.Transactional;
 public class RecipeService {
 
 	private final RecipeRepository recipeRepository;
-	private final UserService userService;
+	private final UserRepository userRepository;
 	private final RecipeIngredientService recipeIngredientService;
+	private final RecipeViewService recipeViewService;
+	private final RecipeViewRepository recipeViewRepository;
 
 	/**
 	 * Constructs a {@code RecipeService} with the required repository dependency.
 	 *
 	 * @param recipeRepository the repository used for recipe persistence operations
 	 */
-	public RecipeService(RecipeRepository recipeRepository, UserService userService,
-			RecipeIngredientService recipeIngredientService) {
+	public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository,
+			RecipeIngredientService recipeIngredientService, RecipeViewService recipeViewService,
+			RecipeViewRepository recipeViewRepository) {
 		this.recipeRepository = recipeRepository;
-		this.userService = userService;
+		this.userRepository = userRepository;
 		this.recipeIngredientService = recipeIngredientService;
+		this.recipeViewService = recipeViewService;
+		this.recipeViewRepository = recipeViewRepository;
 	}
 
 	/**
@@ -76,7 +87,27 @@ public class RecipeService {
 		recipeRepository.findByIdWithIngredients(id);
 
 		RecipeDto recipeDto = RecipeMapper.toDto(recipe);
+		recipeViewService.addView(recipe);
 		return recipeDto;
+	}
+
+	public List<RecipeDto> findRecipeByCreatedBy(String username) {
+		User user = userRepository.findByEmail(username)
+				.orElseThrow(() -> new UserNotFoundException(username));
+
+		return recipeRepository.findByCreatedBy(user)
+				.stream()
+				.map(RecipeMapper::toDto)
+				.toList();
+	}
+
+	public List<RecipeDto> findRecentlyViewedRecipes(User user, int limit) {
+		return recipeViewRepository
+				.findRecentViewsByUser(user, PageRequest.of(0, limit))
+				.stream()
+				.map(RecipeView::getRecipe)
+				.map(RecipeMapper::toDto)
+				.toList();
 	}
 
 	/**

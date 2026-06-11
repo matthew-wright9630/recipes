@@ -1,4 +1,4 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Recipe } from '../../shared/models/recipe';
 import { map, Observable } from 'rxjs';
@@ -19,7 +19,23 @@ export class RecipeService {
 
   getRecipeById(id: number): Observable<Recipe | null> {
     return this.http
-      .get<Recipe>(this.baseURL + '/' + id, { observe: 'response' })
+      .get<Recipe>(this.baseURL + '/' + id, {
+        withCredentials: true,
+        observe: 'response',
+      })
+      .pipe(map((res) => res.body));
+  }
+
+  getRecipesByUser() {
+    return this.http
+      .get<Recipe[]>(this.baseURL + '/me', { observe: 'response' })
+      .pipe(map((res) => res.body));
+  }
+
+  getRecipeViewHistoryByUser(limit: number) {
+    const params = new HttpParams().set('limit', limit.toString());
+    return this.http
+      .get<Recipe[]>(this.baseURL + '/history', { observe: 'response', params })
       .pipe(map((res) => res.body));
   }
 }

@@ -12,6 +12,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.matthew.recipe_backend.services.JwtService;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,31 +36,23 @@ public class JwtConfig extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        // 1. Get Authorization header
         String authHeader = request.getHeader("Authorization");
 
-        // 2. If no token, skip filter
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 3. Extract token
         String token = authHeader.substring(7);
 
-        // 4. Extract email from token
-        String email = jwtService.extractEmail(token);
+        String email = extractEmail(token);
 
-        // 5. If email found and no existing authentication
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            // 6. Load user from DB
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-            // 7. Validate token
             if (jwtService.isTokenValid(token, userDetails)) {
 
-                // 8. Set authentication in security context
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
@@ -69,5 +63,13 @@ public class JwtConfig extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    public String extractEmail(String token) {
+        try {
+            return jwtService.extractClaim(token, Claims::getSubject);
+        } catch (ExpiredJwtException e) {
+            return null;
+        }
     }
 }

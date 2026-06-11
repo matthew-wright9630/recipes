@@ -7,10 +7,11 @@ import {
 } from '@angular/core';
 import { User } from '../models/user';
 import { isPlatformBrowser } from '@angular/common';
-import { AuthServiceService } from './auth-service.service';
+import { AuthService } from './auth.service';
 import { UserService } from './user.service';
-import { map, Observable, of, tap } from 'rxjs';
+import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +22,7 @@ export class AuthStateService {
   private platformId = inject(PLATFORM_ID);
   private userService = inject(UserService);
   private http = inject(HttpClient);
+  private router = inject(Router);
 
   private isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
@@ -52,19 +54,7 @@ export class AuthStateService {
     if (this.isBrowser()) {
       localStorage.removeItem('accessToken');
     }
-  }
-
-  restoreSession(): void {
-    this.http.get<User>('http://localhost:8083/api/users/me').subscribe({
-      next: (user: User) => {
-        this._currentUser.set(user);
-        this._initialized.set(true);
-      },
-      error: () => {
-        this._currentUser.set(null);
-        this._initialized.set(true);
-      },
-    });
+    this.router.navigate(['/']);
   }
 
   initialize(): Observable<void> {
@@ -82,6 +72,14 @@ export class AuthStateService {
     return this.userService.getCurrentUser().pipe(
       tap((user) => this._currentUser.set(user)),
       map(() => void 0),
+      catchError((error) => {
+        if (error.status === 401) {
+          this.logout();
+          return of(void 0);
+        }
+
+        return throwError(() => error);
+      }),
     );
   }
 }

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.matthew.recipe_backend.models.Recipe;
+import com.matthew.recipe_backend.models.User;
 
 /**
  * Repository for {@link Recipe} entities, extending Spring Data JPA's standard
@@ -58,5 +59,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 			    LEFT JOIN FETCH r.recipeDirections rd
 			""")
 	List<Recipe> findAllWithDirections();
+
+	List<Recipe> findByCreatedBy(User createdBy);
 
 }

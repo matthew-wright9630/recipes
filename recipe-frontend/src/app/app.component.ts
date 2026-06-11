@@ -11,8 +11,4 @@ import { AuthStateService } from './shared/services/auth-state.service';
 })
 export class AppComponent {
   title = 'recipe-frontend';
-
-  constructor(private authState: AuthStateService) {
-    this.authState.restoreSession();
-  }
 }

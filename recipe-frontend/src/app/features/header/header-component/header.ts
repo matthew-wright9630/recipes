@@ -28,9 +28,7 @@ export class HeaderComponent {
     private headerService: HeaderService,
     private dialog: MatDialog,
     private router: Router,
-  ) {
-    this.getLoginDetails();
-  }
+  ) {}
 
   authState = inject(AuthStateService);
 
@@ -42,27 +40,11 @@ export class HeaderComponent {
     });
   }
 
-  getLoginDetails() {
-    this.authState.restoreSession();
-    // return this.authState.currentUser();
-    // this.httpService.getUserInfo().subscribe((data) => {
-    //   this.dataPassService.loggedInUser.set(data);
-    //   this.checkRoleType();
-    // });
-  }
-
-  getLoggedInUser() {
-    return this.authState.currentUser();
-  }
-
   logout() {
     this.authState.logout();
-    // this.httpService.logout();
-    // this.dataPassService.loggedInUser.set(null);
   }
 
-  // Check if the user is an employee or a guest.
-  employeeUser = signal(false);
+  // employeeUser = signal(false);
 
   checkRoleType() {
     //   if (

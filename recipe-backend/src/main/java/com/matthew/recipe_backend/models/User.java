@@ -49,17 +49,21 @@ public class User implements UserDetails {
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 
+	@Column(name = "avatar_url")
+	private String avatarUrl;
+
 	public User() {
 	}
 
 	public User(String username, String email, String passwordHash, UserRole role, boolean deactivated,
-			LocalDateTime createdAt) {
+			LocalDateTime createdAt, String avatarUrl) {
 		this.username = username;
 		this.email = email;
 		this.passwordHash = passwordHash;
 		this.role = role;
 		this.deactivated = deactivated;
 		this.createdAt = createdAt;
+		this.avatarUrl = avatarUrl;
 	}
 
 	public Long getId() {
@@ -118,6 +122,14 @@ public class User implements UserDetails {
 		this.createdAt = createdAt;
 	}
 
+	public String getAvatarUrl() {
+		return avatarUrl;
+	}
+
+	public void setAvatarUrl(String avatarUrl) {
+		this.avatarUrl = avatarUrl;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -146,7 +158,7 @@ public class User implements UserDetails {
 	@Override
 	public String toString() {
 		return "Users [id=" + id + ", username=" + username + ", email=" + email + ", passwordHash=" + passwordHash
-				+ ", deactivated=" + deactivated + ", createdAt=" + createdAt + "]";
+				+ ", deactivated=" + deactivated + ", createdAt=" + createdAt + ", avatarUrl" + avatarUrl + "]";
 	}
 
 	// UserDetails interface methods

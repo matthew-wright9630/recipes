@@ -1,0 +1,63 @@
+<article class="profile-layout">
+  <!-- LEFT SIDEBAR -->
+  <mat-card class="profile-sidebar">
+    <div class="profile__header">
+      @if (authState.currentUser()?.avatarUrl) {
+      <img
+        class="profile__img"
+        [src]="authState.currentUser()?.avatarUrl"
+        alt="avatar"
+      />
+      } @else {
+      <img class="profile__img" src="/default-avatar.svg" />
+      }
+
+      <p class="profile__p">{{ authState.currentUser()?.username }}</p>
+      <p class="profile__p">{{ authState.currentUser()?.email }}</p>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="profile__footer">
+      <button mat-button>My Recipes</button>
+      <button mat-button>Cookbooks</button>
+      <button mat-button>Settings</button>
+    </div>
+  </mat-card>
+
+  <!-- RIGHT CONTENT -->
+  <div class="profile-content">
+    <mat-card class="profile__section">
+      <div class="card-header">
+        <mat-card-title class="profile__card-title"> Cookbooks </mat-card-title>
+      </div>
+      <div class="profile__cookbooks__grid"></div>
+    </mat-card>
+
+    <mat-card class="profile__section">
+      <div class="card-header">
+        <mat-card-title class="profile__card-title"
+          >Newly Created Recipes</mat-card-title
+        >
+      </div>
+      <div class="profile__recipes__grid">
+        @for(recipe of recipeList(); track recipe.id) {
+        <app-recipe [recipe]="recipe"></app-recipe>
+        }
+      </div>
+    </mat-card>
+
+    <mat-card class="profile__section">
+      <div class="card-header">
+        <mat-card-title class="profile__card-title"
+          >Recently Viewed Recipes</mat-card-title
+        >
+      </div>
+      <div class="profile__recipes__grid">
+        @for(recipe of recipeHistory(); track recipe.id) {
+        <app-recipe [recipe]="recipe"></app-recipe>
+        }
+      </div>
+    </mat-card>
+  </div>
+</article>
