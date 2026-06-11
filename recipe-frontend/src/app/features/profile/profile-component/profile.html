@@ -12,15 +12,16 @@
       <p class="profile__p">{{authState.currentUser()?.username}}</p>
       <p class="profile__p">{{authState.currentUser()?.email}}</p>
     </div>
-    <div class="profile__cookbooks"></div>
-    <div class="profile__recipes">
+    <article class="profile__section"></article>
+    <article class="profile__section">
       <p>Recent Recipes:</p>
       <div class="profile__recipes__grid">
         @for(recipe of recipeList(); track recipe.id) {
         <app-recipe [recipe]="recipe"></app-recipe>
         }
       </div>
-    </div>
+    </article>
+    <article class="profile__section"></article>
     <div class="profile__footer">
       <button class="profile__btn">My Recipes</button>
       <button class="profile__btn">Cookbooks</button>

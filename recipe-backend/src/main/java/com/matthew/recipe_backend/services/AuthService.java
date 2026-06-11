@@ -2,8 +2,11 @@ package com.matthew.recipe_backend.services;
 
 import java.time.LocalDateTime;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -148,5 +151,25 @@ public class AuthService {
                 user.getEmail(),
                 user.getDisplayUsername(),
                 user.getRole().name());
+    }
+
+    public User getOptionalCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || !auth.isAuthenticated()) {
+            return null;
+        }
+
+        if (auth instanceof AnonymousAuthenticationToken) {
+            return null;
+        }
+
+        Object principal = auth.getPrincipal();
+
+        if (principal instanceof User user) {
+            return user;
+        }
+
+        return null;
     }
 }
