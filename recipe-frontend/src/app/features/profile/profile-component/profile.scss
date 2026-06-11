@@ -24,10 +24,6 @@ div {
   height: 50px;
 }
 
-.profile__recipes {
-  // min-height: 70vh;
-}
-
 .profile__recipes__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

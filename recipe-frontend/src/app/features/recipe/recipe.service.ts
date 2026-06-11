@@ -19,7 +19,10 @@ export class RecipeService {
 
   getRecipeById(id: number): Observable<Recipe | null> {
     return this.http
-      .get<Recipe>(this.baseURL + '/' + id, { observe: 'response' })
+      .get<Recipe>(this.baseURL + '/' + id, {
+        withCredentials: true,
+        observe: 'response',
+      })
       .pipe(map((res) => res.body));
   }
 

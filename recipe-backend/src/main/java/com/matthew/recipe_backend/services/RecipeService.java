@@ -33,6 +33,7 @@ public class RecipeService {
 	private final RecipeRepository recipeRepository;
 	private final UserRepository userRepository;
 	private final RecipeIngredientService recipeIngredientService;
+	private final RecipeViewService recipeViewService;
 
 	/**
 	 * Constructs a {@code RecipeService} with the required repository dependency.
@@ -40,10 +41,11 @@ public class RecipeService {
 	 * @param recipeRepository the repository used for recipe persistence operations
 	 */
 	public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository,
-			RecipeIngredientService recipeIngredientService) {
+			RecipeIngredientService recipeIngredientService, RecipeViewService recipeViewService) {
 		this.recipeRepository = recipeRepository;
 		this.userRepository = userRepository;
 		this.recipeIngredientService = recipeIngredientService;
+		this.recipeViewService = recipeViewService;
 	}
 
 	/**
@@ -79,6 +81,7 @@ public class RecipeService {
 		recipeRepository.findByIdWithIngredients(id);
 
 		RecipeDto recipeDto = RecipeMapper.toDto(recipe);
+		recipeViewService.addView(recipe);
 		return recipeDto;
 	}
 
