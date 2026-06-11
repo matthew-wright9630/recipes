@@ -2,6 +2,7 @@ package com.matthew.recipe_backend.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.matthew.recipe_backend.dtos.RecipeDto;
@@ -11,8 +12,10 @@ import com.matthew.recipe_backend.enums.RecipeStatus;
 import com.matthew.recipe_backend.exceptions.UserNotFoundException;
 import com.matthew.recipe_backend.mappers.RecipeMapper;
 import com.matthew.recipe_backend.models.Recipe;
+import com.matthew.recipe_backend.models.RecipeView;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.repositories.RecipeRepository;
+import com.matthew.recipe_backend.repositories.RecipeViewRepository;
 import com.matthew.recipe_backend.repositories.UserRepository;
 import com.matthew.recipe_backend.validators.RecipeValidator;
 
@@ -34,6 +37,7 @@ public class RecipeService {
 	private final UserRepository userRepository;
 	private final RecipeIngredientService recipeIngredientService;
 	private final RecipeViewService recipeViewService;
+	private final RecipeViewRepository recipeViewRepository;
 
 	/**
 	 * Constructs a {@code RecipeService} with the required repository dependency.
@@ -41,11 +45,13 @@ public class RecipeService {
 	 * @param recipeRepository the repository used for recipe persistence operations
 	 */
 	public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository,
-			RecipeIngredientService recipeIngredientService, RecipeViewService recipeViewService) {
+			RecipeIngredientService recipeIngredientService, RecipeViewService recipeViewService,
+			RecipeViewRepository recipeViewRepository) {
 		this.recipeRepository = recipeRepository;
 		this.userRepository = userRepository;
 		this.recipeIngredientService = recipeIngredientService;
 		this.recipeViewService = recipeViewService;
+		this.recipeViewRepository = recipeViewRepository;
 	}
 
 	/**
@@ -91,6 +97,15 @@ public class RecipeService {
 
 		return recipeRepository.findByCreatedBy(user)
 				.stream()
+				.map(RecipeMapper::toDto)
+				.toList();
+	}
+
+	public List<RecipeDto> findRecentlyViewedRecipes(User user, int limit) {
+		return recipeViewRepository
+				.findRecentViewsByUser(user, PageRequest.of(0, limit))
+				.stream()
+				.map(RecipeView::getRecipe)
 				.map(RecipeMapper::toDto)
 				.toList();
 	}

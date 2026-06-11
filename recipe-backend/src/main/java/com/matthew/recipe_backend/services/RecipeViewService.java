@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.matthew.recipe_backend.dtos.RecipeDto;
+import com.matthew.recipe_backend.mappers.RecipeMapper;
 import com.matthew.recipe_backend.models.Recipe;
 import com.matthew.recipe_backend.models.RecipeView;
 import com.matthew.recipe_backend.models.User;
@@ -68,14 +70,6 @@ public class RecipeViewService {
 
             recipeViewRepository.save(recipeView);
         }
-    }
-
-    public List<Recipe> getRecentlyViewedRecipes(User user, int limit) {
-        return recipeViewRepository
-                .findRecentViewsByUser(user, PageRequest.of(0, limit))
-                .stream()
-                .map(RecipeView::getRecipe)
-                .toList();
     }
 
 }

@@ -52,6 +52,13 @@ public class RecipeController {
 		return ResponseEntity.ok(recipes);
 	}
 
+	@GetMapping("/history")
+	public ResponseEntity<List<RecipeDto>> getRecipeHistory(@AuthenticationPrincipal User user,
+			@RequestParam(defaultValue = "3") int limit) {
+		List<RecipeDto> recipes = recipeService.findRecentlyViewedRecipes(user, limit);
+		return ResponseEntity.ok(recipes);
+	}
+
 	@PostMapping
 	public ResponseEntity<RecipeDto> createDraftRecipe(
 			@RequestParam String name,

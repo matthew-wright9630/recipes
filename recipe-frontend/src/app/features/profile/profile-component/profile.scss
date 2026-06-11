@@ -1,22 +1,25 @@
-div {
-  flex-direction: column;
+.profile-layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: stretch;
+  min-height: 70vh;
+}
+
+.profile-sidebar {
+  width: 25%;
+  position: sticky;
+  top: 1rem;
+  align-self: stretch;
+  justify-content: space-around;
   align-items: center;
 }
 
-.profile {
-  display: flex;
-  flex-direction: column;
-  gap: 5vh;
-}
-
 .profile__header {
-  width: 100%;
   display: flex;
   flex-direction: column;
-}
-
-.profile__p {
-  margin: 1vh;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
 }
 
 .profile__img {
@@ -24,8 +27,48 @@ div {
   height: 50px;
 }
 
+.profile__p {
+  margin: 0;
+  max-width: 100%;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile__footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 50%;
+}
+
+.profile-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.card-header {
+  background: #1976d2;
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 4px 4px 0 0;
+}
+
+.card-header mat-card-title {
+  margin: 0;
+}
+
+.profile__card-title {
+  text-align: center;
+}
+
+/* recipe grids stay the same */
 .profile__recipes__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, 150px);
+  gap: 1rem;
+  justify-content: center;
 }
