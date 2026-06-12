@@ -1,5 +1,9 @@
 .spacer {
-    flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+
+mat-toolbar {
+  margin: 3% 0;
 }
 
 mat-toolbar-row {
@@ -13,6 +17,11 @@ mat-toolbar-row {
   flex-shrink: 0;
 }
 
+.header__buttons {
+  display: flex;
+  gap: 5%;
+}
+
 .search-container {
   flex: 1;
   display: flex;
@@ -21,11 +30,23 @@ mat-toolbar-row {
 }
 
 .search-field {
-  width: 80%;
+  width: 30%;
   max-width: 700px;
 }
 
 /* Removes extra bottom spacing Angular Material adds */
 ::ng-deep .mat-mdc-form-field-subscript-wrapper {
   display: none;
+}
+
+@media screen and (max-width: 950px) {
+  mat-toolbar-row {
+    flex-direction: column;
+    gap: 2vh;
+    min-height: 20vh;
+  }
+
+  .search-field {
+    width: 100%;
+  }
 }
