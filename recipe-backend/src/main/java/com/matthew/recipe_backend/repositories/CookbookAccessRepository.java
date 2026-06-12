@@ -23,4 +23,9 @@ public interface CookbookAccessRepository extends JpaRepository<CookbookAccess, 
         List<Cookbook> findCookbooksByUserAndPermissions(
                         @Param("user") User user,
                         @Param("permissions") List<CookbookPermission> permissions);
+
+        boolean existsByCookbookIdAndUserIdAndPermission(
+                        Long cookbookId,
+                        Long userId,
+                        CookbookPermission permission);
 }

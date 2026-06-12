@@ -2,6 +2,7 @@ package com.matthew.recipe_backend.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.matthew.recipe_backend.dtos.CookbookDetailsDto;
 import com.matthew.recipe_backend.dtos.CookbookDto;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.services.CookbookService;
@@ -40,6 +41,13 @@ public class CookbookController {
     public ResponseEntity<List<CookbookDto>> getAllAccessibleCookbooks(@AuthenticationPrincipal User user) {
         List<CookbookDto> cookbooks = cookbookService.findAllAccessibleCookbooks(user.getUsername());
         return ResponseEntity.ok(cookbooks);
+    }
+
+    @PostMapping
+    public ResponseEntity<CookbookDto> postCookbook(@AuthenticationPrincipal User user,
+            @RequestBody CookbookDetailsDto cookbookDto) {
+        CookbookDto cookbook = cookbookService.createCookbook(user.getUsername(), cookbookDto);
+        return ResponseEntity.ok(cookbook);
     }
 
 }

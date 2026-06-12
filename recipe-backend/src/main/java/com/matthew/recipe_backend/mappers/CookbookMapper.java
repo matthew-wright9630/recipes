@@ -9,6 +9,6 @@ public class CookbookMapper {
 
     public static CookbookDto toDto(Cookbook cookbook) {
         return new CookbookDto(
-                cookbook.getId(), cookbook.getName(), cookbook.getImageUrl());
+                cookbook.getId(), cookbook.getName(), cookbook.getDescription(), cookbook.getImageUrl());
     }
 }

@@ -1,20 +1,25 @@
 package com.matthew.recipe_backend.services;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.matthew.recipe_backend.dtos.CookbookDetailsDto;
 import com.matthew.recipe_backend.dtos.CookbookDto;
 import com.matthew.recipe_backend.enums.CookbookPermission;
 import com.matthew.recipe_backend.exceptions.UserNotFoundException;
 import com.matthew.recipe_backend.mappers.CookbookMapper;
 import com.matthew.recipe_backend.models.Cookbook;
+import com.matthew.recipe_backend.models.CookbookAccess;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.repositories.CookbookAccessRepository;
 import com.matthew.recipe_backend.repositories.CookbookRepository;
 import com.matthew.recipe_backend.repositories.UserRepository;
+import com.matthew.recipe_backend.validators.CookbookValidator;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -76,4 +81,37 @@ public class CookbookService {
                 .map(CookbookMapper::toDto)
                 .toList();
     }
+
+    @Transactional
+    public CookbookDto createCookbook(String username, CookbookDetailsDto cookbookCreationDto) {
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        Cookbook cookbook = new Cookbook(cookbookCreationDto.name(), cookbookCreationDto.description(),
+                cookbookCreationDto.imageUrl());
+        cookbookRepository.save(cookbook);
+        CookbookAccess access = new CookbookAccess(cookbook, user, CookbookPermission.OWNER, Instant.now());
+        cookbookAccessRepository.save(access);
+
+        return CookbookMapper.toDto(cookbook);
+    }
+
+    @Transactional
+    public CookbookDto updateCookbook(Long id, String username, CookbookDetailsDto cookbookDetailsDto) {
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        Cookbook foundCookbook = cookbookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
+
+        CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, id, user.getId());
+
+        foundCookbook.setName(cookbookDetailsDto.name());
+        foundCookbook.setDescription(cookbookDetailsDto.description());
+        foundCookbook.setImageUrl(cookbookDetailsDto.imageUrl());
+
+        Cookbook savedCookbook = cookbookRepository.save(foundCookbook);
+        return CookbookMapper.toDto(savedCookbook);
+    }
+
 }

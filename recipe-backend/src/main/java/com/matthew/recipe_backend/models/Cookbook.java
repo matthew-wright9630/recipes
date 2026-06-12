@@ -18,6 +18,9 @@ public class Cookbook {
 	private String name;
 
 	@Column
+	private String description;
+
+	@Column
 	private boolean deleted;
 
 	@Column(name = "created_at")
@@ -29,11 +32,20 @@ public class Cookbook {
 	public Cookbook() {
 	}
 
-	public Cookbook(String name, boolean deleted, Instant createdAt, String imageUrl) {
+	public Cookbook(String name, String description, boolean deleted, Instant createdAt, String imageUrl) {
 		this.name = name;
+		this.description = description;
 		this.deleted = deleted;
 		this.createdAt = createdAt;
 		this.imageUrl = imageUrl;
+	}
+
+	public Cookbook(String name, String description, String imageUrl) {
+		this.name = name;
+		this.description = description;
+		this.imageUrl = imageUrl;
+		this.deleted = false;
+		this.createdAt = Instant.now();
 	}
 
 	public long getId() {
@@ -50,6 +62,14 @@ public class Cookbook {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public boolean isDeleted() {
@@ -100,7 +120,8 @@ public class Cookbook {
 
 	@Override
 	public String toString() {
-		return "Cookbook [id=" + id + ", name=" + name + ", deleted=" + deleted + ", createdAt=" + createdAt
+		return "Cookbook [id=" + id + ", name=" + name + ", description" + description + ", deleted=" + deleted
+				+ ", createdAt=" + createdAt
 				+ ", imageUrl" + imageUrl + "]";
 	}
 
