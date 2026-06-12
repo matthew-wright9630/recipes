@@ -65,10 +65,23 @@
   text-align: center;
 }
 
-/* recipe grids stay the same */
 .profile__recipes__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 150px);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 33%));
   gap: 1rem;
   justify-content: center;
+}
+
+@media screen and (max-width: 650px) {
+  .profile-layout {
+    flex-direction: column;
+    gap: 3%;
+  }
+
+  .profile-sidebar {
+    width: 100%;
+    position: relative;
+    top: 0;
+    margin-bottom: 5%;
+  }
 }
