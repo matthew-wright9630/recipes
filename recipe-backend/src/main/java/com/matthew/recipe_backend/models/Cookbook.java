@@ -4,11 +4,8 @@ import java.time.Instant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Cookbook {
@@ -20,24 +17,23 @@ public class Cookbook {
 	@Column
 	private String name;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "owner_id", nullable = false)
-	private User owner;
-
 	@Column
 	private boolean deleted;
 
 	@Column(name = "created_at")
 	private Instant createdAt;
 
+	@Column(name = "image_url")
+	private String imageUrl;
+
 	public Cookbook() {
 	}
 
-	public Cookbook(String name, User owner, boolean deleted, Instant createdAt) {
+	public Cookbook(String name, boolean deleted, Instant createdAt, String imageUrl) {
 		this.name = name;
-		this.owner = owner;
 		this.deleted = deleted;
 		this.createdAt = createdAt;
+		this.imageUrl = imageUrl;
 	}
 
 	public long getId() {
@@ -56,14 +52,6 @@ public class Cookbook {
 		this.name = name;
 	}
 
-	public User getOwner() {
-		return owner;
-	}
-
-	public void setOwner(User owner) {
-		this.owner = owner;
-	}
-
 	public boolean isDeleted() {
 		return deleted;
 	}
@@ -78,6 +66,14 @@ public class Cookbook {
 
 	public void setCreatedAt(Instant createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 
 	@Override
@@ -104,7 +100,8 @@ public class Cookbook {
 
 	@Override
 	public String toString() {
-		return "Cookbook [id=" + id + ", name=" + name + ", deleted=" + deleted + ", createdAt=" + createdAt + "]";
+		return "Cookbook [id=" + id + ", name=" + name + ", deleted=" + deleted + ", createdAt=" + createdAt
+				+ ", imageUrl" + imageUrl + "]";
 	}
 
 }
