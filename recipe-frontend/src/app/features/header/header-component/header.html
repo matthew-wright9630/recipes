@@ -1,28 +1,25 @@
 <mat-toolbar>
-  <mat-toolbar-row>
-    <div class="logo-container" fxLayout="row" fxLayoutAlign="start center">
-      <!-- <img
-        src="../../../../../public/favicon.ico"
-        alt="The Wright Recipe List"
-      /> -->
-      <span class="logo-text">The Wright Recipe List</span>
-    </div>
-    <!-- <span class="spacer"></span> -->
-    <div class="header__buttons">
-      <a mat-raised-button routerLink="/" routerLinkActive="active">Homepage</a>
-      @if (this.authState.currentUser() === null) {
-      <button mat-raised-button (click)="openLogin()">Login</button>
-      } @else {
-      <a mat-raised-button routerLink="/profile" routerLinkActive="active"
-        >Profile</a
-      >
-      <button mat-raised-button (click)="logout()">Sign Out</button>
-      }
-    </div>
-    <mat-form-field appearance="outline" class="search-field">
-      <mat-label>Search recipes</mat-label>
-      <input matInput placeholder="Chicken Alfredo..." />
-      <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
-  </mat-toolbar-row>
+  <div class="logo-container">
+    <img src="/favicon.io" alt="Logo" />
+  </div>
+
+  <span class="spacer"></span>
+
+  <div class="header__buttons desktop-nav">
+    <button mat-raised-button routerLink="/">Browse Recipes</button>
+    <button mat-raised-button routerLink="/cookbooks">Cookbooks</button>
+    <button mat-raised-button routerLink="/recipes">My Recipes</button>
+    <button mat-raised-button routerLink="/profile">Profile</button>
+  </div>
+
+  <button mat-icon-button class="mobile-menu" [matMenuTriggerFor]="menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item routerLink="/">Browse Recipes</button>
+    <button mat-menu-item routerLink="/cookbooks">Cookbooks</button>
+    <button mat-menu-item routerLink="/recipes">Recipes</button>
+    <button mat-menu-item routerLink="/profile">Profile</button>
+  </mat-menu>
 </mat-toolbar>

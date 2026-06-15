@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { HeaderService } from '../header.service';
 import { MatDialog } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
 import { LoginDialogComponent } from '../../../shared/dialogs/login-dialog/login-dialog';
 import { AuthStateService } from '../../../shared/services/auth-state.service';
 
@@ -19,6 +20,7 @@ import { AuthStateService } from '../../../shared/services/auth-state.service';
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
+    MatMenuModule,
   ],
   templateUrl: './header.html',
   styleUrl: './header.scss',
@@ -38,10 +40,6 @@ export class HeaderComponent {
       maxWidth: '95vw',
       autoFocus: false,
     });
-  }
-
-  logout() {
-    this.authState.logout();
   }
 
   // employeeUser = signal(false);
