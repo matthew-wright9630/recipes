@@ -1,7 +1,6 @@
 import { RecipeDirection } from './recipe-direction';
 import { RecipeIngredient } from './recipe-ingredient';
 import { RecipeStatus } from './recipe-status';
-import { User } from './user';
 
 export interface Recipe {
   id: number;
