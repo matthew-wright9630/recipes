@@ -5,9 +5,6 @@ import { MatCardModule } from '@angular/material/card';
 import { RecipeService } from '../recipe.service';
 import { Recipe } from '../../../shared/models/recipe';
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
-import { ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import { LoginDialogComponent } from '../../../shared/dialogs/login-dialog/login-dialog';
 
 @Component({
   selector: 'app-recipe-list',
@@ -18,11 +15,7 @@ import { LoginDialogComponent } from '../../../shared/dialogs/login-dialog/login
 export class RecipeListComponent {
   recipeList = signal<Recipe[]>([]);
 
-  constructor(
-    private recipeService: RecipeService,
-    private route: ActivatedRoute,
-    private dialog: MatDialog,
-  ) {
+  constructor(private recipeService: RecipeService) {
     effect(() => {
       this.recipeService.getAllRecipes().subscribe((recipes) => {
         this.recipeList.set(recipes);

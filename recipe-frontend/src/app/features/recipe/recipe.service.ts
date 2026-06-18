@@ -29,7 +29,7 @@ export class RecipeService {
   getRecipesByUser() {
     return this.http
       .get<Recipe[]>(this.baseURL + '/me', { observe: 'response' })
-      .pipe(map((res) => res.body));
+      .pipe(map((res) => res.body || []));
   }
 
   getRecipeViewHistoryByUser(limit: number) {

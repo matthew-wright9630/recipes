@@ -33,7 +33,7 @@ public class RecipeMapper {
 		return new RecipeDto(recipe.getId(), recipe.getName(), recipe.getDescription(), recipe.getNotes(),
 				recipe.getServings(),
 				recipe.getPrepTime(), recipe.getCookTime(), recipe.getVersion(),
-				recipe.getStatus(), directionsDtos, ingredientDtos);
+				recipe.getStatus(), directionsDtos, ingredientDtos, recipe.getCreatedAt());
 	}
 
 	private static RecipeIngredientDto toIngredientDto(RecipeIngredient ri) {

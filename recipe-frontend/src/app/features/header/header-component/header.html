@@ -6,20 +6,36 @@
   <span class="spacer"></span>
 
   <div class="header__buttons desktop-nav">
+    @if(this.authState.currentUser()) {
     <button mat-raised-button routerLink="/">Browse Recipes</button>
     <button mat-raised-button routerLink="/cookbooks">Cookbooks</button>
     <button mat-raised-button routerLink="/recipes">My Recipes</button>
     <button mat-raised-button routerLink="/profile">Profile</button>
+    } @else {
+    <button mat-raised-button routerLink="/">Browse Recipes</button>
+    <button mat-raised-button (click)="openLogin()">Login</button>
+    }
   </div>
+
+  @if(this.authState.currentUser()) {
 
   <button mat-icon-button class="mobile-menu" [matMenuTriggerFor]="menu">
     <mat-icon>menu</mat-icon>
   </button>
-
   <mat-menu #menu="matMenu">
     <button mat-menu-item routerLink="/">Browse Recipes</button>
     <button mat-menu-item routerLink="/cookbooks">Cookbooks</button>
     <button mat-menu-item routerLink="/recipes">Recipes</button>
     <button mat-menu-item routerLink="/profile">Profile</button>
   </mat-menu>
+  } @else {
+
+  <button mat-icon-button class="mobile-menu" [matMenuTriggerFor]="menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item routerLink="/">Browse Recipes</button>
+    <button mat-menu-item (click)="openLogin()">Login</button>
+  </mat-menu>
+  }
 </mat-toolbar>

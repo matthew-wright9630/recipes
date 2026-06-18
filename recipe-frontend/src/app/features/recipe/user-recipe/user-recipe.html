@@ -1,0 +1,34 @@
+<article>
+  <div class="user-recipe-list">
+    <div class="user-recipe__section">
+      <h3 class="user-recipe-list__title">Draft Recipes:</h3>
+      <div class="user-recipe-list__grid">
+        @for (recipe of draftRecipes(); track $index) {
+        <app-recipe [recipe]="recipe"></app-recipe>
+        } @empty {
+        <p class="user-recipe-list__empty">No recipes in draft</p>
+        }
+      </div>
+    </div>
+    <div class="user-recipe__section">
+      <h3 class="user-recipe-list__title">Published Recipes:</h3>
+      <div class="user-recipe-list__grid">
+        @for (recipe of publishedRecipes(); track $index) {
+        <app-recipe [recipe]="recipe"></app-recipe>
+        } @empty {
+        <p class="user-recipe-list__empty">No recipes published.</p>
+        }
+      </div>
+    </div>
+    <div class="user-recipe__section">
+      <h3 class="user-recipe-list__title">Archived Recipes:</h3>
+      <div class="user-recipe-list__grid">
+        @for (recipe of archivedRecipes(); track $index) {
+        <app-recipe [recipe]="recipe"></app-recipe>
+        } @empty {
+        <p class="user-recipe-list__empty">No recipes archived.</p>
+        }
+      </div>
+    </div>
+  </div>
+</article>
