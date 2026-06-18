@@ -7,6 +7,7 @@ public class UserMapper {
 
     public static UserDto toDto(User user) {
         return new UserDto(
+                user.getId(),
                 user.getDisplayUsername(),
                 user.getEmail(),
                 user.getRole().name(), user.getAvatarUrl());

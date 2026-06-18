@@ -12,6 +12,16 @@
     >
       Open Full Recipe
     </button>
+    @if(this.isOwner()) {
+    <button
+      mat-raised-button
+      color="primary"
+      mat-dialog-close
+      [routerLink]="['/recipe', recipe.id]"
+    >
+      Edit Recipe
+    </button>
+    }
   </mat-dialog-actions>
 </div>
 

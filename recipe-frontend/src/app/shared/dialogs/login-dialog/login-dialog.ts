@@ -67,6 +67,7 @@ export class LoginDialogComponent {
     this.authService.login(email, password).subscribe({
       next: (response) => {
         const user: User = {
+          id: response.id,
           email: response.email,
           username: response.username,
           userRole: response.role,
