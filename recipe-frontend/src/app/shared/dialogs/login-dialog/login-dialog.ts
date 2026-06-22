@@ -7,7 +7,6 @@ import {
   Validators,
 } from '@angular/forms';
 import {
-  MatDialogActions,
   MatDialogContent,
   MatDialogModule,
   MatDialogRef,
@@ -20,7 +19,6 @@ import {
   MatInput,
   MatLabel,
 } from '@angular/material/input';
-import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AuthStateService } from '../../services/auth-state.service';
 import { User } from '../../models/user';
