@@ -32,6 +32,7 @@ export class RecipeDetail {
 
       this.recipeService.getRecipeById(id).subscribe((recipe) => {
         recipe?.recipeIngredients.sort((a, b) => a.sortOrder - b.sortOrder);
+        recipe?.recipeDirections.sort((a, b) => a.stepNumber - b.stepNumber);
         this.recipe.set(recipe);
       });
     });

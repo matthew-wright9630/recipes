@@ -13,19 +13,29 @@
   gap: 12px;
 }
 
+.full-width {
+  width: 100%;
+}
+
 .row {
   display: flex;
   gap: 12px;
 }
 
-.full-width {
-  width: 100%;
-}
-
-.ingredient-row,
-.direction-row {
+.ingredient-row {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 2fr;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 1vw;
+  margin-bottom: 5vh;
+  background-color: rgba(255, 255, 242, 0.8);
+}
+
+@media screen and (max-width: 700px) {
+  .ingredient-row {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+
+  .ingredient__notes {
+    grid-column: 1 / -1;
+  }
 }

@@ -2,10 +2,11 @@ import { Component, computed, effect, signal } from '@angular/core';
 import { Recipe } from '../../../shared/models/recipe';
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
 import { RecipeService } from '../../../shared/services/recipe.service';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-user-recipe',
-  imports: [RecipeComponent],
+  imports: [RecipeComponent, MatIcon],
   templateUrl: './user-recipe.html',
   styleUrl: './user-recipe.scss',
 })

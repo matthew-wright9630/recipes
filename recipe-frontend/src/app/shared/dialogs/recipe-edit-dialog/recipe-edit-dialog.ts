@@ -74,7 +74,10 @@ export class RecipeEditDialog {
   });
 
   onCancel(): void {
-    sessionStorage.setItem('recipe-draft', JSON.stringify(this.form.value));
+    sessionStorage.setItem(
+      `recipe-draft-${this.data.id}`,
+      JSON.stringify(this.form.value),
+    );
     this.dialogRef.close();
   }
 
@@ -122,8 +125,6 @@ export class RecipeEditDialog {
       ...this.data,
       ...this.form.getRawValue(),
     } as Recipe;
-
-    console.log(this.data, this.data.recipeDirections);
 
     this.recipeService.updateRecipe(updated).subscribe({
       next: (result) => {

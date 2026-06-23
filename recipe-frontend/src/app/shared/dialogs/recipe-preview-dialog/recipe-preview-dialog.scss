@@ -1,29 +1,30 @@
 .recipe-dialog__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 2vw;
 }
 
 mat-dialog-actions {
-    display: flex;
-    gap: 1vw;
+  display: flex;
+  gap: 1vw;
 }
 
 button {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .recipe-dialog__description {
-    display: flex;
-    flex-direction: column;
-    gap: 1vh;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  align-items: center;
 }
 
 .recipe-dialog__img {
-    width: 70%;
+  width: 70%;
 }
 
 .recipe-dialog__p {
-    margin: 0;
+  margin: 0;
 }
