@@ -27,32 +27,39 @@ public class RecipeDirectionController {
         this.recipeDirectionService = recipeDirectionService;
     }
 
-    @PostMapping
-    public ResponseEntity<RecipeDto> createRecipeDirection(@PathVariable Long recipeId,
-            @RequestBody CreateDirectionDto newDirection) {
-        RecipeDto recipe = recipeDirectionService.addRecipeDirection(recipeId, newDirection);
-        return ResponseEntity.ok(recipe);
-    }
+    // @PostMapping
+    // public ResponseEntity<RecipeDto> createRecipeDirection(@PathVariable Long
+    // recipeId,
+    // @RequestBody CreateDirectionDto newDirection) {
+    // RecipeDto recipe = recipeDirectionService.addRecipeDirection(recipeId,
+    // newDirection);
+    // return ResponseEntity.ok(recipe);
+    // }
 
-    @PutMapping("/{directionId}")
-    public ResponseEntity<RecipeDto> updateRecipeDirection(@PathVariable Long recipeId, @PathVariable Long directionId,
-            @RequestBody UpdateDirectionDto description) {
+    // @PutMapping("/{directionId}")
+    // public ResponseEntity<RecipeDto> updateRecipeDirection(@PathVariable Long
+    // recipeId, @PathVariable Long directionId,
+    // @RequestBody UpdateDirectionDto description) {
 
-        RecipeDto recipe = recipeDirectionService.editRecipeDirection(recipeId, directionId, description);
+    // RecipeDto recipe = recipeDirectionService.editRecipeDirection(recipeId,
+    // directionId, description);
 
-        return ResponseEntity.ok(recipe);
-    }
+    // return ResponseEntity.ok(recipe);
+    // }
 
-    @DeleteMapping("/{directionId}")
-    public ResponseEntity<Object> deleteRecipeDirection(@PathVariable Long recipeId, @PathVariable Long directionId) {
-        recipeDirectionService.deleteRecipeDirection(recipeId, directionId);
-        return ResponseEntity.noContent().build();
-    }
+    // @DeleteMapping("/{directionId}")
+    // public ResponseEntity<Object> deleteRecipeDirection(@PathVariable Long
+    // recipeId, @PathVariable Long directionId) {
+    // recipeDirectionService.deleteRecipeDirection(recipeId, directionId);
+    // return ResponseEntity.noContent().build();
+    // }
 
-    @PutMapping("/reorder")
-    public ResponseEntity<RecipeDto> reorderDirections(@PathVariable Long recipeId,
-            @RequestBody List<ReorderDirectionDto> request) {
-        RecipeDto recipe = recipeDirectionService.reorderDirections(recipeId, request);
-        return ResponseEntity.ok(recipe);
-    }
+    // @PutMapping("/reorder")
+    // public ResponseEntity<RecipeDto> reorderDirections(@PathVariable Long
+    // recipeId,
+    // @RequestBody List<ReorderDirectionDto> request) {
+    // RecipeDto recipe = recipeDirectionService.reorderDirections(recipeId,
+    // request);
+    // return ResponseEntity.ok(recipe);
+    // }
 }

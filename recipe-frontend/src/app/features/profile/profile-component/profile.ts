@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, effect, inject, signal } from '@angular/core';
 import { Recipe } from '../../../shared/models/recipe';
-import { RecipeService } from '../../recipe/recipe.service';
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
 import { AuthStateService } from '../../../shared/services/auth-state.service';
 import { MatCard, MatCardTitle } from '@angular/material/card';
 import { MatDivider } from '@angular/material/divider';
 import { MatButton } from '@angular/material/button';
+import { RecipeService } from '../../../shared/services/recipe.service';
 
 @Component({
   selector: 'app-profile',

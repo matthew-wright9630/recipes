@@ -14,10 +14,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
-import java.util.Set;
 
 import com.matthew.recipe_backend.enums.RecipeStatus;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -61,14 +61,14 @@ public class Recipe {
 	private RecipeStatus status;
 
 	@OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<RecipeDirection> recipeDirections;
+	private List<RecipeDirection> recipeDirections;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_recipe_id")
 	private Recipe parentRecipe;
 
-	@OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
-	private Set<RecipeIngredient> recipeIngredients;
+	@OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<RecipeIngredient> recipeIngredients;
 
 	protected Recipe() { // for JPA use
 
@@ -91,7 +91,7 @@ public class Recipe {
 
 	public Recipe(String name, String description, String notes, Integer servings, Integer prepTime, Integer cookTime,
 			User createdBy, Integer version, OffsetDateTime createdAt, RecipeStatus status,
-			Set<RecipeDirection> recipeDirections, Set<RecipeIngredient> recipeIngredients) {
+			List<RecipeDirection> recipeDirections, List<RecipeIngredient> recipeIngredients) {
 		this.name = name;
 		this.description = description;
 		this.notes = notes;
@@ -194,11 +194,11 @@ public class Recipe {
 		this.createdAt = createdAt;
 	}
 
-	public Set<RecipeDirection> getRecipeDirections() {
+	public List<RecipeDirection> getRecipeDirections() {
 		return recipeDirections;
 	}
 
-	public void setRecipeDirections(Set<RecipeDirection> recipeDirections) {
+	public void setRecipeDirections(List<RecipeDirection> recipeDirections) {
 		this.recipeDirections = recipeDirections;
 	}
 
@@ -210,11 +210,11 @@ public class Recipe {
 		this.parentRecipe = parentRecipe;
 	}
 
-	public Set<RecipeIngredient> getRecipeIngredients() {
+	public List<RecipeIngredient> getRecipeIngredients() {
 		return recipeIngredients;
 	}
 
-	public void setRecipeIngredients(Set<RecipeIngredient> recipeIngredients) {
+	public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
 		this.recipeIngredients = recipeIngredients;
 	}
 

@@ -3,6 +3,7 @@ package com.matthew.recipe_backend.dtos;
 import java.util.List;
 
 public record RecipeDirectionsDto(
-        String description,
-        Integer stepNumber) {
+
+                String description,
+                Integer stepNumber) {
 }

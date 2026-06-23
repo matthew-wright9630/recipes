@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.matthew.recipe_backend.dtos.CreateDirectionDto;
+import com.matthew.recipe_backend.dtos.RecipeDirectionsDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.ReorderDirectionDto;
 import com.matthew.recipe_backend.dtos.UpdateDirectionDto;
@@ -41,86 +42,95 @@ public class RecipeDirectionService {
         this.recipeIngredientService = recipeIngredientService;
     }
 
-    public RecipeDto addRecipeDirection(Long recipeId, CreateDirectionDto newDirection) {
-        Recipe recipe = recipeRepository.findByIdWithDirections(recipeId)
-                .orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
-        RecipeValidator.validateDraftStatus(recipe);
+    // public RecipeDto addRecipeDirection(Long recipeId, CreateDirectionDto
+    // newDirection) {
+    // Recipe recipe = recipeRepository.findByIdWithDirections(recipeId)
+    // .orElseThrow(() -> new EntityNotFoundException("Recipe not found with the
+    // provided id"));
+    // RecipeValidator.validateDraftStatus(recipe);
 
-        Long userId = findUserId();
-        RecipeValidator.recipeBelongsToUser(recipe, userId);
+    // Long userId = findUserId();
+    // RecipeValidator.recipeBelongsToUser(recipe, userId);
 
-        RecipeDirection recipeDirection = new RecipeDirection();
+    // RecipeDirection recipeDirection = new RecipeDirection();
 
-        recipeDirection.setRecipe(recipe);
-        recipeDirection.setDescription(newDirection.description());
-        recipeDirection.setStepNumber(newDirection.stepNumber());
+    // recipeDirection.setRecipe(recipe);
+    // recipeDirection.setDescription(newDirection.description());
+    // recipeDirection.setStepNumber(newDirection.stepNumber());
 
-        RecipeDirectionValidator.validateRecipeDirection(recipeDirection);
-        recipeDirectionRepository.save(recipeDirection);
+    // RecipeDirectionValidator.validateRecipeDirection(recipeDirection);
+    // recipeDirectionRepository.save(recipeDirection);
 
-        recipe.getRecipeDirections().add(recipeDirection);
+    // recipe.getRecipeDirections().add(recipeDirection);
 
-        recipeIngredientService.computeAndSaveSortOrder(recipe);
+    // recipeIngredientService.computeAndSaveSortOrder(recipe);
 
-        return RecipeMapper.toDto(recipe);
-    }
+    // return RecipeMapper.toDto(recipe);
+    // }
 
-    public RecipeDto editRecipeDirection(Long recipeId, Long directionId, UpdateDirectionDto updatedDirection) {
-        Recipe recipe = recipeRepository.findByIdWithDirections(recipeId)
-                .orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
-        RecipeValidator.validateDraftStatus(recipe);
+    // public RecipeDto editRecipeDirection(Long recipeId, Long directionId,
+    // UpdateDirectionDto updatedDirection) {
+    // Recipe recipe = recipeRepository.findByIdWithDirections(recipeId)
+    // .orElseThrow(() -> new EntityNotFoundException("Recipe not found with the
+    // provided id"));
+    // RecipeValidator.validateDraftStatus(recipe);
 
-        Long userId = findUserId();
-        RecipeValidator.recipeBelongsToUser(recipe, userId);
+    // Long userId = findUserId();
+    // RecipeValidator.recipeBelongsToUser(recipe, userId);
 
-        RecipeDirection recipeDirection = recipeDirectionRepository.findById(directionId)
-                .orElseThrow(() -> new EntityNotFoundException("Recipe direction not found with the provided id"));
+    // RecipeDirection recipeDirection =
+    // recipeDirectionRepository.findById(directionId)
+    // .orElseThrow(() -> new EntityNotFoundException("Recipe direction not found
+    // with the provided id"));
 
-        recipeDirection.setDescription(updatedDirection.description());
+    // recipeDirection.setDescription(updatedDirection.description());
 
-        RecipeDirectionValidator.validateRecipeDirection(recipeDirection);
-        recipeDirectionRepository.save(recipeDirection);
+    // RecipeDirectionValidator.validateRecipeDirection(recipeDirection);
+    // recipeDirectionRepository.save(recipeDirection);
 
-        recipeIngredientService.computeAndSaveSortOrder(recipe);
+    // recipeIngredientService.computeAndSaveSortOrder(recipe);
 
-        return RecipeMapper.toDto(recipe);
-    }
+    // return RecipeMapper.toDto(recipe);
+    // }
 
-    public void deleteRecipeDirection(Long recipeId, Long directionId) {
-        Recipe recipe = recipeRepository.findByIdWithDirections(recipeId)
-                .orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
-        RecipeValidator.validateDraftStatus(recipe);
+    // public void deleteRecipeDirection(Long recipeId, Long directionId) {
+    // Recipe recipe = recipeRepository.findByIdWithDirections(recipeId)
+    // .orElseThrow(() -> new EntityNotFoundException("Recipe not found with the
+    // provided id"));
+    // RecipeValidator.validateDraftStatus(recipe);
 
-        Long userId = findUserId();
-        RecipeValidator.recipeBelongsToUser(recipe, userId);
+    // Long userId = findUserId();
+    // RecipeValidator.recipeBelongsToUser(recipe, userId);
 
-        recipe.getRecipeDirections().removeIf(rd -> rd.getId().equals(directionId));
+    // recipe.getRecipeDirections().removeIf(rd -> rd.getId().equals(directionId));
 
-        recipeIngredientService.computeAndSaveSortOrder(recipe);
+    // recipeIngredientService.computeAndSaveSortOrder(recipe);
 
-        recipeRepository.save(recipe);
-    }
+    // recipeRepository.save(recipe);
+    // }
 
-    public RecipeDto reorderDirections(Long recipeId, List<ReorderDirectionDto> request) {
-        RecipeDirectionValidator.validateReorder(request);
-        Recipe recipe = recipeRepository.findByIdWithDirections(recipeId)
-                .orElseThrow(() -> new EntityNotFoundException("Recipe not found"));
+    // public RecipeDto reorderDirections(Long recipeId, List<ReorderDirectionDto>
+    // request) {
+    // RecipeDirectionValidator.validateReorder(request);
+    // Recipe recipe = recipeRepository.findByIdWithDirections(recipeId)
+    // .orElseThrow(() -> new EntityNotFoundException("Recipe not found"));
 
-        Map<Long, Integer> reorderMap = request.stream()
-                .collect(Collectors.toMap(ReorderDirectionDto::directionId, ReorderDirectionDto::stepNumber));
+    // Map<Long, Integer> reorderMap = request.stream()
+    // .collect(Collectors.toMap(ReorderDirectionDto::directionId,
+    // ReorderDirectionDto::stepNumber));
 
-        recipe.getRecipeDirections().forEach(rd -> {
-            if (reorderMap.containsKey(rd.getId())) {
-                rd.setStepNumber(reorderMap.get(rd.getId()));
-            }
-        });
+    // recipe.getRecipeDirections().forEach(rd -> {
+    // if (reorderMap.containsKey(rd.getId())) {
+    // rd.setStepNumber(reorderMap.get(rd.getId()));
+    // }
+    // });
 
-        Recipe saved = recipeRepository.save(recipe);
+    // Recipe saved = recipeRepository.save(recipe);
 
-        recipeIngredientService.computeAndSaveSortOrder(recipe);
+    // recipeIngredientService.computeAndSaveSortOrder(recipe);
 
-        return RecipeMapper.toDto(saved);
-    }
+    // return RecipeMapper.toDto(saved);
+    // }
 
     public Long findUserId() {
         String username = SecurityContextHolder.getContext()

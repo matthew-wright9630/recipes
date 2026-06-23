@@ -1,7 +1,7 @@
 import { Component, computed, effect, signal } from '@angular/core';
 import { Recipe } from '../../../shared/models/recipe';
-import { RecipeService } from '../recipe.service';
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
+import { RecipeService } from '../../../shared/services/recipe.service';
 
 @Component({
   selector: 'app-user-recipe',

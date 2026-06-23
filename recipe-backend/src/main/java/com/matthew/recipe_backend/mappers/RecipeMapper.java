@@ -16,7 +16,7 @@ public class RecipeMapper {
 		List<RecipeIngredientDto> ingredientDtos = recipe.getRecipeIngredients() == null ? Collections.emptyList()
 				: recipe.getRecipeIngredients()
 						.stream()
-						.map(ri -> new RecipeIngredientDto(ri.getIngredient().getId(), ri.getIngredient().getName(),
+						.map(ri -> new RecipeIngredientDto(ri.getIngredient().getName(),
 								ri.getQuantity(),
 								ri.getUnit(),
 								ri.getNotes(),
@@ -41,7 +41,6 @@ public class RecipeMapper {
 		if (ri == null)
 			return null;
 		return new RecipeIngredientDto(
-				ri.getIngredient().getId(),
 				ri.getIngredient().getName(),
 				ri.getQuantity(),
 				ri.getUnit(),

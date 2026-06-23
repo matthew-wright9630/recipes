@@ -38,4 +38,10 @@ export class RecipeService {
       .get<Recipe[]>(this.baseURL + '/history', { observe: 'response', params })
       .pipe(map((res) => res.body));
   }
+
+  updateRecipe(recipe: Recipe) {
+    return this.http.put<Recipe>(this.baseURL + '/' + recipe.id, recipe, {
+      observe: 'response',
+    });
+  }
 }

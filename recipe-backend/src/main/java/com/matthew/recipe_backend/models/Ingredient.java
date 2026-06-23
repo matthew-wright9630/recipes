@@ -26,6 +26,9 @@ public class Ingredient {
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 
+	@Column(name = "normalized_name")
+	private String normalizedName;
+
 	@OneToMany(mappedBy = "ingredient")
 	private Set<IngredientNutritionMap> nutritionMaps;
 
@@ -80,6 +83,14 @@ public class Ingredient {
 		this.recipeIngredients = recipeIngredients;
 	}
 
+	public String getNormalizedName() {
+		return normalizedName;
+	}
+
+	public void setNormalizedName(String normalizedName) {
+		this.normalizedName = normalizedName;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -100,8 +111,7 @@ public class Ingredient {
 		if (id == 0) {
 			if (other.id != 0)
 				return false;
-		}
-		else if (id != other.id)
+		} else if (id != other.id)
 			return false;
 		return true;
 	}

@@ -4,6 +4,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
@@ -11,22 +14,19 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import com.matthew.recipe_backend.keys.RecipeIngredientKey;
-
 @Entity
 @Table(name = "recipe_ingredients")
 public class RecipeIngredient {
 
-	@EmbeddedId
-	private RecipeIngredientKey id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@MapsId("recipeId")
+	@ManyToOne
 	@JoinColumn(name = "recipe_id")
 	private Recipe recipe;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@MapsId("ingredientId")
+	@ManyToOne
 	@JoinColumn(name = "ingredient_id")
 	private Ingredient ingredient;
 
@@ -50,16 +50,13 @@ public class RecipeIngredient {
 		this.ingredient = ingredient;
 		this.quantity = quantity;
 		this.unit = unit;
-		if (recipe != null && ingredient != null) {
-			this.id = new RecipeIngredientKey((Long) recipe.getId(), (Long) ingredient.getId());
-		}
 	}
 
-	public RecipeIngredientKey getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(RecipeIngredientKey id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
