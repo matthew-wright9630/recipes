@@ -1,3 +1,7 @@
+.edit-recipe-dialog__title {
+  margin: 2vh 3vw 0;
+}
+
 .dialog-content {
   display: flex;
   flex-direction: column;
@@ -28,6 +32,10 @@
   gap: 1vw;
   margin-bottom: 5vh;
   background-color: rgba(255, 255, 242, 0.8);
+}
+
+.error {
+  color: #ba1a1a;
 }
 
 @media screen and (max-width: 700px) {

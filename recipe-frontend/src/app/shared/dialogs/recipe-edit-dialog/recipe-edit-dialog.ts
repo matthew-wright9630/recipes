@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import {
+  AbstractControl,
   FormArray,
   FormBuilder,
   ReactiveFormsModule,
@@ -18,6 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-recipe-edit-dialog',
@@ -46,9 +48,9 @@ export class RecipeEditDialog {
       [Validators.minLength(2), Validators.required],
     ],
     notes: [this.data.notes],
-    servings: [this.data.servings, [Validators.min(1), Validators.required]],
-    prepTime: [this.data.prepTime, [Validators.min(0), Validators.required]],
-    cookTime: [this.data.cookTime, [Validators.min(0), Validators.required]],
+    servings: [this.data.servings],
+    prepTime: [this.data.prepTime],
+    cookTime: [this.data.cookTime],
     status: [this.data.status, Validators.required],
     recipeIngredients: this.fb.array(
       [...this.data.recipeIngredients]
@@ -72,6 +74,67 @@ export class RecipeEditDialog {
         ),
     ),
   });
+
+  private readonly publishValidators = {
+    servings: Validators.min(1),
+    cookTime: Validators.min(0),
+    prepTime: Validators.min(0),
+  };
+
+  ngOnInit(): void {
+    this.updateValidators(this.data.status);
+
+    this.form.get('status')?.valueChanges.subscribe((status) => {
+      if (status) {
+        this.updateValidators(status);
+      }
+    });
+
+    this.form.valueChanges.pipe(debounceTime(10000)).subscribe(() => {
+      sessionStorage.setItem(
+        `recipe-draft-${this.data.id}`,
+        JSON.stringify(this.form.getRawValue()),
+      );
+    });
+  }
+
+  private updateValidators(status: RecipeStatus): void {
+    const ingredientsArray = this.form.controls.recipeIngredients;
+    const directionsArray = this.form.controls.recipeDirections;
+    const servingsControl = this.form.get('servings');
+    const cookTimeControl = this.form.get('cookTime');
+    const prepTimeControl = this.form.get('prepTime');
+    const nameControl = this.form.get('name');
+    const descriptionControl = this.form.get('description');
+
+    if (status === RecipeStatus.PUBLISHED) {
+      nameControl?.addValidators(Validators.required);
+      descriptionControl?.addValidators(Validators.required);
+      servingsControl?.addValidators(this.publishValidators.servings);
+      cookTimeControl?.addValidators(this.publishValidators.cookTime);
+      prepTimeControl?.addValidators(this.publishValidators.prepTime);
+      ingredientsArray.addValidators(minLengthArray(1));
+      directionsArray.addValidators(minLengthArray(1));
+      this.form.markAllAsTouched();
+    } else {
+      nameControl?.removeValidators(Validators.required);
+      descriptionControl?.removeValidators(Validators.required);
+      servingsControl?.removeValidators(this.publishValidators.servings);
+      cookTimeControl?.removeValidators(this.publishValidators.cookTime);
+      prepTimeControl?.removeValidators(this.publishValidators.prepTime);
+      ingredientsArray.clearValidators();
+      directionsArray.clearValidators();
+    }
+
+    nameControl?.updateValueAndValidity();
+    descriptionControl?.updateValueAndValidity();
+    servingsControl?.updateValueAndValidity();
+    cookTimeControl?.updateValueAndValidity();
+    prepTimeControl?.updateValueAndValidity();
+    ingredientsArray.updateValueAndValidity();
+    directionsArray.updateValueAndValidity();
+    this.form.updateValueAndValidity();
+  }
 
   onCancel(): void {
     sessionStorage.setItem(
@@ -136,4 +199,12 @@ export class RecipeEditDialog {
       },
     });
   }
+}
+
+// helper function
+function minLengthArray(min: number) {
+  return (control: AbstractControl) => {
+    const array = control as FormArray;
+    return array.length >= min ? null : { minLengthArray: true };
+  };
 }
