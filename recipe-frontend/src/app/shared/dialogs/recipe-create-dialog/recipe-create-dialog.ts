@@ -5,7 +5,7 @@ import {
   MatDialogContent,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { RecipeService } from '../../services/recipe.service';
+import { RecipeService } from '../../services/recipe-service/recipe.service';
 import { Recipe } from '../../models/recipe';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';

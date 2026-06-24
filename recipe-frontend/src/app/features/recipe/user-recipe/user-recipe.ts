@@ -1,7 +1,7 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Recipe } from '../../../shared/models/recipe';
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
-import { RecipeService } from '../../../shared/services/recipe.service';
+import { RecipeService } from '../../../shared/services/recipe-service/recipe.service';
 import { MatIcon } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { RecipeCreateDialog } from '../../../shared/dialogs/recipe-create-dialog/recipe-create-dialog';

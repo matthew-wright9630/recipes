@@ -5,10 +5,9 @@ import {
   PLATFORM_ID,
   signal,
 } from '@angular/core';
-import { User } from '../models/user';
+import { User } from '../../models/user';
 import { isPlatformBrowser } from '@angular/common';
-import { AuthService } from './auth.service';
-import { UserService } from './user.service';
+import { UserService } from '../user-service/user.service';
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';

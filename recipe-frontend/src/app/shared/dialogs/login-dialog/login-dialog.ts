@@ -19,8 +19,8 @@ import {
   MatInput,
   MatLabel,
 } from '@angular/material/input';
-import { AuthService } from '../../services/auth.service';
-import { AuthStateService } from '../../services/auth-state.service';
+import { AuthService } from '../../services/auth-service/auth.service';
+import { AuthStateService } from '../../services/auth-state-service/auth-state.service';
 import { User } from '../../models/user';
 
 @Component({

@@ -7,7 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
-import { RecipeService } from '../../../shared/services/recipe.service';
+import { RecipeService } from '../../../shared/services/recipe-service/recipe.service';
 
 @Component({
   selector: 'app-recipe-detail',

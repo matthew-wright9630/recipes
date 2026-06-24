@@ -4,7 +4,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { Recipe } from '../../../shared/models/recipe';
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
-import { RecipeService } from '../../../shared/services/recipe.service';
+import { RecipeService } from '../../../shared/services/recipe-service/recipe.service';
 
 @Component({
   selector: 'app-recipe-list',

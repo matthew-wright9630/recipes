@@ -9,7 +9,7 @@ import {
 } from '@angular/material/dialog';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthStateService } from '../../services/auth-state.service';
+import { AuthStateService } from '../../services//auth-state-service/auth-state.service';
 import { RecipeEditDialog } from '../recipe-edit-dialog/recipe-edit-dialog';
 
 @Component({

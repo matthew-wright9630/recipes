@@ -12,7 +12,7 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { Recipe } from '../../models/recipe';
-import { RecipeService } from '../../services/recipe.service';
+import { RecipeService } from '../../services/recipe-service/recipe.service';
 import { RecipeStatus } from '../../models/recipe-status';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';

@@ -9,7 +9,7 @@ import { HeaderService } from '../header.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { LoginDialogComponent } from '../../../shared/dialogs/login-dialog/login-dialog';
-import { AuthStateService } from '../../../shared/services/auth-state.service';
+import { AuthStateService } from '../../../shared/services/auth-state-service/auth-state.service';
 
 @Component({
   selector: 'app-header-component',
