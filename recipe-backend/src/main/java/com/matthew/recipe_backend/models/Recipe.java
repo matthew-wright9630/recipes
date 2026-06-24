@@ -74,9 +74,9 @@ public class Recipe {
 
 	}
 
-	public Recipe(User createdBy, String name) {
+	public Recipe(User createdBy, String name, String description) {
 		this.name = name;
-		this.description = null;
+		this.description = description;
 		this.notes = null;
 		this.servings = 0;
 		this.prepTime = 0;

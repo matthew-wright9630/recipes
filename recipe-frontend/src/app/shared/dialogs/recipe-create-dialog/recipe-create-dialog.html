@@ -1,1 +1,23 @@
-<p>recipe-create-dialog works!</p>
+<mat-dialog-content [formGroup]="form" class="dialog-content">
+  <h2 mat-dialog-title>Edit Recipe</h2>
+  <!-- =======================
+       BASIC INFO
+  ======================== -->
+  <section class="section">
+    <div class="create-recipe__content">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field>
+    </div>
+  </section>
+  <mat-dialog-actions class="create-recipe__buttons" align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-flat-button color="primary" (click)="onSave()">Save</button>
+  </mat-dialog-actions>
+</mat-dialog-content>

@@ -1,12 +1,25 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  MatDialogActions,
+  MatDialogContent,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { RecipeService } from '../../services/recipe.service';
 import { Recipe } from '../../models/recipe';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-recipe-create-dialog',
-  imports: [],
+  imports: [
+    MatDialogContent,
+    MatFormField,
+    MatLabel,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatDialogActions,
+  ],
   templateUrl: './recipe-create-dialog.html',
   styleUrl: './recipe-create-dialog.scss',
 })
@@ -21,18 +34,16 @@ export class RecipeCreateDialog {
   });
 
   onCancel(): void {
-    sessionStorage.setItem('recipe-draft', JSON.stringify(this.form.value));
     this.dialogRef.close();
   }
 
   onSave(): void {
-    const updated: Recipe = {
+    const draftRecipe: Recipe = {
       ...this.form.getRawValue(),
     } as Recipe;
 
-    this.recipeService.updateRecipe(updated).subscribe({
+    this.recipeService.createDraftRecipe(draftRecipe).subscribe({
       next: (result) => {
-        sessionStorage.removeItem(`recipe-draft-${this.form.value}`);
         this.dialogRef.close(result);
       },
       error: (err) => {

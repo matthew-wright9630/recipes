@@ -13,12 +13,17 @@
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Description</mat-label>
-      <textarea matInput formControlName="description"></textarea>
+      <textarea
+        matInput
+        cdkAutosizeMinRows="3"
+        cdkTextareaAutosize
+        formControlName="description"
+      ></textarea>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Notes</mat-label>
-      <textarea matInput formControlName="notes"></textarea>
+      <textarea matInput cdkTextareaAutosize formControlName="notes"></textarea>
     </mat-form-field>
 
     <div class="row">

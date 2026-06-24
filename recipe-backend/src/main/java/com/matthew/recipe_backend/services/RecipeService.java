@@ -6,6 +6,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.matthew.recipe_backend.dtos.CreateRecipeDto;
 import com.matthew.recipe_backend.dtos.RecipeDirectionsDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.RecipeIngredientDto;
@@ -132,11 +133,11 @@ public class RecipeService {
 	 * Creates a new recipe in {@code DRAFT} status with only a name and owner set.
 	 *
 	 * @param createdById the ID of the user creating the recipe
-	 * @param name        the initial name for the recipe
+	 * @param draftRecipe the initial name for the recipe
 	 * @return the newly created {@link RecipeDto}
 	 */
-	public RecipeDto createDraftRecipe(String name, User user) {
-		Recipe recipe = new Recipe(user, name);
+	public RecipeDto createDraftRecipe(CreateRecipeDto draftRecipe, User user) {
+		Recipe recipe = new Recipe(user, draftRecipe.name(), draftRecipe.description());
 		recipeRepository.save(recipe);
 		return RecipeMapper.toDto(recipe);
 	}

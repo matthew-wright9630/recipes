@@ -39,6 +39,12 @@ export class RecipeService {
       .pipe(map((res) => res.body));
   }
 
+  createDraftRecipe(recipe: Recipe) {
+    return this.http.post<Recipe>(this.baseURL, recipe, {
+      observe: 'response',
+    });
+  }
+
   updateRecipe(recipe: Recipe) {
     return this.http.put<Recipe>(this.baseURL + '/' + recipe.id, recipe, {
       observe: 'response',

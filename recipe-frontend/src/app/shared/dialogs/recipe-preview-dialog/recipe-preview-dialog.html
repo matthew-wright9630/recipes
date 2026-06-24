@@ -2,12 +2,15 @@
   <h2 mat-dialog-title>{{ recipe.name }}</h2>
 
   <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Close</button>
+    <button class="recipe-dialog__btn" mat-button mat-dialog-close>
+      Close
+    </button>
 
     <button
       mat-raised-button
       color="primary"
       mat-dialog-close
+      class="recipe-dialog__btn"
       [routerLink]="['/recipe', recipe.id]"
     >
       Open Full Recipe
@@ -17,6 +20,7 @@
       mat-raised-button
       color="primary"
       mat-dialog-close
+      class="recipe-dialog__btn"
       (click)="openEditDialog()"
     >
       Edit Recipe
@@ -40,7 +44,9 @@
 
   <ul>
     @for(ingredient of sortedIngredients(); track ingredient.sortOrder) {
-    <li>{{ingredient.quantity}} {{ingredient.unit}} of {{ingredient.name}}</li>
+    <li class="recipe-dialog__ingredient">
+      {{ingredient.quantity}} {{ingredient.unit}} of {{ingredient.name}}
+    </li>
     }
   </ul>
 </mat-dialog-content>

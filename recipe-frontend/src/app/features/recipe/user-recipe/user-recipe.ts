@@ -1,8 +1,10 @@
-import { Component, computed, effect, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Recipe } from '../../../shared/models/recipe';
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
 import { RecipeService } from '../../../shared/services/recipe.service';
 import { MatIcon } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import { RecipeCreateDialog } from '../../../shared/dialogs/recipe-create-dialog/recipe-create-dialog';
 
 @Component({
   selector: 'app-user-recipe',
@@ -12,6 +14,8 @@ import { MatIcon } from '@angular/material/icon';
 })
 export class UserRecipe {
   recipeList = signal<Recipe[]>([]);
+
+  private dialog = inject(MatDialog);
 
   draftRecipes = computed(() =>
     this.recipeList()
@@ -50,6 +54,14 @@ export class UserRecipe {
 
         this.recipeList.set(sortedRecipes);
       });
+    });
+  }
+
+  openCreateRecipe() {
+    this.dialog.open(RecipeCreateDialog, {
+      width: '800px',
+      maxWidth: '95vw',
+      autoFocus: false,
     });
   }
 }
