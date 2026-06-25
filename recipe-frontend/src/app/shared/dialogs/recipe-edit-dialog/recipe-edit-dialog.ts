@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -89,7 +89,21 @@ export class RecipeEditDialog {
   };
 
   ngOnInit(): void {
-    this.updateValidators(this.data.status);
+    this.updateValidators(RecipeStatus.PUBLISHED);
+
+    this.form.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((values) => {
+        this.formState.set({
+          name: values.name || '',
+          description: values.description || '',
+          servings: values.servings || 0,
+          cookTime: values.cookTime || 0,
+          prepTime: values.prepTime || 0,
+          ingredientCount: this.ingredients.length,
+          directionCount: this.directions.length,
+        });
+      });
 
     this.form.valueChanges
       .pipe(debounceTime(1000), takeUntilDestroyed(this.destroyRef))
@@ -102,6 +116,8 @@ export class RecipeEditDialog {
           `recipe-draft-${this.data.id}`,
           JSON.stringify(draft),
         );
+
+        this.updateValidators(RecipeStatus.PUBLISHED);
       });
   }
 
@@ -196,12 +212,25 @@ export class RecipeEditDialog {
     this.directions.removeAt(index);
   }
 
+  private formState = signal({
+    name: this.data.name,
+    description: this.data.description,
+    servings: this.data.servings,
+    cookTime: this.data.cookTime,
+    prepTime: this.data.prepTime,
+    ingredientCount: this.data.recipeIngredients.length,
+    directionCount: this.data.recipeDirections.length,
+  });
+
   canPublish = computed(
     () =>
-      !!this.form.get('name')?.value?.trim() &&
-      !!this.form.get('description')?.value?.trim() &&
-      this.ingredients.length >= 1 &&
-      this.directions.length >= 1,
+      !!this.formState().name?.trim() &&
+      !!this.formState().description?.trim() &&
+      this.formState().servings > 0 &&
+      this.formState().cookTime >= 0 &&
+      this.formState().prepTime >= 0 &&
+      this.formState().ingredientCount >= 1 &&
+      this.formState().directionCount >= 1,
   );
 
   onSave(): void {
@@ -210,7 +239,7 @@ export class RecipeEditDialog {
       ...this.form.getRawValue(),
     } as Recipe;
 
-    this.recipeService.updateRecipe(updated).subscribe({
+    this.recipeService.updateDraftRecipe(updated).subscribe({
       next: (result) => {
         localStorage.removeItem(`recipe-draft-${this.data.id}`);
         this.recipeStateService.notifyRecipeUpdated(result.body as Recipe);
@@ -235,7 +264,7 @@ export class RecipeEditDialog {
       status: RecipeStatus.PUBLISHED,
     } as Recipe;
 
-    this.recipeService.updateRecipe(updated).subscribe({
+    this.recipeService.updateAndPublishRecipe(updated).subscribe({
       next: (result) => {
         localStorage.removeItem(`recipe-draft-${this.data.id}`);
         if (result.body) {

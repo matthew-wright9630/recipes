@@ -59,7 +59,6 @@ export class UserRecipe {
     this.recipeStateService.recipeUpdated$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((updatedRecipe) => {
-        console.log(updatedRecipe);
         if (updatedRecipe) {
           this.recipeService.getRecipesByUser().subscribe((recipes) => {
             this.recipeList.set(recipes);

@@ -161,9 +161,9 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
+  @if (data.status === RecipeStatus.DRAFT) {
   <button mat-button color="warn" (click)="onCancel()">Revert Changes</button>
   <button mat-flat-button (click)="onSave()">Save Draft</button>
-  @if (data.status === RecipeStatus.DRAFT) {
   <button
     mat-flat-button
     color="primary"

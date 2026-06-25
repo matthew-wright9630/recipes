@@ -59,8 +59,6 @@ export class RecipePreviewDialog {
       data = this.recipe;
     }
 
-    console.log(data);
-
     this.dialog.open(RecipeEditDialog, {
       width: '800px',
       maxWidth: '95vw',

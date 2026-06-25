@@ -168,16 +168,16 @@ public class RecipeService {
 		foundRecipe.setPrepTime(recipeDto.prepTime());
 		foundRecipe.setCookTime(recipeDto.cookTime());
 
-		Recipe savedRecipe = recipeRepository.save(foundRecipe);
-
 		// Deletes old steps and saves the new ones
-		updateDirections(savedRecipe, recipeDto.recipeDirections());
+		updateDirections(foundRecipe, recipeDto.recipeDirections());
 
 		// Delete old ingredients and save the new ones
-		updateIngredients(savedRecipe, recipeDto.recipeIngredients());
+		updateIngredients(foundRecipe, recipeDto.recipeIngredients());
 
 		// Sort the ingredient list.
-		recipeIngredientService.computeAndSaveSortOrder(savedRecipe);
+		recipeIngredientService.computeAndSaveSortOrder(foundRecipe);
+
+		Recipe savedRecipe = recipeRepository.save(foundRecipe);
 		return RecipeMapper.toDto(savedRecipe);
 	}
 
@@ -227,7 +227,6 @@ public class RecipeService {
 	}
 
 	public Ingredient findOrCreateIngredient(String cleanName, String normalized) {
-		System.out.println(cleanName);
 		return ingredientRepository
 				.findByNormalizedName(normalized)
 				.orElseGet(() -> {
@@ -243,6 +242,36 @@ public class RecipeService {
 								.orElseThrow();
 					}
 				});
+	}
+
+	public RecipeDto saveAndPublishRecipe(Long id, UpdateRecipeDto recipeDto) {
+		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
+				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
+
+		// Only draft recipes may be edited
+		RecipeValidator.validateDraftStatus(foundRecipe);
+
+		foundRecipe.setName(recipeDto.name());
+		foundRecipe.setDescription(recipeDto.description());
+		foundRecipe.setNotes(recipeDto.notes());
+		foundRecipe.setServings(recipeDto.servings());
+		foundRecipe.setPrepTime(recipeDto.prepTime());
+		foundRecipe.setCookTime(recipeDto.cookTime());
+
+		// Deletes old steps and saves the new ones
+		updateDirections(foundRecipe, recipeDto.recipeDirections());
+
+		// Delete old ingredients and save the new ones
+		updateIngredients(foundRecipe, recipeDto.recipeIngredients());
+
+		RecipeValidator.validateRecipePublish(foundRecipe);
+		foundRecipe.setStatus(RecipeStatus.PUBLISHED);
+
+		// Sort the ingredient list.
+		recipeIngredientService.computeAndSaveSortOrder(foundRecipe);
+
+		Recipe savedRecipe = recipeRepository.save(foundRecipe);
+		return RecipeMapper.toDto(savedRecipe);
 	}
 
 	/**

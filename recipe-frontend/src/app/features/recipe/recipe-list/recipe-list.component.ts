@@ -24,7 +24,6 @@ export class RecipeListComponent {
     this.recipeStateService.recipeUpdated$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((updatedRecipe) => {
-        console.log(updatedRecipe);
         if (updatedRecipe) {
           this.recipeService.getAllRecipes().subscribe((recipes) => {
             this.recipeList.set(recipes);

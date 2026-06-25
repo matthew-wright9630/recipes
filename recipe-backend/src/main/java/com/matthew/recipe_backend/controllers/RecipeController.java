@@ -68,9 +68,15 @@ public class RecipeController {
 				.body(recipeService.createDraftRecipe(newRecipe, user));
 	}
 
-	@PutMapping("/{id}")
+	@PutMapping("/{id}/draft")
 	public ResponseEntity<RecipeDto> editRecipe(@PathVariable long id, @RequestBody UpdateRecipeDto request) {
 		RecipeDto recipe = recipeService.updateRecipe(id, request);
+		return ResponseEntity.ok(recipe);
+	}
+
+	@PutMapping("/{id}/publish")
+	public ResponseEntity<RecipeDto> publishRecipe(@PathVariable long id, @RequestBody UpdateRecipeDto request) {
+		RecipeDto recipe = recipeService.saveAndPublishRecipe(id, request);
 		return ResponseEntity.ok(recipe);
 	}
 
