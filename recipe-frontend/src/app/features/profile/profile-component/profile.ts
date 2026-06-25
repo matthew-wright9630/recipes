@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { Recipe } from '../../../shared/models/recipe';
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
 import { AuthStateService } from '../../../shared/services/auth-state-service/auth-state.service';
@@ -7,6 +7,8 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
 import { MatDivider } from '@angular/material/divider';
 import { MatButton } from '@angular/material/button';
 import { RecipeService } from '../../../shared/services/recipe-service/recipe.service';
+import { RecipeStateService } from '../../../shared/services/recipe-state-service/recipe-state.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-profile',
@@ -25,6 +27,31 @@ export class Profile {
   recipeList = signal<Recipe[]>([]);
 
   recipeHistory = signal<Recipe[]>([]);
+
+  private recipeStateService = inject(RecipeStateService);
+  private destroyRef = inject(DestroyRef);
+
+  ngOnInit(): void {
+    this.recipeStateService.recipeUpdated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((updatedRecipe) => {
+        console.log(updatedRecipe);
+        if (updatedRecipe) {
+          this.recipeService.getRecipesByUser().subscribe((recipes) => {
+            if (recipes) {
+              this.recipeList.set(recipes);
+            }
+          });
+          this.recipeService
+            .getRecipeViewHistoryByUser(3)
+            .subscribe((recipes) => {
+              if (recipes) {
+                this.recipeHistory.set(recipes);
+              }
+            });
+        }
+      });
+  }
 
   private recipeService = inject(RecipeService);
   authState = inject(AuthStateService);

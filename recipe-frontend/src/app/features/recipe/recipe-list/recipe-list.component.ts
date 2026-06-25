@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, signal } from '@angular/core';
+import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { Recipe } from '../../../shared/models/recipe';
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
 import { RecipeService } from '../../../shared/services/recipe-service/recipe.service';
+import { RecipeStateService } from '../../../shared/services/recipe-state-service/recipe-state.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-recipe-list',
@@ -14,6 +16,22 @@ import { RecipeService } from '../../../shared/services/recipe-service/recipe.se
 })
 export class RecipeListComponent {
   recipeList = signal<Recipe[]>([]);
+
+  private recipeStateService = inject(RecipeStateService);
+  private destroyRef = inject(DestroyRef);
+
+  ngOnInit(): void {
+    this.recipeStateService.recipeUpdated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((updatedRecipe) => {
+        console.log(updatedRecipe);
+        if (updatedRecipe) {
+          this.recipeService.getAllRecipes().subscribe((recipes) => {
+            this.recipeList.set(recipes);
+          });
+        }
+      });
+  }
 
   constructor(private recipeService: RecipeService) {
     effect(() => {

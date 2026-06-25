@@ -1,10 +1,19 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { Recipe } from '../../../shared/models/recipe';
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
 import { RecipeService } from '../../../shared/services/recipe-service/recipe.service';
 import { MatIcon } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { RecipeCreateDialog } from '../../../shared/dialogs/recipe-create-dialog/recipe-create-dialog';
+import { RecipeStateService } from '../../../shared/services/recipe-state-service/recipe-state.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user-recipe',
@@ -16,6 +25,8 @@ export class UserRecipe {
   recipeList = signal<Recipe[]>([]);
 
   private dialog = inject(MatDialog);
+  private recipeStateService = inject(RecipeStateService);
+  private destroyRef = inject(DestroyRef);
 
   draftRecipes = computed(() =>
     this.recipeList()
@@ -43,6 +54,19 @@ export class UserRecipe {
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
       ),
   );
+
+  ngOnInit(): void {
+    this.recipeStateService.recipeUpdated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((updatedRecipe) => {
+        console.log(updatedRecipe);
+        if (updatedRecipe) {
+          this.recipeService.getRecipesByUser().subscribe((recipes) => {
+            this.recipeList.set(recipes);
+          });
+        }
+      });
+  }
 
   constructor(private recipeService: RecipeService) {
     effect(() => {

@@ -20,6 +20,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
 import { debounceTime } from 'rxjs';
+import { RecipeStateService } from '../../services/recipe-state-service/recipe-state.service';
 
 @Component({
   selector: 'app-recipe-edit-dialog',
@@ -39,6 +40,7 @@ export class RecipeEditDialog {
   private fb = inject(FormBuilder);
   private dialogRef = inject(MatDialogRef<RecipeEditDialog>);
   private recipeService = inject(RecipeService);
+  private recipeStateService = inject(RecipeStateService);
   data = inject<Recipe>(MAT_DIALOG_DATA);
 
   form = this.fb.group({
@@ -192,6 +194,7 @@ export class RecipeEditDialog {
     this.recipeService.updateRecipe(updated).subscribe({
       next: (result) => {
         sessionStorage.removeItem(`recipe-draft-${this.data.id}`);
+        this.recipeStateService.notifyRecipeUpdated(result.body as Recipe);
         this.dialogRef.close(result);
       },
       error: (err) => {
