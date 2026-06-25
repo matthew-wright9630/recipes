@@ -52,15 +52,6 @@
         <mat-error>Cook time cannot be below 0.</mat-error>
       </mat-form-field>
     </div>
-
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Status</mat-label>
-      <mat-select formControlName="status">
-        @for (status of statuses; track status) {
-        <mat-option [value]="status">{{ status }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
   </section>
 
   <mat-divider></mat-divider>
@@ -75,7 +66,7 @@
     <p class="error">At least one ingredient is required to publish</p>
     }
     <div formArrayName="recipeIngredients">
-      @for (ingredientCtrl of ingredients.controls; track $index;) {
+      @for (ingredientCtrl of ingredients.controls; track ingredientCtrl;) {
       <div [formGroupName]="$index" class="ingredient-row">
         <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Name</mat-label>
@@ -136,7 +127,7 @@
     }
 
     <div formArrayName="recipeDirections">
-      @for (directionCtrl of directions.controls; track $index) {
+      @for (directionCtrl of directions.controls; track directionCtrl) {
       <div [formGroupName]="$index" class="direction-row">
         <p class="direction__number">Step {{$index + 1}}</p>
         <mat-form-field appearance="outline" class="full-width">
@@ -155,7 +146,7 @@
           type="button"
           class="ingredient-row__delete"
           aria-label="Remove ingredient"
-          (click)="removeIngredient($index)"
+          (click)="removeDirection($index)"
         >
           <mat-icon>close</mat-icon>
         </button>
@@ -170,13 +161,16 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button color="warn" (click)="onCancel()">Revert Changes</button>
+  <button mat-flat-button (click)="onSave()">Save Draft</button>
+  @if (data.status === RecipeStatus.DRAFT) {
   <button
     mat-flat-button
     color="primary"
-    (click)="onSave()"
-    [disabled]="form.invalid"
+    (click)="onPublish()"
+    [disabled]="!canPublish()"
   >
-    Save
+    Publish Recipe
   </button>
+  }
 </mat-dialog-actions>

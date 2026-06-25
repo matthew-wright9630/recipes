@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, computed, DestroyRef, inject } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -46,6 +46,7 @@ export class RecipeEditDialog {
   private recipeStateService = inject(RecipeStateService);
   private destroyRef = inject(DestroyRef);
   data = inject<Recipe>(MAT_DIALOG_DATA);
+  readonly RecipeStatus = RecipeStatus;
 
   form = this.fb.group({
     name: [this.data.name, [Validators.minLength(3), Validators.required]],
@@ -90,14 +91,8 @@ export class RecipeEditDialog {
   ngOnInit(): void {
     this.updateValidators(this.data.status);
 
-    this.form.get('status')?.valueChanges.subscribe((status) => {
-      if (status) {
-        this.updateValidators(status);
-      }
-    });
-
     this.form.valueChanges
-      .pipe(debounceTime(10000), takeUntilDestroyed(this.destroyRef))
+      .pipe(debounceTime(1000), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         const draft = {
           savedAt: new Date().toISOString(),
@@ -201,6 +196,14 @@ export class RecipeEditDialog {
     this.directions.removeAt(index);
   }
 
+  canPublish = computed(
+    () =>
+      !!this.form.get('name')?.value?.trim() &&
+      !!this.form.get('description')?.value?.trim() &&
+      this.ingredients.length >= 1 &&
+      this.directions.length >= 1,
+  );
+
   onSave(): void {
     const updated: Recipe = {
       ...this.data,
@@ -216,6 +219,31 @@ export class RecipeEditDialog {
       error: (err) => {
         console.error(err);
       },
+    });
+  }
+
+  onPublish(): void {
+    this.updateValidators(RecipeStatus.PUBLISHED);
+
+    if (this.form.invalid) return;
+
+    // const confirmed = // we'll come back to confirmation dialog
+
+    const updated = {
+      ...this.data,
+      ...this.form.getRawValue(),
+      status: RecipeStatus.PUBLISHED,
+    } as Recipe;
+
+    this.recipeService.updateRecipe(updated).subscribe({
+      next: (result) => {
+        localStorage.removeItem(`recipe-draft-${this.data.id}`);
+        if (result.body) {
+          this.recipeStateService.notifyRecipeUpdated(result.body);
+        }
+        this.dialogRef.close(result);
+      },
+      error: (err) => console.error(err),
     });
   }
 }
