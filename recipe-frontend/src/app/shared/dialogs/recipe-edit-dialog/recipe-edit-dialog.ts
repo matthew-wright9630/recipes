@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
+  MatDialog,
   MatDialogActions,
   MatDialogRef,
 } from '@angular/material/dialog';
@@ -23,6 +24,7 @@ import { debounceTime } from 'rxjs';
 import { RecipeStateService } from '../../services/recipe-state-service/recipe-state.service';
 import { MatIcon } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ConfirmationDialog } from '../confirmation-dialog/confirmation-dialog';
 
 @Component({
   selector: 'app-recipe-edit-dialog',
@@ -40,6 +42,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './recipe-edit-dialog.scss',
 })
 export class RecipeEditDialog {
+  private dialog = inject(MatDialog);
   private fb = inject(FormBuilder);
   private dialogRef = inject(MatDialogRef<RecipeEditDialog>);
   private recipeService = inject(RecipeService);
@@ -256,23 +259,35 @@ export class RecipeEditDialog {
 
     if (this.form.invalid) return;
 
-    // const confirmed = // we'll come back to confirmation dialog
-
-    const updated = {
-      ...this.data,
-      ...this.form.getRawValue(),
-      status: RecipeStatus.PUBLISHED,
-    } as Recipe;
-
-    this.recipeService.updateAndPublishRecipe(updated).subscribe({
-      next: (result) => {
-        localStorage.removeItem(`recipe-draft-${this.data.id}`);
-        if (result.body) {
-          this.recipeStateService.notifyRecipeUpdated(result.body);
-        }
-        this.dialogRef.close(result);
+    const confirmRef = this.dialog.open(ConfirmationDialog, {
+      data: {
+        title: 'Publish Recipe',
+        message:
+          'This will make your recipe visible to everyone. Are you sure?',
+        confirmLabel: 'Publish',
+        confirmColor: 'primary',
       },
-      error: (err) => console.error(err),
+    });
+
+    confirmRef.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) return;
+
+      const updated = {
+        ...this.data,
+        ...this.form.getRawValue(),
+        status: RecipeStatus.PUBLISHED,
+      } as Recipe;
+
+      this.recipeService.updateAndPublishRecipe(updated).subscribe({
+        next: (result) => {
+          localStorage.removeItem(`recipe-draft-${this.data.id}`);
+          if (result.body) {
+            this.recipeStateService.notifyRecipeUpdated(result.body);
+          }
+          this.dialogRef.close(result);
+        },
+        error: (err) => console.error(err),
+      });
     });
   }
 }
