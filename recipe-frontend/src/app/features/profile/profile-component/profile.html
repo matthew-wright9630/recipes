@@ -19,9 +19,10 @@
     <mat-divider></mat-divider>
 
     <div class="profile__footer">
-      <button mat-button>My Recipes</button>
-      <button mat-button>Cookbooks</button>
+      <!-- <button mat-button>My Recipes</button>
+      <button mat-button>Cookbooks</button> -->
       <button mat-button>Settings</button>
+      <button mat-button (click)="this.logout()">Sign Out</button>
     </div>
   </mat-card>
 

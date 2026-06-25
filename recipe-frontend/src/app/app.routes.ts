@@ -3,6 +3,7 @@ import { RecipeListComponent } from './features/recipe/recipe-list/recipe-list.c
 import { RecipeDetail } from './features/recipe/recipe-detail/recipe-detail';
 import { Profile } from './features/profile/profile-component/profile';
 import { authGuard } from './auth-guard';
+import { UserRecipe } from './features/recipe/user-recipe/user-recipe';
 
 export const routes: Routes = [
   {
@@ -16,6 +17,11 @@ export const routes: Routes = [
   {
     path: 'profile',
     component: Profile,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'recipes',
+    component: UserRecipe,
     canActivate: [authGuard],
   },
 ];

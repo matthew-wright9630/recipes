@@ -1,13 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, signal } from '@angular/core';
+import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
-import { RecipeService } from '../recipe.service';
 import { Recipe } from '../../../shared/models/recipe';
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
-import { ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import { LoginDialogComponent } from '../../../shared/dialogs/login-dialog/login-dialog';
+import { RecipeService } from '../../../shared/services/recipe-service/recipe.service';
+import { RecipeStateService } from '../../../shared/services/recipe-state-service/recipe-state.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-recipe-list',
@@ -18,11 +17,23 @@ import { LoginDialogComponent } from '../../../shared/dialogs/login-dialog/login
 export class RecipeListComponent {
   recipeList = signal<Recipe[]>([]);
 
-  constructor(
-    private recipeService: RecipeService,
-    private route: ActivatedRoute,
-    private dialog: MatDialog,
-  ) {
+  private recipeStateService = inject(RecipeStateService);
+  private destroyRef = inject(DestroyRef);
+
+  ngOnInit(): void {
+    this.recipeStateService.recipeUpdated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((updatedRecipe) => {
+        console.log(updatedRecipe);
+        if (updatedRecipe) {
+          this.recipeService.getAllRecipes().subscribe((recipes) => {
+            this.recipeList.set(recipes);
+          });
+        }
+      });
+  }
+
+  constructor(private recipeService: RecipeService) {
     effect(() => {
       this.recipeService.getAllRecipes().subscribe((recipes) => {
         this.recipeList.set(recipes);

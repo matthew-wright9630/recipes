@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './features/header/header-component/header';
-import { AuthStateService } from './shared/services/auth-state.service';
+import { AuthStateService } from './shared/services/auth-state-service/auth-state.service';
 
 @Component({
   selector: 'app-root',

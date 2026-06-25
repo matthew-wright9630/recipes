@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.matthew.recipe_backend.dtos.CreateRecipeDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.StatusUpdateRequestDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
@@ -61,10 +62,10 @@ public class RecipeController {
 
 	@PostMapping
 	public ResponseEntity<RecipeDto> createDraftRecipe(
-			@RequestParam String name,
+			@RequestBody CreateRecipeDto newRecipe,
 			@AuthenticationPrincipal User user) {
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(recipeService.createDraftRecipe(name, user));
+				.body(recipeService.createDraftRecipe(newRecipe, user));
 	}
 
 	@PutMapping("/{id}")

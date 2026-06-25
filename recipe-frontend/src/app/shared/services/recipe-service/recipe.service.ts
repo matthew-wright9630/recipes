@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Recipe } from '../../shared/models/recipe';
+import { Recipe } from '../../models/recipe';
 import { map, Observable } from 'rxjs';
 
 @Injectable({
@@ -29,7 +29,7 @@ export class RecipeService {
   getRecipesByUser() {
     return this.http
       .get<Recipe[]>(this.baseURL + '/me', { observe: 'response' })
-      .pipe(map((res) => res.body));
+      .pipe(map((res) => res.body || []));
   }
 
   getRecipeViewHistoryByUser(limit: number) {
@@ -37,5 +37,17 @@ export class RecipeService {
     return this.http
       .get<Recipe[]>(this.baseURL + '/history', { observe: 'response', params })
       .pipe(map((res) => res.body));
+  }
+
+  createDraftRecipe(recipe: Recipe) {
+    return this.http.post<Recipe>(this.baseURL, recipe, {
+      observe: 'response',
+    });
+  }
+
+  updateRecipe(recipe: Recipe) {
+    return this.http.put<Recipe>(this.baseURL + '/' + recipe.id, recipe, {
+      observe: 'response',
+    });
   }
 }

@@ -2,23 +2,35 @@ package com.matthew.recipe_backend.services;
 
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.matthew.recipe_backend.dtos.CreateRecipeDto;
+import com.matthew.recipe_backend.dtos.RecipeDirectionsDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
+import com.matthew.recipe_backend.dtos.RecipeIngredientDto;
+import com.matthew.recipe_backend.dtos.UpdateRecipeDirectionsDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
+import com.matthew.recipe_backend.dtos.UpdateRecipeIngredientsDto;
 import com.matthew.recipe_backend.dtos.UserDto;
 import com.matthew.recipe_backend.enums.RecipeStatus;
 import com.matthew.recipe_backend.exceptions.UserNotFoundException;
 import com.matthew.recipe_backend.mappers.RecipeMapper;
+import com.matthew.recipe_backend.models.Ingredient;
 import com.matthew.recipe_backend.models.Recipe;
+import com.matthew.recipe_backend.models.RecipeDirection;
+import com.matthew.recipe_backend.models.RecipeIngredient;
 import com.matthew.recipe_backend.models.RecipeView;
 import com.matthew.recipe_backend.models.User;
+import com.matthew.recipe_backend.repositories.IngredientRepository;
+import com.matthew.recipe_backend.repositories.RecipeDirectionRepository;
 import com.matthew.recipe_backend.repositories.RecipeRepository;
 import com.matthew.recipe_backend.repositories.RecipeViewRepository;
 import com.matthew.recipe_backend.repositories.UserRepository;
 import com.matthew.recipe_backend.validators.RecipeValidator;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
@@ -38,6 +50,9 @@ public class RecipeService {
 	private final RecipeIngredientService recipeIngredientService;
 	private final RecipeViewService recipeViewService;
 	private final RecipeViewRepository recipeViewRepository;
+	private final RecipeDirectionRepository recipeDirectionRepository;
+	private final IngredientRepository ingredientRepository;
+	private final EntityManager entityManager;
 
 	/**
 	 * Constructs a {@code RecipeService} with the required repository dependency.
@@ -46,12 +61,16 @@ public class RecipeService {
 	 */
 	public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository,
 			RecipeIngredientService recipeIngredientService, RecipeViewService recipeViewService,
-			RecipeViewRepository recipeViewRepository) {
+			RecipeViewRepository recipeViewRepository, RecipeDirectionRepository recipeDirectionRepository,
+			IngredientRepository ingredientRepository, EntityManager entityManager) {
 		this.recipeRepository = recipeRepository;
 		this.userRepository = userRepository;
 		this.recipeIngredientService = recipeIngredientService;
 		this.recipeViewService = recipeViewService;
 		this.recipeViewRepository = recipeViewRepository;
+		this.recipeDirectionRepository = recipeDirectionRepository;
+		this.ingredientRepository = ingredientRepository;
+		this.entityManager = entityManager;
 	}
 
 	/**
@@ -114,11 +133,11 @@ public class RecipeService {
 	 * Creates a new recipe in {@code DRAFT} status with only a name and owner set.
 	 *
 	 * @param createdById the ID of the user creating the recipe
-	 * @param name        the initial name for the recipe
+	 * @param draftRecipe the initial name for the recipe
 	 * @return the newly created {@link RecipeDto}
 	 */
-	public RecipeDto createDraftRecipe(String name, User user) {
-		Recipe recipe = new Recipe(user, name);
+	public RecipeDto createDraftRecipe(CreateRecipeDto draftRecipe, User user) {
+		Recipe recipe = new Recipe(user, draftRecipe.name(), draftRecipe.description());
 		recipeRepository.save(recipe);
 		return RecipeMapper.toDto(recipe);
 	}
@@ -150,9 +169,80 @@ public class RecipeService {
 		foundRecipe.setCookTime(recipeDto.cookTime());
 
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
+
+		// Deletes old steps and saves the new ones
+		updateDirections(savedRecipe, recipeDto.recipeDirections());
+
+		// Delete old ingredients and save the new ones
+		updateIngredients(savedRecipe, recipeDto.recipeIngredients());
+
 		// Sort the ingredient list.
 		recipeIngredientService.computeAndSaveSortOrder(savedRecipe);
 		return RecipeMapper.toDto(savedRecipe);
+	}
+
+	@Transactional
+	public void updateDirections(
+			Recipe recipe,
+			List<UpdateRecipeDirectionsDto> directionDtos) {
+
+		recipe.getRecipeDirections().clear();
+
+		for (int i = 0; i < directionDtos.size(); i++) {
+			UpdateRecipeDirectionsDto dto = directionDtos.get(i);
+			RecipeDirection direction = new RecipeDirection();
+			direction.setDescription(dto.description());
+			direction.setStepNumber(i + 1);
+			direction.setRecipe(recipe);
+			recipe.getRecipeDirections().add(direction);
+		}
+	}
+
+	@Transactional
+	public void updateIngredients(
+			Recipe recipe,
+			List<UpdateRecipeIngredientsDto> ingredientDtos) {
+
+		recipe.getRecipeIngredients().clear();
+		entityManager.flush();
+
+		for (UpdateRecipeIngredientsDto dto : ingredientDtos) {
+
+			String cleanName = dto.name().trim().replaceAll("\\s+", " ");
+			String normalized = cleanName.toLowerCase();
+
+			Ingredient ingredient = findOrCreateIngredient(cleanName, normalized);
+
+			RecipeIngredient recipeIngredient = new RecipeIngredient();
+			recipeIngredient.setRecipe(recipe);
+			recipeIngredient.setIngredient(ingredient);
+			recipeIngredient.setQuantity(dto.quantity());
+			recipeIngredient.setUnit(dto.unit());
+			recipeIngredient.setNotes(dto.notes());
+
+			recipeIngredientService.computeAndSaveSortOrder(recipe);
+
+			recipe.getRecipeIngredients().add(recipeIngredient);
+		}
+	}
+
+	public Ingredient findOrCreateIngredient(String cleanName, String normalized) {
+		System.out.println(cleanName);
+		return ingredientRepository
+				.findByNormalizedName(normalized)
+				.orElseGet(() -> {
+					try {
+						Ingredient i = new Ingredient();
+						i.setName(cleanName);
+						i.setNormalizedName(normalized);
+						return ingredientRepository.save(i);
+					} catch (DataIntegrityViolationException e) {
+						// Another thread beat us to it, just fetch the one that was saved
+						return ingredientRepository
+								.findByNormalizedName(normalized)
+								.orElseThrow();
+					}
+				});
 	}
 
 	/**

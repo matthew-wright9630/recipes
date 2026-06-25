@@ -1,5 +1,5 @@
 import { CanActivateFn } from '@angular/router';
-import { AuthStateService } from './shared/services/auth-state.service';
+import { AuthStateService } from './shared/services/auth-state-service/auth-state.service';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { distinctUntilChanged, filter, map, take } from 'rxjs';

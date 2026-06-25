@@ -146,6 +146,7 @@ public class AuthService {
         String refreshToken = jwtService.generateRefreshToken(user);
 
         return new AuthResponseDto(
+                user.getId(),
                 accessToken,
                 refreshToken,
                 user.getEmail(),

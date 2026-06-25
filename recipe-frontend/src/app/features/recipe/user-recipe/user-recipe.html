@@ -1,0 +1,47 @@
+<article>
+  <div class="user-recipe">
+    <div class="user-recipe__header">
+      <h2>My Recipes</h2>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="user-recipe__button"
+        (click)="openCreateRecipe()"
+      >
+        <mat-icon>add</mat-icon>
+        Create Recipe
+      </button>
+    </div>
+    <div class="user-recipe__section">
+      <h3 class="user-recipe__title">Draft Recipes:</h3>
+      <div class="user-recipe__grid">
+        @for (recipe of draftRecipes(); track $index) {
+        <app-recipe [recipe]="recipe"></app-recipe>
+        } @empty {
+        <p class="user-recipe__empty">No recipes in draft</p>
+        }
+      </div>
+    </div>
+    <div class="user-recipe__section">
+      <h3 class="user-recipe__title">Published Recipes:</h3>
+      <div class="user-recipe__grid">
+        @for (recipe of publishedRecipes(); track $index) {
+        <app-recipe [recipe]="recipe"></app-recipe>
+        } @empty {
+        <p class="user-recipe__empty">No recipes published.</p>
+        }
+      </div>
+    </div>
+    <div class="user-recipe__section">
+      <h3 class="user-recipe__title">Archived Recipes:</h3>
+      <div class="user-recipe__grid">
+        @for (recipe of archivedRecipes(); track $index) {
+        <app-recipe [recipe]="recipe"></app-recipe>
+        } @empty {
+        <p class="user-recipe__empty">No recipes archived.</p>
+        }
+      </div>
+    </div>
+  </div>
+</article>

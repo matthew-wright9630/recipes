@@ -1,29 +1,64 @@
 .recipe-dialog__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 2vw;
+}
+
+h2 {
+  max-width: 60%;
 }
 
 mat-dialog-actions {
-    display: flex;
-    gap: 1vw;
+  display: flex;
+  gap: 1vw;
 }
 
 button {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .recipe-dialog__description {
-    display: flex;
-    flex-direction: column;
-    gap: 1vh;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  align-items: center;
 }
 
 .recipe-dialog__img {
-    width: 70%;
+  width: 70%;
 }
 
 .recipe-dialog__p {
-    margin: 0;
+  margin: 2vh 0;
+  font-size: 1rem;
+}
+
+.recipe-dialog__ingredient {
+  font-size: 1.2rem;
+}
+
+@media screen and (max-width: 875px) {
+  .recipe-dialog__header {
+    flex-direction: column;
+  }
+  h2 {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media screen and (max-width: 675px) {
+  h2 {
+    // max-width: 40%;
+  }
+
+  mat-dialog-actions {
+    flex-direction: column;
+    padding: 2vh 0;
+  }
+
+  .recipe-dialog__btn {
+    width: 100%;
+  }
 }

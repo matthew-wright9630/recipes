@@ -7,7 +7,6 @@ import {
   Validators,
 } from '@angular/forms';
 import {
-  MatDialogActions,
   MatDialogContent,
   MatDialogModule,
   MatDialogRef,
@@ -20,9 +19,8 @@ import {
   MatInput,
   MatLabel,
 } from '@angular/material/input';
-import { RouterLink } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { AuthStateService } from '../../services/auth-state.service';
+import { AuthService } from '../../services/auth-service/auth.service';
+import { AuthStateService } from '../../services/auth-state-service/auth-state.service';
 import { User } from '../../models/user';
 
 @Component({
@@ -67,6 +65,7 @@ export class LoginDialogComponent {
     this.authService.login(email, password).subscribe({
       next: (response) => {
         const user: User = {
+          id: response.id,
           email: response.email,
           username: response.username,
           userRole: response.role,

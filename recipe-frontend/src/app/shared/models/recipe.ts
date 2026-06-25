@@ -1,6 +1,6 @@
-import { RecipeDirection } from "./recipe-direction";
-import { RecipeIngredient } from "./recipe-ingredient";
-import { RecipeStatus } from "./recipe-status";
+import { RecipeDirection } from './recipe-direction';
+import { RecipeIngredient } from './recipe-ingredient';
+import { RecipeStatus } from './recipe-status';
 
 export interface Recipe {
   id: number;
@@ -14,4 +14,6 @@ export interface Recipe {
   status: RecipeStatus;
   recipeDirections: RecipeDirection[];
   recipeIngredients: RecipeIngredient[];
+  createdAt: string;
+  createdById: number;
 }

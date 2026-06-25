@@ -17,7 +17,7 @@ import {
   withInterceptors,
 } from '@angular/common/http';
 import { authInterceptor } from './shared/auth-interceptor';
-import { AuthStateService } from './shared/services/auth-state.service';
+import { AuthStateService } from './shared/services/auth-state-service/auth-state.service';
 import { firstValueFrom } from 'rxjs';
 
 export const appConfig: ApplicationConfig = {
