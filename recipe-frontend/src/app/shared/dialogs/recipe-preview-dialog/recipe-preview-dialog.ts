@@ -41,8 +41,25 @@ export class RecipePreviewDialog {
   private authState = inject(AuthStateService);
 
   openEditDialog() {
-    const draft = sessionStorage.getItem(`recipe-draft-${this.recipe.id}`);
-    const data = draft ? { ...this.recipe, ...JSON.parse(draft) } : this.recipe;
+    const raw = localStorage.getItem(`recipe-draft-${this.recipe.id}`);
+    let data;
+
+    if (raw) {
+      const draft = JSON.parse(raw);
+      const savedAt = new Date(draft.savedAt);
+      const daysSince =
+        (Date.now() - savedAt.getTime()) / (1000 * 60 * 60 * 24);
+
+      if (daysSince <= 7) {
+        data = { ...this.recipe, ...draft.values };
+      } else {
+        localStorage.removeItem(`recipe-draft-${this.recipe.id}`);
+      }
+    } else {
+      data = this.recipe;
+    }
+
+    console.log(data);
 
     this.dialog.open(RecipeEditDialog, {
       width: '800px',

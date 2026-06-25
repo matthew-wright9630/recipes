@@ -1,5 +1,8 @@
-.edit-recipe-dialog__title {
-  margin: 2vh 3vw 0;
+.edit-recipe-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1vh 3vw 0;
 }
 
 .dialog-content {
@@ -28,7 +31,17 @@
 
 .ingredient-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 2fr;
+  grid-template-columns: 2fr 1fr 1fr 2fr 0.5fr;
+  align-items: center;
+  gap: 1vw;
+  margin-bottom: 5vh;
+  background-color: rgba(255, 255, 242, 0.8);
+}
+
+.direction-row {
+  display: grid;
+  grid-template-columns: 0.5fr 4fr 0.5fr;
+  align-items: center;
   gap: 1vw;
   margin-bottom: 5vh;
   background-color: rgba(255, 255, 242, 0.8);
@@ -44,6 +57,10 @@
   }
 
   .ingredient__notes {
-    grid-column: 1 / -1;
+    grid-column: 1 / -2;
+  }
+
+  .ingredient-row__delete {
+    grid-column: -2 / -1;
   }
 }

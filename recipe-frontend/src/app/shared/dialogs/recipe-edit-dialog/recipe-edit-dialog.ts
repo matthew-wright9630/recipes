@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -21,6 +21,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
 import { debounceTime } from 'rxjs';
 import { RecipeStateService } from '../../services/recipe-state-service/recipe-state.service';
+import { MatIcon } from '@angular/material/icon';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-recipe-edit-dialog',
@@ -32,6 +34,7 @@ import { RecipeStateService } from '../../services/recipe-state-service/recipe-s
     MatSelectModule,
     MatDialogActions,
     ReactiveFormsModule,
+    MatIcon,
   ],
   templateUrl: './recipe-edit-dialog.html',
   styleUrl: './recipe-edit-dialog.scss',
@@ -41,6 +44,7 @@ export class RecipeEditDialog {
   private dialogRef = inject(MatDialogRef<RecipeEditDialog>);
   private recipeService = inject(RecipeService);
   private recipeStateService = inject(RecipeStateService);
+  private destroyRef = inject(DestroyRef);
   data = inject<Recipe>(MAT_DIALOG_DATA);
 
   form = this.fb.group({
@@ -92,12 +96,18 @@ export class RecipeEditDialog {
       }
     });
 
-    this.form.valueChanges.pipe(debounceTime(10000)).subscribe(() => {
-      sessionStorage.setItem(
-        `recipe-draft-${this.data.id}`,
-        JSON.stringify(this.form.getRawValue()),
-      );
-    });
+    this.form.valueChanges
+      .pipe(debounceTime(10000), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        const draft = {
+          savedAt: new Date().toISOString(),
+          values: this.form.getRawValue(),
+        };
+        localStorage.setItem(
+          `recipe-draft-${this.data.id}`,
+          JSON.stringify(draft),
+        );
+      });
   }
 
   private updateValidators(status: RecipeStatus): void {
@@ -138,11 +148,17 @@ export class RecipeEditDialog {
     this.form.updateValueAndValidity();
   }
 
+  onClose(): void {
+    const draft = {
+      savedAt: new Date().toISOString(),
+      values: this.form.getRawValue(),
+    };
+    localStorage.setItem(`recipe-draft-${this.data.id}`, JSON.stringify(draft));
+    this.dialogRef.close();
+  }
+
   onCancel(): void {
-    sessionStorage.setItem(
-      `recipe-draft-${this.data.id}`,
-      JSON.stringify(this.form.value),
-    );
+    localStorage.removeItem(`recipe-draft-${this.data.id}`);
     this.dialogRef.close();
   }
 
@@ -193,7 +209,7 @@ export class RecipeEditDialog {
 
     this.recipeService.updateRecipe(updated).subscribe({
       next: (result) => {
-        sessionStorage.removeItem(`recipe-draft-${this.data.id}`);
+        localStorage.removeItem(`recipe-draft-${this.data.id}`);
         this.recipeStateService.notifyRecipeUpdated(result.body as Recipe);
         this.dialogRef.close(result);
       },

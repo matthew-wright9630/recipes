@@ -9,6 +9,7 @@ import { RecipeService } from '../../services/recipe-service/recipe.service';
 import { Recipe } from '../../models/recipe';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { RecipeStateService } from '../../services/recipe-state-service/recipe-state.service';
 
 @Component({
   selector: 'app-recipe-create-dialog',
@@ -27,6 +28,7 @@ export class RecipeCreateDialog {
   private fb = inject(FormBuilder);
   private dialogRef = inject(MatDialogRef<RecipeCreateDialog>);
   private recipeService = inject(RecipeService);
+  private recipeStateService = inject(RecipeStateService);
 
   form = this.fb.group({
     name: ['', [Validators.minLength(3), Validators.required]],
@@ -45,6 +47,7 @@ export class RecipeCreateDialog {
     this.recipeService.createDraftRecipe(draftRecipe).subscribe({
       next: (result) => {
         this.dialogRef.close(result);
+        this.recipeStateService.notifyRecipeUpdated(result.body as Recipe);
       },
       error: (err) => {
         console.error(err);

@@ -1,4 +1,9 @@
-<h2 mat-dialog-title class="edit-recipe-dialog__title">Edit Recipe</h2>
+<div class="edit-recipe-dialog">
+  <h2 mat-dialog-title class="edit-recipe-dialog__title">Edit Recipe</h2>
+  <button mat-icon-button (click)="onClose()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
 <mat-dialog-content [formGroup]="form" class="dialog-content">
   <!-- =======================
        BASIC INFO
@@ -101,6 +106,15 @@
             cdkAutosizeMaxRows="5"
           ></textarea>
         </mat-form-field>
+        <button
+          mat-icon-button
+          type="button"
+          class="ingredient-row__delete"
+          aria-label="Remove ingredient"
+          (click)="removeIngredient($index)"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
       </div>
       } @empty {
       <p>No ingredients added yet.</p>
@@ -124,6 +138,7 @@
     <div formArrayName="recipeDirections">
       @for (directionCtrl of directions.controls; track $index) {
       <div [formGroupName]="$index" class="direction-row">
+        <p class="direction__number">Step {{$index + 1}}</p>
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Description</mat-label>
           <textarea
@@ -134,6 +149,16 @@
             cdkAutosizeMaxRows="12"
           ></textarea>
         </mat-form-field>
+
+        <button
+          mat-icon-button
+          type="button"
+          class="ingredient-row__delete"
+          aria-label="Remove ingredient"
+          (click)="removeIngredient($index)"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
       </div>
       } @empty {
       <p>No directions added yet.</p>
