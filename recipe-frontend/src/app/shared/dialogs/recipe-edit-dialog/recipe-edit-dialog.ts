@@ -261,7 +261,7 @@ export class RecipeEditDialog {
 
     const confirmRef = this.dialog.open(ConfirmationDialog, {
       data: {
-        title: 'Publish Recipe',
+        title: `Publish ${this.data.name}`,
         message:
           'This will make your recipe visible to everyone. Are you sure?',
         confirmLabel: 'Publish',
