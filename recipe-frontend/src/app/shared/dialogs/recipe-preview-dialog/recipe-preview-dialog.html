@@ -15,7 +15,7 @@
     >
       Open Full Recipe
     </button>
-    @if(this.isOwner()) {
+    @if(this.isOwner() && this.recipe.status === "DRAFT") {
     <button
       mat-raised-button
       color="primary"
@@ -24,6 +24,24 @@
       (click)="openEditDialog()"
     >
       Edit Recipe
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      mat-dialog-close
+      class="recipe-dialog__btn"
+    >
+      Delete Recipe
+    </button>
+    } @if (this.isOwner() && this.recipe.status === "PUBLISHED") {
+    <button
+      mat-raised-button
+      color="primary"
+      mat-dialog-close
+      class="recipe-dialog__btn"
+      (click)="onArchive()"
+    >
+      Archive Recipe
     </button>
     }
   </mat-dialog-actions>

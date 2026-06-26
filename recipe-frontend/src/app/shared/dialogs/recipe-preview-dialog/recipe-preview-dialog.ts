@@ -11,6 +11,9 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthStateService } from '../../services//auth-state-service/auth-state.service';
 import { RecipeEditDialog } from '../recipe-edit-dialog/recipe-edit-dialog';
+import { ConfirmationDialog } from '../confirmation-dialog/confirmation-dialog';
+import { RecipeService } from '../../services/recipe-service/recipe.service';
+import { RecipeStateService } from '../../services/recipe-state-service/recipe-state.service';
 
 @Component({
   selector: 'app-recipe-preview-dialog',
@@ -27,6 +30,8 @@ import { RecipeEditDialog } from '../recipe-edit-dialog/recipe-edit-dialog';
 })
 export class RecipePreviewDialog {
   recipe = inject(MAT_DIALOG_DATA);
+  recipeService = inject(RecipeService);
+  recipeStateService = inject(RecipeStateService);
   isOwner = computed(
     () => this.authState.currentUser()?.id === this.recipe.createdById,
   );
@@ -66,4 +71,32 @@ export class RecipePreviewDialog {
       data: data,
     });
   }
+
+  onArchive(): void {
+    const confirmRef = this.dialog.open(ConfirmationDialog, {
+      data: {
+        title: 'Archive Recipe',
+        message:
+          "This will hide your recipe from search and other users' cookbooks. You can re-publish it later.",
+        confirmLabel: 'Archive',
+        confirmColor: 'warn',
+      },
+    });
+
+    confirmRef.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) return;
+      this.recipeService.archiveRecipe(this.recipe.id).subscribe({
+        next: (result) => {
+          console.log(result);
+          if (result) {
+            this.recipeStateService.notifyRecipeUpdated(result);
+          }
+          this.dialog.closeAll();
+        },
+        error: (err) => console.error(err),
+      });
+    });
+  }
+
+  onDelete(): void {}
 }

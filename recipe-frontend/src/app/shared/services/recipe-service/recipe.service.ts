@@ -64,4 +64,10 @@ export class RecipeService {
       },
     );
   }
+
+  archiveRecipe(id: number) {
+    return this.http.put<Recipe>(this.baseURL + '/' + id + '/archive', {
+      observe: 'response',
+    });
+  }
 }

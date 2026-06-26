@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.matthew.recipe_backend.dtos.CreateRecipeDto;
@@ -154,9 +155,13 @@ public class RecipeService {
 	 * @throws EntityNotFoundException if no recipe exists with the given ID
 	 * @throws IllegalStateException   if the recipe is not in {@code DRAFT} status
 	 */
-	public RecipeDto updateRecipe(Long id, UpdateRecipeDto recipeDto) {
+	public RecipeDto updateRecipe(Long id, UpdateRecipeDto recipeDto, User user) {
 		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
 				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
+
+		if (!foundRecipe.getCreatedBy().equals(user)) {
+			throw new IllegalAccessError("You do not own this recipe");
+		}
 
 		// Only draft recipes may be edited
 		RecipeValidator.validateDraftStatus(foundRecipe);
@@ -244,9 +249,13 @@ public class RecipeService {
 				});
 	}
 
-	public RecipeDto saveAndPublishRecipe(Long id, UpdateRecipeDto recipeDto) {
+	public RecipeDto saveAndPublishRecipe(Long id, UpdateRecipeDto recipeDto, User user) {
 		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
 				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
+
+		if (!foundRecipe.getCreatedBy().equals(user)) {
+			throw new IllegalAccessError("You do not own this recipe");
+		}
 
 		// Only draft recipes may be edited
 		RecipeValidator.validateDraftStatus(foundRecipe);
@@ -266,10 +275,23 @@ public class RecipeService {
 
 		RecipeValidator.validateRecipePublish(foundRecipe);
 		foundRecipe.setStatus(RecipeStatus.PUBLISHED);
-
 		// Sort the ingredient list.
 		recipeIngredientService.computeAndSaveSortOrder(foundRecipe);
 
+		Recipe savedRecipe = recipeRepository.save(foundRecipe);
+		return RecipeMapper.toDto(savedRecipe);
+	}
+
+	public RecipeDto archiveRecipe(Long id, User user) {
+		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
+				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
+
+		if (!foundRecipe.getCreatedBy().equals(user)) {
+			throw new IllegalAccessError("You do not own this recipe");
+		}
+
+		RecipeValidator.validateStatusTransition(foundRecipe.getStatus(), RecipeStatus.ARCHIVED);
+		foundRecipe.setStatus(RecipeStatus.ARCHIVED);
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
 		return RecipeMapper.toDto(savedRecipe);
 	}

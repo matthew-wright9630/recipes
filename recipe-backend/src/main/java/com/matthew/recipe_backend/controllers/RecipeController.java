@@ -69,14 +69,23 @@ public class RecipeController {
 	}
 
 	@PutMapping("/{id}/draft")
-	public ResponseEntity<RecipeDto> editRecipe(@PathVariable long id, @RequestBody UpdateRecipeDto request) {
-		RecipeDto recipe = recipeService.updateRecipe(id, request);
+	public ResponseEntity<RecipeDto> editRecipe(@PathVariable long id, @RequestBody UpdateRecipeDto request,
+			@AuthenticationPrincipal User user) {
+		RecipeDto recipe = recipeService.updateRecipe(id, request, user);
 		return ResponseEntity.ok(recipe);
 	}
 
 	@PutMapping("/{id}/publish")
-	public ResponseEntity<RecipeDto> publishRecipe(@PathVariable long id, @RequestBody UpdateRecipeDto request) {
-		RecipeDto recipe = recipeService.saveAndPublishRecipe(id, request);
+	public ResponseEntity<RecipeDto> publishRecipe(@PathVariable long id, @RequestBody UpdateRecipeDto request,
+			@AuthenticationPrincipal User user) {
+		RecipeDto recipe = recipeService.saveAndPublishRecipe(id, request, user);
+		return ResponseEntity.ok(recipe);
+	}
+
+	@PutMapping("/{id}/archive")
+	public ResponseEntity<RecipeDto> archiveRecipe(@PathVariable long id,
+			@AuthenticationPrincipal User user) {
+		RecipeDto recipe = recipeService.archiveRecipe(id, user);
 		return ResponseEntity.ok(recipe);
 	}
 
