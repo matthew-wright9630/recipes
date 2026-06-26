@@ -75,7 +75,7 @@ export class RecipePreviewDialog {
   onArchive(): void {
     const confirmRef = this.dialog.open(ConfirmationDialog, {
       data: {
-        title: 'Archive Recipe',
+        title: `Archive ${this.recipe.name}`,
         message:
           "This will hide your recipe from search and other users' cookbooks. You can re-publish it later.",
         confirmLabel: 'Archive',
@@ -87,7 +87,6 @@ export class RecipePreviewDialog {
       if (!confirmed) return;
       this.recipeService.archiveRecipe(this.recipe.id).subscribe({
         next: (result) => {
-          console.log(result);
           if (result) {
             this.recipeStateService.notifyRecipeUpdated(result);
           }
@@ -98,5 +97,26 @@ export class RecipePreviewDialog {
     });
   }
 
-  onDelete(): void {}
+  onDelete(): void {
+    const confirmRef = this.dialog.open(ConfirmationDialog, {
+      data: {
+        title: `Delete ${this.recipe.name}`,
+        message:
+          'This will permanently delete your draft. This action is not reversable.',
+        confirmLabel: 'Delete',
+        confirmColor: 'warn',
+      },
+    });
+
+    confirmRef.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) return;
+      this.recipeService.deleteDraftRecipe(this.recipe.id).subscribe({
+        next: (result) => {
+          this.recipeStateService.notifyRecipeDeleted(this.recipe.id);
+          this.dialog.closeAll();
+        },
+        error: (err) => console.error(err),
+      });
+    });
+  }
 }

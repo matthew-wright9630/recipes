@@ -50,6 +50,14 @@ export class Profile {
             });
         }
       });
+
+    this.recipeStateService.recipeDeleted$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((deletedId) => {
+        this.recipeList.update((recipes) =>
+          recipes.filter((r) => r.id !== deletedId),
+        );
+      });
   }
 
   private recipeService = inject(RecipeService);

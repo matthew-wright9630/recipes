@@ -65,6 +65,14 @@ export class UserRecipe {
           });
         }
       });
+
+    this.recipeStateService.recipeDeleted$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((deletedId) => {
+        this.recipeList.update((recipes) =>
+          recipes.filter((r) => r.id !== deletedId),
+        );
+      });
   }
 
   constructor(private recipeService: RecipeService) {

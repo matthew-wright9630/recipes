@@ -70,4 +70,10 @@ export class RecipeService {
       observe: 'response',
     });
   }
+
+  deleteDraftRecipe(id: number) {
+    return this.http.delete<Recipe>(this.baseURL + '/' + id, {
+      observe: 'response',
+    });
+  }
 }
