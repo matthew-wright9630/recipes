@@ -51,7 +51,17 @@
   color: #ba1a1a;
 }
 
+mat-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 @media screen and (max-width: 700px) {
+  .dialog-content {
+    max-height: 70vh;
+  }
+
   .ingredient-row {
     grid-template-columns: 2fr 1fr 1fr;
   }
@@ -62,5 +72,15 @@
 
   .ingredient-row__delete {
     grid-column: -2 / -1;
+  }
+
+  mat-dialog-actions {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  mat-dialog-actions button {
+    width: 100%;
   }
 }

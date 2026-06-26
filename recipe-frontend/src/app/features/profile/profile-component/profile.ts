@@ -35,7 +35,6 @@ export class Profile {
     this.recipeStateService.recipeUpdated$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((updatedRecipe) => {
-        console.log(updatedRecipe);
         if (updatedRecipe) {
           this.recipeService.getRecipesByUser().subscribe((recipes) => {
             if (recipes) {
@@ -50,6 +49,14 @@ export class Profile {
               }
             });
         }
+      });
+
+    this.recipeStateService.recipeDeleted$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((deletedId) => {
+        this.recipeList.update((recipes) =>
+          recipes.filter((r) => r.id !== deletedId),
+        );
       });
   }
 

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
+  MatDialog,
   MatDialogActions,
   MatDialogRef,
 } from '@angular/material/dialog';
@@ -23,6 +24,7 @@ import { debounceTime } from 'rxjs';
 import { RecipeStateService } from '../../services/recipe-state-service/recipe-state.service';
 import { MatIcon } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ConfirmationDialog } from '../confirmation-dialog/confirmation-dialog';
 
 @Component({
   selector: 'app-recipe-edit-dialog',
@@ -40,12 +42,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './recipe-edit-dialog.scss',
 })
 export class RecipeEditDialog {
+  private dialog = inject(MatDialog);
   private fb = inject(FormBuilder);
   private dialogRef = inject(MatDialogRef<RecipeEditDialog>);
   private recipeService = inject(RecipeService);
   private recipeStateService = inject(RecipeStateService);
   private destroyRef = inject(DestroyRef);
   data = inject<Recipe>(MAT_DIALOG_DATA);
+  readonly RecipeStatus = RecipeStatus;
 
   form = this.fb.group({
     name: [this.data.name, [Validators.minLength(3), Validators.required]],
@@ -88,16 +92,24 @@ export class RecipeEditDialog {
   };
 
   ngOnInit(): void {
-    this.updateValidators(this.data.status);
-
-    this.form.get('status')?.valueChanges.subscribe((status) => {
-      if (status) {
-        this.updateValidators(status);
-      }
-    });
+    this.updateValidators(RecipeStatus.PUBLISHED);
 
     this.form.valueChanges
-      .pipe(debounceTime(10000), takeUntilDestroyed(this.destroyRef))
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((values) => {
+        this.formState.set({
+          name: values.name || '',
+          description: values.description || '',
+          servings: values.servings || 0,
+          cookTime: values.cookTime || 0,
+          prepTime: values.prepTime || 0,
+          ingredientCount: this.ingredients.length,
+          directionCount: this.directions.length,
+        });
+      });
+
+    this.form.valueChanges
+      .pipe(debounceTime(1000), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         const draft = {
           savedAt: new Date().toISOString(),
@@ -107,6 +119,8 @@ export class RecipeEditDialog {
           `recipe-draft-${this.data.id}`,
           JSON.stringify(draft),
         );
+
+        this.updateValidators(RecipeStatus.PUBLISHED);
       });
   }
 
@@ -201,13 +215,34 @@ export class RecipeEditDialog {
     this.directions.removeAt(index);
   }
 
+  private formState = signal({
+    name: this.data.name,
+    description: this.data.description,
+    servings: this.data.servings,
+    cookTime: this.data.cookTime,
+    prepTime: this.data.prepTime,
+    ingredientCount: this.data.recipeIngredients.length,
+    directionCount: this.data.recipeDirections.length,
+  });
+
+  canPublish = computed(
+    () =>
+      !!this.formState().name?.trim() &&
+      !!this.formState().description?.trim() &&
+      this.formState().servings > 0 &&
+      this.formState().cookTime >= 0 &&
+      this.formState().prepTime >= 0 &&
+      this.formState().ingredientCount >= 1 &&
+      this.formState().directionCount >= 1,
+  );
+
   onSave(): void {
     const updated: Recipe = {
       ...this.data,
       ...this.form.getRawValue(),
     } as Recipe;
 
-    this.recipeService.updateRecipe(updated).subscribe({
+    this.recipeService.updateDraftRecipe(updated).subscribe({
       next: (result) => {
         localStorage.removeItem(`recipe-draft-${this.data.id}`);
         this.recipeStateService.notifyRecipeUpdated(result.body as Recipe);
@@ -216,6 +251,43 @@ export class RecipeEditDialog {
       error: (err) => {
         console.error(err);
       },
+    });
+  }
+
+  onPublish(): void {
+    this.updateValidators(RecipeStatus.PUBLISHED);
+
+    if (this.form.invalid) return;
+
+    const confirmRef = this.dialog.open(ConfirmationDialog, {
+      data: {
+        title: `Publish ${this.data.name}`,
+        message:
+          'This will make your recipe visible to everyone. Are you sure?',
+        confirmLabel: 'Publish',
+        confirmColor: 'primary',
+      },
+    });
+
+    confirmRef.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) return;
+
+      const updated = {
+        ...this.data,
+        ...this.form.getRawValue(),
+        status: RecipeStatus.PUBLISHED,
+      } as Recipe;
+
+      this.recipeService.updateAndPublishRecipe(updated).subscribe({
+        next: (result) => {
+          localStorage.removeItem(`recipe-draft-${this.data.id}`);
+          if (result.body) {
+            this.recipeStateService.notifyRecipeUpdated(result.body);
+          }
+          this.dialogRef.close(result);
+        },
+        error: (err) => console.error(err),
+      });
     });
   }
 }

@@ -45,8 +45,34 @@ export class RecipeService {
     });
   }
 
-  updateRecipe(recipe: Recipe) {
-    return this.http.put<Recipe>(this.baseURL + '/' + recipe.id, recipe, {
+  updateDraftRecipe(recipe: Recipe) {
+    return this.http.put<Recipe>(
+      this.baseURL + '/' + recipe.id + '/draft',
+      recipe,
+      {
+        observe: 'response',
+      },
+    );
+  }
+
+  updateAndPublishRecipe(recipe: Recipe) {
+    return this.http.put<Recipe>(
+      this.baseURL + '/' + recipe.id + '/publish',
+      recipe,
+      {
+        observe: 'response',
+      },
+    );
+  }
+
+  archiveRecipe(id: number) {
+    return this.http.put<Recipe>(this.baseURL + '/' + id + '/archive', {
+      observe: 'response',
+    });
+  }
+
+  deleteDraftRecipe(id: number) {
+    return this.http.delete<Recipe>(this.baseURL + '/' + id, {
       observe: 'response',
     });
   }

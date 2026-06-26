@@ -59,12 +59,19 @@ export class UserRecipe {
     this.recipeStateService.recipeUpdated$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((updatedRecipe) => {
-        console.log(updatedRecipe);
         if (updatedRecipe) {
           this.recipeService.getRecipesByUser().subscribe((recipes) => {
             this.recipeList.set(recipes);
           });
         }
+      });
+
+    this.recipeStateService.recipeDeleted$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((deletedId) => {
+        this.recipeList.update((recipes) =>
+          recipes.filter((r) => r.id !== deletedId),
+        );
       });
   }
 
