@@ -5,5 +5,5 @@ public enum RecipeStatus {
     PUBLISHED,
     ARCHIVED, // Used for when a user edits a recipe or otherwise wants to delete a recipe
     REMOVED, // Used for moderation or copyright issues
-    SUPERCEEDED // Used for versioning
+    SUPERSEDED // Used for versioning
 }

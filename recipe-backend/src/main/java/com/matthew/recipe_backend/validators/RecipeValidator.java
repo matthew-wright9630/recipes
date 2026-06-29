@@ -87,11 +87,11 @@ public class RecipeValidator {
 		boolean valid = switch (current) {
 			case DRAFT -> next == RecipeStatus.PUBLISHED;
 			case PUBLISHED ->
-				next == RecipeStatus.ARCHIVED || next == RecipeStatus.REMOVED || next == RecipeStatus.SUPERCEEDED;
-			case ARCHIVED -> next == RecipeStatus.SUPERCEEDED;
-			// REMOVED and SUPERCEEDED are terminal states — no further transitions are
+				next == RecipeStatus.ARCHIVED || next == RecipeStatus.REMOVED || next == RecipeStatus.SUPERSEDED;
+			case ARCHIVED -> next == RecipeStatus.SUPERSEDED;
+			// REMOVED and SUPERSEDED are terminal states — no further transitions are
 			// allowed
-			case SUPERCEEDED -> false;
+			case SUPERSEDED -> false;
 			case REMOVED -> false;
 		};
 

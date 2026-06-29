@@ -105,7 +105,6 @@ public class RecipeController {
 	@PostMapping("/{id}/revision")
 	public ResponseEntity<RecipeDto> reviseRecipe(@PathVariable long id, @AuthenticationPrincipal User user) {
 		RecipeDto recipe = recipeService.createRevision(id, user);
-
 		return ResponseEntity.ok(recipe);
 	}
 
