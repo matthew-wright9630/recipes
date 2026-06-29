@@ -35,6 +35,12 @@ public class RecipeDirection {
 	public RecipeDirection() {
 	}
 
+	public RecipeDirection(Recipe recipe, RecipeDirection recipeDirection) {
+		this.recipe = recipe;
+		this.description = recipeDirection.getDescription();
+		this.stepNumber = recipeDirection.getStepNumber();
+	}
+
 	public RecipeDirection(Recipe recipe, String description, Integer stepNumber) {
 		this.recipe = recipe;
 		this.description = description;

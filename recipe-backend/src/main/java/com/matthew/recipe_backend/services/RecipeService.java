@@ -1,5 +1,6 @@
 package com.matthew.recipe_backend.services;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -159,9 +160,7 @@ public class RecipeService {
 		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
 				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
 
-		if (!foundRecipe.getCreatedBy().equals(user)) {
-			throw new IllegalAccessError("You do not own this recipe");
-		}
+		RecipeValidator.recipeBelongsToUser(foundRecipe, user.getId());
 
 		// Only draft recipes may be edited
 		RecipeValidator.validateDraftStatus(foundRecipe);
@@ -172,6 +171,7 @@ public class RecipeService {
 		foundRecipe.setServings(recipeDto.servings());
 		foundRecipe.setPrepTime(recipeDto.prepTime());
 		foundRecipe.setCookTime(recipeDto.cookTime());
+		foundRecipe.setUpdatedAt(OffsetDateTime.now());
 
 		// Deletes old steps and saves the new ones
 		updateDirections(foundRecipe, recipeDto.recipeDirections());
@@ -253,9 +253,7 @@ public class RecipeService {
 		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
 				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
 
-		if (!foundRecipe.getCreatedBy().equals(user)) {
-			throw new IllegalAccessError("You do not own this recipe");
-		}
+		RecipeValidator.recipeBelongsToUser(foundRecipe, user.getId());
 
 		// Only draft recipes may be edited
 		RecipeValidator.validateDraftStatus(foundRecipe);
@@ -266,12 +264,34 @@ public class RecipeService {
 		foundRecipe.setServings(recipeDto.servings());
 		foundRecipe.setPrepTime(recipeDto.prepTime());
 		foundRecipe.setCookTime(recipeDto.cookTime());
+		foundRecipe.setUpdatedAt(OffsetDateTime.now());
+		foundRecipe.setVersion(foundRecipe.getVersion() + 1);
 
 		// Deletes old steps and saves the new ones
 		updateDirections(foundRecipe, recipeDto.recipeDirections());
 
 		// Delete old ingredients and save the new ones
 		updateIngredients(foundRecipe, recipeDto.recipeIngredients());
+
+		// Find the previous version and SUPERSEDE it with the new revision.
+		if (foundRecipe.getRootRecipe() != null) {
+			Long rootId = foundRecipe.getRootRecipe().getId();
+
+			// Check if the root recipe (v1) is the active one
+			recipeRepository.findByIdAndStatusIn(rootId, List.of(RecipeStatus.PUBLISHED, RecipeStatus.ARCHIVED))
+					.ifPresent(previous -> {
+						previous.setStatus(RecipeStatus.SUPERSEDED);
+						recipeRepository.save(previous);
+					});
+
+			// Check if any other revision (v2+) is the active one
+			recipeRepository
+					.findByRootRecipeIdAndStatusIn(rootId, List.of(RecipeStatus.PUBLISHED, RecipeStatus.ARCHIVED))
+					.ifPresent(previous -> {
+						previous.setStatus(RecipeStatus.SUPERSEDED);
+						recipeRepository.save(previous);
+					});
+		}
 
 		RecipeValidator.validateRecipePublish(foundRecipe);
 		foundRecipe.setStatus(RecipeStatus.PUBLISHED);
@@ -286,11 +306,10 @@ public class RecipeService {
 		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
 				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
 
-		if (!foundRecipe.getCreatedBy().equals(user)) {
-			throw new IllegalAccessError("You do not own this recipe");
-		}
+		RecipeValidator.recipeBelongsToUser(foundRecipe, user.getId());
 
 		RecipeValidator.validateStatusTransition(foundRecipe.getStatus(), RecipeStatus.ARCHIVED);
+		foundRecipe.setUpdatedAt(OffsetDateTime.now());
 		foundRecipe.setStatus(RecipeStatus.ARCHIVED);
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
 		return RecipeMapper.toDto(savedRecipe);
@@ -329,6 +348,7 @@ public class RecipeService {
 		}
 
 		foundRecipe.setStatus(newStatus);
+		foundRecipe.setUpdatedAt(OffsetDateTime.now());
 		return RecipeMapper.toDto(foundRecipe);
 	}
 
@@ -350,5 +370,42 @@ public class RecipeService {
 		RecipeValidator.validateDraftStatus(foundRecipe);
 
 		recipeRepository.delete(foundRecipe);
+	}
+
+	/**
+	 * Creates a new revision of a recipe. Recipe needs to be in either PUBLISHED or
+	 * ARCHIVED state.
+	 * 
+	 * 
+	 */
+	public RecipeDto createRevision(Long id, User user) {
+		Recipe foundRecipe = recipeRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
+
+		RecipeValidator.validateCanCreateRevision(foundRecipe.getStatus());
+		RecipeValidator.recipeBelongsToUser(foundRecipe, user.getId());
+
+		Recipe rootRecipe = foundRecipe.getRootRecipe() != null
+				? foundRecipe.getRootRecipe()
+				: foundRecipe;
+
+		Recipe newDraftRecipe = new Recipe(foundRecipe.getName(), foundRecipe.getDescription(), foundRecipe.getNotes(),
+				foundRecipe.getServings(), foundRecipe.getPrepTime(), foundRecipe.getCookTime(),
+				foundRecipe.getCreatedBy(), foundRecipe.getVersion() + 1, rootRecipe);
+
+		List<RecipeDirection> copiedDirections = foundRecipe.getRecipeDirections().stream()
+				.map(d -> new RecipeDirection(newDraftRecipe, d))
+				.toList();
+
+		List<RecipeIngredient> copiedIngredients = foundRecipe.getRecipeIngredients().stream()
+				.map(i -> new RecipeIngredient(newDraftRecipe, i))
+				.toList();
+
+		newDraftRecipe.setRecipeDirections(copiedDirections);
+		newDraftRecipe.setRecipeIngredients(copiedIngredients);
+
+		recipeRepository.save(newDraftRecipe);
+
+		return RecipeMapper.toDto(newDraftRecipe);
 	}
 }

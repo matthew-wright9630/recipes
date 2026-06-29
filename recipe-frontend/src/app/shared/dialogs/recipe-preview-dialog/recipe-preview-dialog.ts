@@ -72,12 +72,30 @@ export class RecipePreviewDialog {
     });
   }
 
+  onRevise(): void {
+    this.recipeService.reviseRecipe(this.recipe.id).subscribe({
+      next: (result) => {
+        if (result) {
+          this.dialog.closeAll();
+          this.recipeStateService.notifyRecipeUpdated(result);
+          this.dialog.open(RecipeEditDialog, {
+            width: '800px',
+            maxWidth: '95vw',
+            autoFocus: false,
+            data: result,
+          });
+        }
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
   onArchive(): void {
     const confirmRef = this.dialog.open(ConfirmationDialog, {
       data: {
         title: `Archive ${this.recipe.name}`,
         message:
-          "This will hide your recipe from search and other users' cookbooks. You can republish it later.",
+          "This will hide your recipe from search and other users' cookbooks. You can revise this recipe later to publish it.",
         confirmLabel: 'Archive',
         confirmColor: 'warn',
       },

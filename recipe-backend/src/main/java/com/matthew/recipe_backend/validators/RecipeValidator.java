@@ -86,9 +86,12 @@ public class RecipeValidator {
 	public static void validateStatusTransition(RecipeStatus current, RecipeStatus next) {
 		boolean valid = switch (current) {
 			case DRAFT -> next == RecipeStatus.PUBLISHED;
-			case PUBLISHED -> next == RecipeStatus.ARCHIVED || next == RecipeStatus.REMOVED;
-			case ARCHIVED -> next == RecipeStatus.PUBLISHED;
-			// REMOVED is a terminal state — no further transitions are allowed
+			case PUBLISHED ->
+				next == RecipeStatus.ARCHIVED || next == RecipeStatus.REMOVED || next == RecipeStatus.SUPERSEDED;
+			case ARCHIVED -> next == RecipeStatus.SUPERSEDED;
+			// REMOVED and SUPERSEDED are terminal states — no further transitions are
+			// allowed
+			case SUPERSEDED -> false;
 			case REMOVED -> false;
 		};
 
@@ -118,7 +121,14 @@ public class RecipeValidator {
 
 	public static void recipeBelongsToUser(Recipe recipe, Long userId) {
 		if (!recipe.getCreatedBy().getId().equals(userId)) {
-			throw new IllegalStateException("Direction does not belong to this user");
+			throw new IllegalStateException("Recipe does not belong to this user");
+		}
+	}
+
+	public static void validateCanCreateRevision(RecipeStatus current) {
+		if (!(current.equals(RecipeStatus.PUBLISHED) || current.equals(RecipeStatus.ARCHIVED))) {
+			throw new IllegalStateException(
+					"Only published or archived recipes can be deleted. Please contact an administrator for more help if necessary.");
 		}
 	}
 }

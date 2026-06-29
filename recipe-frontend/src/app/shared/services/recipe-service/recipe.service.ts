@@ -65,6 +65,12 @@ export class RecipeService {
     );
   }
 
+  reviseRecipe(id: number) {
+    return this.http.post<Recipe>(this.baseURL + '/' + id + '/revise', {
+      observe: 'response',
+    });
+  }
+
   archiveRecipe(id: number) {
     return this.http.put<Recipe>(this.baseURL + '/' + id + '/archive', {
       observe: 'response',

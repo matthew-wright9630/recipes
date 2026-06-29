@@ -56,6 +56,9 @@ public class Recipe {
 	@Column(name = "created_at", nullable = false)
 	private OffsetDateTime createdAt;
 
+	@Column(name = "updated_at", nullable = false)
+	private OffsetDateTime updatedAt;
+
 	@Enumerated(EnumType.STRING)
 	@Column(columnDefinition = "recipe_status")
 	private RecipeStatus status;
@@ -64,8 +67,8 @@ public class Recipe {
 	private List<RecipeDirection> recipeDirections;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "parent_recipe_id")
-	private Recipe parentRecipe;
+	@JoinColumn(name = "root_recipe_id")
+	private Recipe rootRecipe;
 
 	@OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<RecipeIngredient> recipeIngredients;
@@ -84,9 +87,26 @@ public class Recipe {
 		this.createdBy = createdBy;
 		this.version = 0;
 		this.createdAt = OffsetDateTime.now();
+		this.updatedAt = OffsetDateTime.now();
 		this.status = RecipeStatus.DRAFT;
 		this.recipeDirections = null;
 		this.recipeIngredients = null;
+	}
+
+	public Recipe(String name, String description, String notes, Integer servings, Integer prepTime, Integer cookTime,
+			User createdBy, Integer version, Recipe rootRecipe) {
+		this.name = name;
+		this.description = description;
+		this.notes = notes;
+		this.servings = servings;
+		this.prepTime = prepTime;
+		this.cookTime = cookTime;
+		this.createdBy = createdBy;
+		this.version = version;
+		this.createdAt = OffsetDateTime.now();
+		this.updatedAt = OffsetDateTime.now();
+		this.status = RecipeStatus.DRAFT;
+		this.rootRecipe = rootRecipe;
 	}
 
 	public Recipe(String name, String description, String notes, Integer servings, Integer prepTime, Integer cookTime,
@@ -101,6 +121,7 @@ public class Recipe {
 		this.createdBy = createdBy;
 		this.version = version;
 		this.createdAt = createdAt;
+		this.updatedAt = OffsetDateTime.now();
 		this.status = status;
 		this.recipeDirections = recipeDirections;
 		this.recipeIngredients = recipeIngredients;
@@ -202,12 +223,12 @@ public class Recipe {
 		this.recipeDirections = recipeDirections;
 	}
 
-	public Recipe getParentRecipe() {
-		return parentRecipe;
+	public Recipe getRootRecipe() {
+		return rootRecipe;
 	}
 
-	public void setParentRecipe(Recipe parentRecipe) {
-		this.parentRecipe = parentRecipe;
+	public void setRootRecipe(Recipe rootRecipe) {
+		this.rootRecipe = rootRecipe;
 	}
 
 	public List<RecipeIngredient> getRecipeIngredients() {
@@ -216,6 +237,14 @@ public class Recipe {
 
 	public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
 		this.recipeIngredients = recipeIngredients;
+	}
+
+	public OffsetDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(OffsetDateTime updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 	@Override
@@ -241,7 +270,7 @@ public class Recipe {
 				+ ", servings=" + servings + ", prepTime=" + prepTime + ", cookTime=" + cookTime + ", version="
 				+ version + ", createdAt=" + createdAt
 				+ ", status=" + status + ", recipeDirections=" + recipeDirections + ", recipeIngredients="
-				+ recipeIngredients + "]";
+				+ recipeIngredients + ", " + updatedAt + "]";
 	}
 
 }
