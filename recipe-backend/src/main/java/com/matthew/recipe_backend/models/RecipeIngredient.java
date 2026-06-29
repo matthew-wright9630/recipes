@@ -45,6 +45,13 @@ public class RecipeIngredient {
 	public RecipeIngredient() {
 	}
 
+	public RecipeIngredient(Recipe recipe, RecipeIngredient recipeIngredient) {
+		this.recipe = recipe;
+		this.ingredient = recipeIngredient.getIngredient();
+		this.quantity = recipeIngredient.getQuantity();
+		this.unit = recipeIngredient.getUnit();
+	}
+
 	public RecipeIngredient(Recipe recipe, Ingredient ingredient, BigDecimal quantity, String unit) {
 		this.recipe = recipe;
 		this.ingredient = ingredient;
