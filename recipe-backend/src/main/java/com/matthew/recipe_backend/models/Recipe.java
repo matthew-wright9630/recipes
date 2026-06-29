@@ -87,6 +87,7 @@ public class Recipe {
 		this.createdBy = createdBy;
 		this.version = 0;
 		this.createdAt = OffsetDateTime.now();
+		this.updatedAt = OffsetDateTime.now();
 		this.status = RecipeStatus.DRAFT;
 		this.recipeDirections = null;
 		this.recipeIngredients = null;
@@ -103,6 +104,7 @@ public class Recipe {
 		this.createdBy = createdBy;
 		this.version = version;
 		this.createdAt = OffsetDateTime.now();
+		this.updatedAt = OffsetDateTime.now();
 		this.status = RecipeStatus.DRAFT;
 		this.rootRecipe = rootRecipe;
 	}
@@ -119,6 +121,7 @@ public class Recipe {
 		this.createdBy = createdBy;
 		this.version = version;
 		this.createdAt = createdAt;
+		this.updatedAt = OffsetDateTime.now();
 		this.status = status;
 		this.recipeDirections = recipeDirections;
 		this.recipeIngredients = recipeIngredients;

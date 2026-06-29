@@ -1,5 +1,6 @@
 package com.matthew.recipe_backend.services;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -159,7 +160,7 @@ public class RecipeService {
 		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
 				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
 
-		RecipeValidator.recipeBelongsToUser(foundRecipe, id);
+		RecipeValidator.recipeBelongsToUser(foundRecipe, user.getId());
 
 		// Only draft recipes may be edited
 		RecipeValidator.validateDraftStatus(foundRecipe);
@@ -170,6 +171,7 @@ public class RecipeService {
 		foundRecipe.setServings(recipeDto.servings());
 		foundRecipe.setPrepTime(recipeDto.prepTime());
 		foundRecipe.setCookTime(recipeDto.cookTime());
+		foundRecipe.setUpdatedAt(OffsetDateTime.now());
 
 		// Deletes old steps and saves the new ones
 		updateDirections(foundRecipe, recipeDto.recipeDirections());
@@ -251,7 +253,7 @@ public class RecipeService {
 		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
 				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
 
-		RecipeValidator.recipeBelongsToUser(foundRecipe, id);
+		RecipeValidator.recipeBelongsToUser(foundRecipe, user.getId());
 
 		// Only draft recipes may be edited
 		RecipeValidator.validateDraftStatus(foundRecipe);
@@ -262,6 +264,7 @@ public class RecipeService {
 		foundRecipe.setServings(recipeDto.servings());
 		foundRecipe.setPrepTime(recipeDto.prepTime());
 		foundRecipe.setCookTime(recipeDto.cookTime());
+		foundRecipe.setUpdatedAt(OffsetDateTime.now());
 		foundRecipe.setVersion(foundRecipe.getVersion() + 1);
 
 		// Deletes old steps and saves the new ones
@@ -283,9 +286,10 @@ public class RecipeService {
 		Recipe foundRecipe = recipeRepository.findByIdWithIngredients(id)
 				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
 
-		RecipeValidator.recipeBelongsToUser(foundRecipe, id);
+		RecipeValidator.recipeBelongsToUser(foundRecipe, user.getId());
 
 		RecipeValidator.validateStatusTransition(foundRecipe.getStatus(), RecipeStatus.ARCHIVED);
+		foundRecipe.setUpdatedAt(OffsetDateTime.now());
 		foundRecipe.setStatus(RecipeStatus.ARCHIVED);
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
 		return RecipeMapper.toDto(savedRecipe);
@@ -324,6 +328,7 @@ public class RecipeService {
 		}
 
 		foundRecipe.setStatus(newStatus);
+		foundRecipe.setUpdatedAt(OffsetDateTime.now());
 		return RecipeMapper.toDto(foundRecipe);
 	}
 
@@ -358,7 +363,7 @@ public class RecipeService {
 				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
 
 		RecipeValidator.validateCanCreateRevision(foundRecipe.getStatus());
-		RecipeValidator.recipeBelongsToUser(foundRecipe, id);
+		RecipeValidator.recipeBelongsToUser(foundRecipe, user.getId());
 
 		Recipe rootRecipe = foundRecipe.getRootRecipe() != null
 				? foundRecipe.getRootRecipe()

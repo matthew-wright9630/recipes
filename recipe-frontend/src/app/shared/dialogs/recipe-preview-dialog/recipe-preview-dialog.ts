@@ -72,6 +72,24 @@ export class RecipePreviewDialog {
     });
   }
 
+  onRevise(): void {
+    this.recipeService.reviseRecipe(this.recipe.id).subscribe({
+      next: (result) => {
+        if (result) {
+          this.dialog.closeAll();
+          this.recipeStateService.notifyRecipeUpdated(result);
+          this.dialog.open(RecipeEditDialog, {
+            width: '800px',
+            maxWidth: '95vw',
+            autoFocus: false,
+            data: result,
+          });
+        }
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
   onArchive(): void {
     const confirmRef = this.dialog.open(ConfirmationDialog, {
       data: {
