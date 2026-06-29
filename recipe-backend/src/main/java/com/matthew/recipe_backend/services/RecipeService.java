@@ -278,6 +278,17 @@ public class RecipeService {
 		// Sort the ingredient list.
 		recipeIngredientService.computeAndSaveSortOrder(foundRecipe);
 
+		// Find the previous version and SUPERSEDE it with the new revision.
+		if (foundRecipe.getRootRecipe() != null) {
+			recipeRepository.findByRootRecipeIdAndStatusIn(
+					foundRecipe.getRootRecipe().getId(),
+					List.of(RecipeStatus.PUBLISHED, RecipeStatus.ARCHIVED))
+					.ifPresent(previous -> {
+						previous.setStatus(RecipeStatus.SUPERSEDED);
+						recipeRepository.save(previous);
+					});
+		}
+
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
 		return RecipeMapper.toDto(savedRecipe);
 	}
