@@ -95,7 +95,7 @@ export class RecipePreviewDialog {
       data: {
         title: `Archive ${this.recipe.name}`,
         message:
-          "This will hide your recipe from search and other users' cookbooks. You can republish it later.",
+          "This will hide your recipe from search and other users' cookbooks. You can revise this recipe later to publish it.",
         confirmLabel: 'Archive',
         confirmColor: 'warn',
       },

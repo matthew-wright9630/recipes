@@ -273,21 +273,30 @@ public class RecipeService {
 		// Delete old ingredients and save the new ones
 		updateIngredients(foundRecipe, recipeDto.recipeIngredients());
 
-		RecipeValidator.validateRecipePublish(foundRecipe);
-		foundRecipe.setStatus(RecipeStatus.PUBLISHED);
-		// Sort the ingredient list.
-		recipeIngredientService.computeAndSaveSortOrder(foundRecipe);
-
 		// Find the previous version and SUPERSEDE it with the new revision.
 		if (foundRecipe.getRootRecipe() != null) {
-			recipeRepository.findByRootRecipeIdAndStatusIn(
-					foundRecipe.getRootRecipe().getId(),
-					List.of(RecipeStatus.PUBLISHED, RecipeStatus.ARCHIVED))
+			Long rootId = foundRecipe.getRootRecipe().getId();
+
+			// Check if the root recipe (v1) is the active one
+			recipeRepository.findByIdAndStatusIn(rootId, List.of(RecipeStatus.PUBLISHED, RecipeStatus.ARCHIVED))
+					.ifPresent(previous -> {
+						previous.setStatus(RecipeStatus.SUPERSEDED);
+						recipeRepository.save(previous);
+					});
+
+			// Check if any other revision (v2+) is the active one
+			recipeRepository
+					.findByRootRecipeIdAndStatusIn(rootId, List.of(RecipeStatus.PUBLISHED, RecipeStatus.ARCHIVED))
 					.ifPresent(previous -> {
 						previous.setStatus(RecipeStatus.SUPERSEDED);
 						recipeRepository.save(previous);
 					});
 		}
+
+		RecipeValidator.validateRecipePublish(foundRecipe);
+		foundRecipe.setStatus(RecipeStatus.PUBLISHED);
+		// Sort the ingredient list.
+		recipeIngredientService.computeAndSaveSortOrder(foundRecipe);
 
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
 		return RecipeMapper.toDto(savedRecipe);
