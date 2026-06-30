@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { LoginDialogComponent } from '../../../shared/dialogs/login-dialog/login-dialog';
 import { AuthStateService } from '../../../shared/services/auth-state-service/auth-state.service';
+import { RegistrationDialog } from '../../../shared/dialogs/registration-dialog/registration-dialog';
 
 @Component({
   selector: 'app-header-component',
@@ -36,6 +37,14 @@ export class HeaderComponent {
 
   openLogin() {
     this.dialog.open(LoginDialogComponent, {
+      width: '800px',
+      maxWidth: '95vw',
+      autoFocus: false,
+    });
+  }
+
+  openRegistration(): void {
+    this.dialog.open(RegistrationDialog, {
       width: '800px',
       maxWidth: '95vw',
       autoFocus: false,
