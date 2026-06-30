@@ -66,6 +66,8 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
 	List<Recipe> findByCreatedBy(User createdBy);
 
+	Page<Recipe> findByCreatedByAndStatusNotIn(User user, List<RecipeStatus> statuses, Pageable pageable);
+
 	Optional<Recipe> findByIdAndStatusIn(Long id, List<RecipeStatus> statuses);
 
 	Optional<Recipe> findByRootRecipeIdAndStatusIn(Long rootRecipeId, List<RecipeStatus> statuses);

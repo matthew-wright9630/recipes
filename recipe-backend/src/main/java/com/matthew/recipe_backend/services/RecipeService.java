@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -120,6 +121,17 @@ public class RecipeService {
 
 		return recipeRepository.findByCreatedBy(user)
 				.stream()
+				.map(RecipeMapper::toDto)
+				.toList();
+	}
+
+	public List<RecipeDto> findRecipeByCreatedByWithLimit(String username, int limit) {
+		User user = userRepository.findByEmail(username)
+				.orElseThrow(() -> new UserNotFoundException(username));
+
+		Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "updatedAt"));
+
+		return recipeRepository.findByCreatedByAndStatusNotIn(user, List.of(RecipeStatus.SUPERSEDED), pageable)
 				.map(RecipeMapper::toDto)
 				.toList();
 	}
