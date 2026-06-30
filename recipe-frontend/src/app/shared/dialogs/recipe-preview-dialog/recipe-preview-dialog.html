@@ -62,7 +62,7 @@
   <div class="recipe-dialog__description">
     <img
       class="recipe-dialog__img"
-      [src]="recipe.imageUrl"
+      [src]="recipe.imageUrl + '-medium.jpg'"
       [alt]="recipe.name"
     />
     <p class="recipe-dialog__p">{{ recipe.description }}</p>
@@ -71,7 +71,7 @@
   <h3>Ingredients</h3>
 
   <ul>
-    @for(ingredient of sortedIngredients(); track ingredient.sortOrder) {
+    @for(ingredient of sortedIngredients(); track $index) {
     <li class="recipe-dialog__ingredient">
       {{ingredient.quantity}} {{ingredient.unit}} of {{ingredient.name}}
     </li>

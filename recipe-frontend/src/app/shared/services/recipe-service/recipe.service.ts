@@ -2,6 +2,7 @@ import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Recipe } from '../../models/recipe';
 import { map, Observable } from 'rxjs';
+import { Page } from '../../models/page';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,15 @@ export class RecipeService {
     return this.http
       .get<Recipe[]>(this.baseURL, { observe: 'response' })
       .pipe(map((res) => res.body || []));
+  }
+
+  getPublishedRecipes(
+    page: number = 0,
+    size: number = 12,
+  ): Observable<Page<Recipe>> {
+    return this.http.get<Page<Recipe>>(
+      this.baseURL + `/publish?page=${page}&size=${size}`,
+    );
   }
 
   getRecipeById(id: number): Observable<Recipe | null> {

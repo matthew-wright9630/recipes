@@ -7,44 +7,74 @@ import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-c
 import { RecipeService } from '../../../shared/services/recipe-service/recipe.service';
 import { RecipeStateService } from '../../../shared/services/recipe-state-service/recipe-state.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Page } from '../../../shared/models/page';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-recipe-list',
-  imports: [CommonModule, MatCardModule, RecipeComponent, MatGridListModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    RecipeComponent,
+    MatGridListModule,
+    MatIcon,
+  ],
   templateUrl: './recipe-list.component.html',
   styleUrl: './recipe-list.component.scss',
 })
 export class RecipeListComponent {
-  recipeList = signal<Recipe[]>([]);
+  // recipeList = signal<Recipe[]>([]);
 
   private recipeStateService = inject(RecipeStateService);
   private destroyRef = inject(DestroyRef);
+  private recipeService = inject(RecipeService);
+
+  currentPage = 0;
+  recipeData: Page<Recipe> | null = null;
 
   ngOnInit(): void {
+    console.log('NG INIT');
+    this.loadRecipes();
+
     this.recipeStateService.recipeUpdated$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((updatedRecipe) => {
         if (updatedRecipe) {
-          this.recipeService.getAllRecipes().subscribe((recipes) => {
-            this.recipeList.set(recipes);
-          });
+          this.loadRecipes();
         }
       });
 
+    this.recipeStateService.recipeDeleted$;
     this.recipeStateService.recipeDeleted$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((deletedId) => {
-        this.recipeList.update((recipes) =>
-          recipes.filter((r) => r.id !== deletedId),
-        );
-      });
+      .subscribe(() => this.loadRecipes());
   }
 
-  constructor(private recipeService: RecipeService) {
-    effect(() => {
-      this.recipeService.getAllRecipes().subscribe((recipes) => {
-        this.recipeList.set(recipes);
-      });
+  loadRecipes(): void {
+    console.log('Load Recipe');
+    this.recipeService.getPublishedRecipes(this.currentPage).subscribe({
+      next: (data) => {
+        console.log(data);
+        this.recipeData = data;
+      },
     });
+  }
+
+  test(): void {
+    console.log('Test');
+  }
+
+  nextPage(): void {
+    if (!this.recipeData?.last) {
+      this.currentPage++;
+      this.loadRecipes();
+    }
+  }
+
+  previousPage(): void {
+    if (!this.recipeData?.first) {
+      this.currentPage--;
+      this.loadRecipes();
+    }
   }
 }

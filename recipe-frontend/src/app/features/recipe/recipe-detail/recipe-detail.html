@@ -15,7 +15,11 @@
           </mat-chip-set>
         </div>
       </div>
-      <img class="recipe-image" [src]="r.imageUrl" [alt]="r.name" />
+      <img
+        class="recipe-image"
+        [src]="r.imageUrl + '-medium.jpg'"
+        [alt]="r.name"
+      />
     </div>
   </mat-card>
   <div class="recipe-content">
@@ -26,7 +30,7 @@
 
       <mat-card-content>
         <ul class="ingredients-list">
-          @for ( ingredient of r.recipeIngredients; track ingredient.id ) {
+          @for ( ingredient of r.recipeIngredients; track $index ) {
 
           <li>
             {{ ingredient.quantity }} {{ ingredient.unit }} {{ ingredient.name
@@ -47,7 +51,7 @@
 
       <mat-card-content>
         <ol class="directions-list">
-          @for ( direction of r.recipeDirections; track direction.stepNumber ) {
+          @for ( direction of r.recipeDirections; track $index ) {
 
           <li>{{ direction.description }}</li>
 

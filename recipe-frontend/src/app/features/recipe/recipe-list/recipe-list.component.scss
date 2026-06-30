@@ -1,9 +1,17 @@
-.recipe-list {
-  // min-height: 70vh;
-}
-
 .recipe-list__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
+  margin-bottom: 2vh;
+}
+
+.recipe-list__pagination {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: 1vw;
+}
+
+.recipe-list__btn:enabled {
+  cursor: pointer;
 }

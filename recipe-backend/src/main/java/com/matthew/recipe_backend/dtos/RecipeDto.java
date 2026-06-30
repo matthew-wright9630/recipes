@@ -10,4 +10,16 @@ public record RecipeDto(Long id, String name, String description, String imageUr
 		Integer cookTime, Integer version, RecipeStatus status,
 		List<RecipeDirectionsDto> recipeDirections,
 		List<RecipeIngredientDto> recipeIngredients, OffsetDateTime createdAt, Long createdById) {
+
+	public String getThumbUrl() {
+		return imageUrl + "/thumb.jpg";
+	}
+
+	public String getMedium() {
+		return imageUrl + "/medium.jpg";
+	}
+
+	public String getLarge() {
+		return imageUrl + "/large.jpg";
+	}
 }

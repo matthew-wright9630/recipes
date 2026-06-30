@@ -4,7 +4,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -129,6 +131,11 @@ public class RecipeService {
 				.map(RecipeView::getRecipe)
 				.map(RecipeMapper::toDto)
 				.toList();
+	}
+
+	public Page<RecipeDto> findAllPublishedRecipes(Pageable pageable) {
+		return recipeRepository.findAllByStatus(RecipeStatus.PUBLISHED, pageable)
+				.map(RecipeMapper::toDto);
 	}
 
 	/**
