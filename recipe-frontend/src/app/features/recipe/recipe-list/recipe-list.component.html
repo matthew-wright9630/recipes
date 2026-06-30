@@ -1,5 +1,16 @@
 <article>
   <div class="recipe-list">
+    <div class="recipe-list__search">
+      <mat-form-field appearance="outline">
+        <mat-label>Search Recipes</mat-label>
+        <input
+          matInput
+          [formControl]="searchControl"
+          placeholder="Search by title..."
+        />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
     <div class="recipe-list__grid">
       @for (recipe of recipeData?.content; track recipe.id) {
         <app-recipe [recipe]="recipe"></app-recipe>

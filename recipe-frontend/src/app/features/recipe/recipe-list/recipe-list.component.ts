@@ -9,6 +9,10 @@ import { RecipeStateService } from '../../../shared/services/recipe-state-servic
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Page } from '../../../shared/models/page';
 import { MatIcon } from '@angular/material/icon';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-recipe-list',
@@ -18,22 +22,26 @@ import { MatIcon } from '@angular/material/icon';
     RecipeComponent,
     MatGridListModule,
     MatIcon,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
   ],
   templateUrl: './recipe-list.component.html',
   styleUrl: './recipe-list.component.scss',
 })
 export class RecipeListComponent {
-  // recipeList = signal<Recipe[]>([]);
-
   private recipeStateService = inject(RecipeStateService);
   private destroyRef = inject(DestroyRef);
   private recipeService = inject(RecipeService);
 
-  currentPage = 0;
+  currentPage: number = 0;
+  searchTerm: string = '';
   recipeData: Page<Recipe> | null = null;
 
+  searchControl = new FormControl('');
+
   ngOnInit(): void {
-    console.log('NG INIT');
     this.loadRecipes();
 
     this.recipeStateService.recipeUpdated$
@@ -48,20 +56,28 @@ export class RecipeListComponent {
     this.recipeStateService.recipeDeleted$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.loadRecipes());
+
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((value) => {
+        this.searchTerm = value || '';
+        this.currentPage = 0;
+        this.loadRecipes();
+      });
   }
 
   loadRecipes(): void {
-    console.log('Load Recipe');
-    this.recipeService.getPublishedRecipes(this.currentPage).subscribe({
-      next: (data) => {
-        console.log(data);
-        this.recipeData = data;
-      },
-    });
-  }
-
-  test(): void {
-    console.log('Test');
+    this.recipeService
+      .getPublishedRecipes(this.currentPage, 12, this.searchTerm)
+      .subscribe({
+        next: (data) => {
+          this.recipeData = data;
+        },
+      });
   }
 
   nextPage(): void {
@@ -76,5 +92,11 @@ export class RecipeListComponent {
       this.currentPage--;
       this.loadRecipes();
     }
+  }
+
+  onSearch(event: Event): void {
+    this.searchTerm = (event.target as HTMLInputElement).value;
+    this.currentPage = 0;
+    this.loadRecipes();
   }
 }

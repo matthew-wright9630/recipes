@@ -72,4 +72,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
 	Page<Recipe> findAllByStatus(RecipeStatus status, Pageable pageable);
 
+	Page<Recipe> findAllByStatusAndNameContainingIgnoreCase(RecipeStatus status, String name, Pageable pageable);
+
 }

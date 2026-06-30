@@ -133,8 +133,13 @@ public class RecipeService {
 				.toList();
 	}
 
-	public Page<RecipeDto> findAllPublishedRecipes(Pageable pageable) {
-		return recipeRepository.findAllByStatus(RecipeStatus.PUBLISHED, pageable)
+	public Page<RecipeDto> findAllPublishedRecipes(Pageable pageable, String search) {
+		if (search == null || search.isBlank()) {
+			return recipeRepository.findAllByStatus(RecipeStatus.PUBLISHED, pageable)
+					.map(RecipeMapper::toDto);
+		}
+		return recipeRepository.findAllByStatusAndNameContainingIgnoreCase(
+				RecipeStatus.PUBLISHED, search, pageable)
 				.map(RecipeMapper::toDto);
 	}
 

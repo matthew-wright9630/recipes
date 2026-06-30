@@ -66,9 +66,10 @@ public class RecipeController {
 	@GetMapping("/publish")
 	public ResponseEntity<Page<RecipeDto>> getPublishedRecipes(
 			@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "12") int size) {
+			@RequestParam(defaultValue = "12") int size,
+			@RequestParam(defaultValue = "") String search) {
 		Pageable pageable = PageRequest.of(page, size);
-		Page<RecipeDto> recipes = recipeService.findAllPublishedRecipes(pageable);
+		Page<RecipeDto> recipes = recipeService.findAllPublishedRecipes(pageable, search);
 		return ResponseEntity.ok(recipes);
 	}
 

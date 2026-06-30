@@ -21,9 +21,10 @@ export class RecipeService {
   getPublishedRecipes(
     page: number = 0,
     size: number = 12,
+    searchTerm: string = '',
   ): Observable<Page<Recipe>> {
     return this.http.get<Page<Recipe>>(
-      this.baseURL + `/publish?page=${page}&size=${size}`,
+      this.baseURL + `/publish?page=${page}&size=${size}&search=${searchTerm}`,
     );
   }
 
