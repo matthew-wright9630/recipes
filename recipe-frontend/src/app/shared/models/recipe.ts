@@ -6,6 +6,7 @@ export interface Recipe {
   id: number;
   name: string;
   description: string;
+  imageUrl: string;
   notes: string;
   servings: number;
   prepTime: number;
