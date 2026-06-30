@@ -1,0 +1,99 @@
+<div class="registration-dialog__header">
+  <h2 mat-dialog-title>Register</h2>
+  <button mat-icon-button mat-dialog-close class="registration-dialog__close">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="registration-dialog__form">
+    <mat-form-field class="registration-dialog__input" appearance="outline">
+      <mat-label>Username</mat-label>
+      <input
+        matInput
+        type="username"
+        formControlName="username"
+        placeholder="username"
+        autocomplete="username"
+      />@if(form.get('username')?.hasError('required')) {
+      <mat-error>Username is Required</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field class="registration-dialog__input" appearance="outline">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        type="email"
+        formControlName="email"
+        placeholder="you@example.com"
+      />
+      @if(form.get('email')?.hasError('required')) {
+      <mat-error>Email is Required</mat-error>
+      } @if(form.get('email')?.hasError('email')) {
+      <mat-error>Email is not in the correct format</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="registration-dialog__input" appearance="outline">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        [type]="hidePassword ? 'password' : 'text'"
+        formControlName="password"
+        autocomplete="new-password"
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="hidePassword = !hidePassword"
+        type="button"
+      >
+        <mat-icon
+          >{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon
+        >
+      </button>
+      @if (form.get('password')?.hasError('required')) {
+      <mat-error>Password is required</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field class="registration-dialog__input" appearance="outline">
+      <mat-label>Confirm Password</mat-label>
+      <input
+        matInput
+        [type]="hidePassword ? 'password' : 'text'"
+        formControlName="confirmPassword"
+        autocomplete="new-password"
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="hidePassword = !hidePassword"
+        type="button"
+      >
+        <mat-icon
+          >{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon
+        >
+      </button>
+      @if (form.controls.confirmPassword.hasError('passwordMismatch')) {
+      <mat-error>Passwords do not match</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- @if (errorMessage) {
+    <p class="registration-dialog__error">{{ errorMessage }}</p>
+    } -->
+
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onSave()"
+      class="registration-dialog__submit"
+    >
+      Register
+    </button>
+
+    <div class="registration-dialog__footer">
+      <!-- <span>Don't have an account? <a (click)="onRegister()">Register</a></span> -->
+    </div>
+  </form>
+</mat-dialog-content>
