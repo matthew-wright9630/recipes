@@ -14,7 +14,7 @@
       </button>
     </div>
     <div class="user-recipe__section">
-      <h3 class="user-recipe__title">Draft Recipes:</h3>
+      <h3 class="user-recipe__title">On the back burner</h3>
       <div class="user-recipe__grid">
         @for (recipe of draftRecipes(); track $index) {
         <app-recipe [recipe]="recipe"></app-recipe>
@@ -24,7 +24,7 @@
       </div>
     </div>
     <div class="user-recipe__section">
-      <h3 class="user-recipe__title">Published Recipes:</h3>
+      <h3 class="user-recipe__title">Dinner is served!</h3>
       <div class="user-recipe__grid">
         @for (recipe of publishedRecipes(); track $index) {
         <app-recipe [recipe]="recipe"></app-recipe>
@@ -34,7 +34,7 @@
       </div>
     </div>
     <div class="user-recipe__section">
-      <h3 class="user-recipe__title">Archived Recipes:</h3>
+      <h3 class="user-recipe__title">Stale Recipes</h3>
       <div class="user-recipe__grid">
         @for (recipe of archivedRecipes(); track $index) {
         <app-recipe [recipe]="recipe"></app-recipe>
