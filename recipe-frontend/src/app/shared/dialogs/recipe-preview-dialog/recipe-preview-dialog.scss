@@ -15,10 +15,6 @@ button {
   cursor: pointer;
 }
 
-.liked {
-  color: #e53935;
-}
-
 .recipe-dialog__description {
   display: flex;
   flex-direction: column;
@@ -107,14 +103,9 @@ button {
   transform: scale(1.1);
 }
 
-// .recipe-dialog__like-btn {
-//   width: 40px;
-//   height: 40px;
-//   border-radius: 10px;
-//   position: absolute;
-//   top: 10px;
-//   left: 10px;
-// }
+.liked {
+  color: #e53935;
+}
 
 .full-recipe-btn {
   border-top: 1px solid var(--mat-sys-outline-variant);
@@ -157,10 +148,8 @@ button {
     width: 90%;
   }
 
-  .recipe-dialog__close-btn {
-    // position: absolute;
-    // right: 10px;
-    // top: 10px;
+  mat-dialog-content {
+    max-height: 50vh;
   }
 
   .recipe-dialog__section {

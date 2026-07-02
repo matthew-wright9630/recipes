@@ -1,13 +1,27 @@
 <section class="recipe-card">
-  <mat-card align="center" (click)="openRecipe(recipe)">
-    <mat-card-title class="recipe-card-title">{{ recipe.name }}</mat-card-title>
-    <!-- <mat-card-content> -->
-    <img
-      mat-card-image
-      [src]="recipe.imageUrl + '-thumb.jpg'"
-      [alt]="recipe.name"
-      class="recipe-card__img"
-    />
-    <!-- </mat-card-content> -->
+  <mat-card align="center">
+    <mat-card-content (click)="openRecipe(recipe)">
+      <mat-card-title class="recipe-card-title">{{
+        recipe.name
+      }}</mat-card-title>
+      <img
+        [src]="recipe.imageUrl + '-thumb.jpg'"
+        [alt]="recipe.name"
+        class="recipe-card__img"
+      />
+    </mat-card-content>
+    <mat-card-actions align="end">
+      @if (recipe.status === 'PUBLISHED' && this.authState.currentUser()) {
+        <button
+          class="recipe-card__like-btn"
+          mat-icon-button
+          (click)="toggleFavorite(recipe)"
+        >
+          <mat-icon [class.liked]="recipe.likedByCurrentUser">
+            {{ recipe.likedByCurrentUser ? 'favorite' : 'favorite_border' }}
+          </mat-icon>
+        </button>
+      }
+    </mat-card-actions>
   </mat-card>
 </section>
