@@ -68,11 +68,15 @@ button {
 }
 
 .recipe-dialog__action-btns {
-  position: absolute;
-  top: 10px;
-  right: 2vw;
   display: flex;
-  gap: 8px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.recipe-dialog__owner-actions {
+  display: flex;
+  gap: 1vw;
+  flex-direction: column;
 }
 
 .recipe-dialog__close-btn,
@@ -170,7 +174,7 @@ button {
     justify-content: center;
   }
 
-  .recipe-dialog__owner-actions {
-    justify-content: center;
-  }
+  // .recipe-dialog__owner-actions {
+  //   justify-content: center;
+  // }
 }

@@ -1,63 +1,69 @@
 <div class="recipe-dialog__header">
   <h2 mat-dialog-title>{{ recipe.name }}</h2>
-  @if(this.isOwner() && this.recipe.status === "DRAFT") {
-  <button
-    mat-raised-button
-    color="primary"
-    mat-dialog-close
-    class="recipe-dialog__btn"
-    (click)="openEditDialog()"
-  >
-    Edit Recipe
-  </button>
-  <button
-    mat-stroked-button
-    color="warn"
-    mat-dialog-close
-    class="recipe-dialog__delete recipe-dialog__btn"
-    (click)="onDelete()"
-  >
-    Delete Recipe
-  </button>
-  } @if (this.isOwner() && (this.recipe.status === "PUBLISHED" ||
-  this.recipe.status === "ARCHIVED")) {
-  <button
-    mat-raised-button
-    color="primary"
-    mat-dialog-close
-    class="recipe-dialog__btn"
-    (click)="onRevise()"
-  >
-    Revise Recipe
-  </button>
-  } @if (this.isOwner() && this.recipe.status === "PUBLISHED") {
+  <div class="recipe-dialog__header-actions">
+    <div class="recipe-dialog__action-btns">
+      @if(recipe.status === 'PUBLISHED' && this.authState.currentUser()) {
 
-  <button
-    mat-stroked-button
-    color="warn"
-    mat-dialog-close
-    class="recipe-dialog__btn"
-    (click)="onArchive()"
-  >
-    Archive Recipe
-  </button>
-  }
-  <div class="recipe-dialog__action-btns">
-    @if(recipe.status === 'PUBLISHED' && this.authState.currentUser()) {
+      <button
+        class="recipe-dialog__like-btn"
+        mat-icon-button
+        (click)="toggleFavorite()"
+      >
+        <mat-icon [class.liked]="recipe.likedByCurrentUser">
+          {{ recipe.likedByCurrentUser ? 'favorite' : 'favorite_border' }}
+        </mat-icon>
+      </button>
+      }
+      <button mat-icon-button mat-dialog-close class="recipe-dialog__close-btn">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    @if (this.isOwner()) {
+    <div class="recipe-dialog__owner-actions">
+      @if(this.recipe.status === "DRAFT") {
+      <button
+        mat-raised-button
+        color="primary"
+        mat-dialog-close
+        class="recipe-dialog__btn"
+        (click)="openEditDialog()"
+      >
+        Edit Recipe
+      </button>
+      <button
+        mat-stroked-button
+        color="warn"
+        mat-dialog-close
+        class="recipe-dialog__delete recipe-dialog__btn"
+        (click)="onDelete()"
+      >
+        Delete Recipe
+      </button>
+      } @if ((this.recipe.status === "PUBLISHED" || this.recipe.status ===
+      "ARCHIVED")) {
+      <button
+        mat-raised-button
+        color="primary"
+        mat-dialog-close
+        class="recipe-dialog__btn"
+        (click)="onRevise()"
+      >
+        Revise Recipe
+      </button>
+      } @if (this.recipe.status === "PUBLISHED") {
 
-    <button
-      class="recipe-dialog__like-btn"
-      mat-icon-button
-      (click)="toggleFavorite()"
-    >
-      <mat-icon [class.liked]="recipe.likedByCurrentUser">
-        {{ recipe.likedByCurrentUser ? 'favorite' : 'favorite_border' }}
-      </mat-icon>
-    </button>
+      <button
+        mat-stroked-button
+        color="warn"
+        mat-dialog-close
+        class="recipe-dialog__btn"
+        (click)="onArchive()"
+      >
+        Archive Recipe
+      </button>
+      }
+    </div>
     }
-    <button mat-icon-button mat-dialog-close class="recipe-dialog__close-btn">
-      <mat-icon>close</mat-icon>
-    </button>
   </div>
 </div>
 
