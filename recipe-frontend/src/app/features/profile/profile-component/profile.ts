@@ -28,16 +28,27 @@ export class Profile {
 
   recipeHistory = signal<Recipe[]>([]);
 
+  private recipeService = inject(RecipeService);
+  authState = inject(AuthStateService);
   private recipeStateService = inject(RecipeStateService);
   private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
-    this.recipeStateService.recipeUpdated$;
-    this.recipeService.getRecipeViewHistoryByUser(3).subscribe((recipes) => {
-      if (recipes) {
-        this.recipeHistory.set(recipes);
-      }
+    this.recipeService.getLikedRecipePreview().subscribe((recipes) => {
+      if (recipes) this.likedRecipeList.set(recipes);
     });
+
+    this.recipeService.getRecipeViewHistoryByUser(3).subscribe((recipes) => {
+      if (recipes) this.recipeHistory.set(recipes);
+    });
+
+    this.recipeStateService.recipeUpdated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.recipeService.getLikedRecipePreview().subscribe((recipes) => {
+          if (recipes) this.likedRecipeList.set(recipes);
+        });
+      });
 
     this.recipeStateService.recipeDeleted$
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -46,26 +57,6 @@ export class Profile {
           recipes.filter((r) => r.id !== deletedId),
         );
       });
-  }
-
-  private recipeService = inject(RecipeService);
-  authState = inject(AuthStateService);
-
-  constructor() {
-    effect(() => {
-      //   this.recipeService
-      //     .getRecipeRevisionHistoryByUser()
-      //     .subscribe((recipes) => {
-      //       if (recipes) {
-      //         this.recipeList.set(recipes);
-      //       }
-      //     });
-      this.recipeService.getRecipeViewHistoryByUser(3).subscribe((recipes) => {
-        if (recipes) {
-          this.recipeHistory.set(recipes);
-        }
-      });
-    });
   }
 
   logout() {

@@ -58,15 +58,6 @@ public class RecipeController {
 		return ResponseEntity.ok(recipes);
 	}
 
-	// @GetMapping("/me/history")
-	// public ResponseEntity<List<RecipeDto>>
-	// getRecipeHistoryByUser(@AuthenticationPrincipal User user,
-	// @RequestParam(defaultValue = "3") int limit) {
-	// List<RecipeDto> recipes =
-	// recipeService.findRecipeByCreatedByWithLimit(user.getUsername(), limit);
-	// return ResponseEntity.ok(recipes);
-	// }
-
 	@GetMapping("/history")
 	public ResponseEntity<List<RecipeDto>> getRecipeHistory(@AuthenticationPrincipal User user,
 			@RequestParam(defaultValue = "3") int limit) {
