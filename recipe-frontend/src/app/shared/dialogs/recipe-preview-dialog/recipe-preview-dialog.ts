@@ -35,6 +35,8 @@ export class RecipePreviewDialog {
   recipeService = inject(RecipeService);
   recipeStateService = inject(RecipeStateService);
   recipeLikeService = inject(RecipeLikeService);
+  authState = inject(AuthStateService);
+
   isOwner = computed(
     () => this.authState.currentUser()?.id === this.recipe.createdById,
   );
@@ -50,7 +52,6 @@ export class RecipePreviewDialog {
   );
 
   private dialog = inject(MatDialog);
-  private authState = inject(AuthStateService);
 
   openEditDialog() {
     const raw = localStorage.getItem(`recipe-draft-${this.recipe.id}`);
@@ -146,15 +147,22 @@ export class RecipePreviewDialog {
   }
 
   toggleFavorite(): void {
-    if (this.recipe.likedByCurrentUser) {
+    if (!this.recipe.likedByCurrentUser) {
       this.recipeLikeService.likeRecipe(this.recipe.id).subscribe({
         next: () => {
-          this.recipeStateService.notifyRecipeDeleted(this.recipe.id);
-          this.dialog.closeAll();
+          this.recipeStateService.notifyRecipeUpdated(this.recipe.id);
+          this.recipe.likedByCurrentUser = true;
         },
         error: (err) => console.error(err),
       });
     } else {
+      this.recipeLikeService.unlikeRecipe(this.recipe.id).subscribe({
+        next: () => {
+          this.recipeStateService.notifyRecipeUpdated(this.recipe.id);
+          this.recipe.likedByCurrentUser = false;
+        },
+        error: (err) => console.error(err),
+      });
     }
   }
 }

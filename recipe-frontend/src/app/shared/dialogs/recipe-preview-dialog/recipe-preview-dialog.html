@@ -1,6 +1,5 @@
 <div class="recipe-dialog__header">
   <h2 mat-dialog-title>{{ recipe.name }}</h2>
-
   @if(this.isOwner() && this.recipe.status === "DRAFT") {
   <button
     mat-raised-button
@@ -43,21 +42,23 @@
     Archive Recipe
   </button>
   }
-  <button
-    mat-icon-button
-    mat-dialog-close
-    class="recipe-dialog__close-btn recipe-dialog__btn"
-  >
-    <mat-icon>close</mat-icon>
-  </button>
-  @if(recipe.status === 'PUBLISHED') {
+  <div class="recipe-dialog__action-btns">
+    @if(recipe.status === 'PUBLISHED' && this.authState.currentUser()) {
 
-  <button mat-icon-button (click)="toggleFavorite()">
-    <mat-icon>
-      {{ recipe.isFavorited ? 'favorite' : 'favorite_border' }}
-    </mat-icon>
-  </button>
-  }
+    <button
+      class="recipe-dialog__like-btn"
+      mat-icon-button
+      (click)="toggleFavorite()"
+    >
+      <mat-icon [class.liked]="recipe.likedByCurrentUser">
+        {{ recipe.likedByCurrentUser ? 'favorite' : 'favorite_border' }}
+      </mat-icon>
+    </button>
+    }
+    <button mat-icon-button mat-dialog-close class="recipe-dialog__close-btn">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
 </div>
 
 <mat-dialog-content>
@@ -93,27 +94,15 @@
       <h3 class="recipe-dialog__h3">Directions</h3>
 
       <ul>
-        @if (sortedDirections().length === 0) { } @else if
-        (sortedDirections().length === 1) {
+        @for(direction of sortedDirections().slice(0, 2); track $index) {
         <li class="recipe-dialog__direction">
-          Step {{sortedDirections().at(0).stepNumber}}:
-          {{sortedDirections().at(0).description}}
+          Step {{direction.stepNumber}}: {{direction.description}}
         </li>
-        } @else {
-        <li class="recipe-dialog__direction">
-          Step {{sortedDirections().at(0).stepNumber}}:
-          {{sortedDirections().at(0).description}}
-        </li>
-        <li class="recipe-dialog__direction">
-          Step {{sortedDirections().at(1).stepNumber}}:
-          {{sortedDirections().at(1).description}}
+        } @if(sortedDirections().length > 2) {
+        <li class="recipe-dialog__direction recipe-dialog__more">
+          ...see all {{sortedDirections().length}} steps
         </li>
         }
-        <!-- <li class="recipe-dialog__direction">
-          <a mat-button mat-dialog-close [routerLink]="['/recipe', recipe.id]">
-            ...See full recipe
-          </a>
-        </li> -->
       </ul>
     </div>
   </div>

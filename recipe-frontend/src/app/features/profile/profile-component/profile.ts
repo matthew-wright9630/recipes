@@ -66,20 +66,20 @@ export class Profile {
   authState = inject(AuthStateService);
 
   constructor() {
-    // effect(() => {
-    //   this.recipeService
-    //     .getRecipeRevisionHistoryByUser()
-    //     .subscribe((recipes) => {
-    //       if (recipes) {
-    //         this.recipeList.set(recipes);
-    //       }
-    //     });
-    //   this.recipeService.getRecipeViewHistoryByUser(3).subscribe((recipes) => {
-    //     if (recipes) {
-    //       this.recipeHistory.set(recipes);
-    //     }
-    //   });
-    // });
+    effect(() => {
+      //   this.recipeService
+      //     .getRecipeRevisionHistoryByUser()
+      //     .subscribe((recipes) => {
+      //       if (recipes) {
+      //         this.recipeList.set(recipes);
+      //       }
+      //     });
+      this.recipeService.getRecipeViewHistoryByUser(3).subscribe((recipes) => {
+        if (recipes) {
+          this.recipeHistory.set(recipes);
+        }
+      });
+    });
   }
 
   logout() {

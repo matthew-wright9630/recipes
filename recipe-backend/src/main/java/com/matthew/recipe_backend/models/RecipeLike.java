@@ -34,6 +34,7 @@ public class RecipeLike {
     }
 
     public RecipeLike(User user, Recipe recipe, OffsetDateTime createdAt) {
+        this.id = new RecipeLikeKey(user.getId(), recipe.getId());
         this.user = user;
         this.recipe = recipe;
         this.createdAt = createdAt;
