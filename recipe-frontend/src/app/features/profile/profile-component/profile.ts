@@ -24,7 +24,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './profile.scss',
 })
 export class Profile {
-  recipeList = signal<Recipe[]>([]);
+  likedRecipeList = signal<Recipe[]>([]);
 
   recipeHistory = signal<Recipe[]>([]);
 
@@ -32,31 +32,17 @@ export class Profile {
   private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
-    // this.recipeStateService.recipeUpdated$
-    //   .pipe(takeUntilDestroyed(this.destroyRef))
-    //   .subscribe((updatedRecipe) => {
-    //     if (updatedRecipe) {
-    //       this.recipeService
-    //         .getRecipeRevisionHistoryByUser()
-    //         .subscribe((recipes) => {
-    //           if (recipes) {
-    //             this.recipeList.set(recipes);
-    //           }
-    //         });
-    //       this.recipeService
-    //         .getRecipeViewHistoryByUser(3)
-    //         .subscribe((recipes) => {
-    //           if (recipes) {
-    //             this.recipeHistory.set(recipes);
-    //           }
-    //         });
-    //     }
-    //   });
+    this.recipeStateService.recipeUpdated$;
+    this.recipeService.getRecipeViewHistoryByUser(3).subscribe((recipes) => {
+      if (recipes) {
+        this.recipeHistory.set(recipes);
+      }
+    });
 
     this.recipeStateService.recipeDeleted$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((deletedId) => {
-        this.recipeList.update((recipes) =>
+        this.likedRecipeList.update((recipes) =>
           recipes.filter((r) => r.id !== deletedId),
         );
       });

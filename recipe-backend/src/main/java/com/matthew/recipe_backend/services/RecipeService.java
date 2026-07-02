@@ -153,9 +153,7 @@ public class RecipeService {
 
 	public List<RecipeDto> findRecentlyViewedRecipes(User user, int limit) {
 		List<Recipe> recipes = recipeViewRepository
-				.findRecentViewsByUser(user, PageRequest.of(0, limit))
-				.stream()
-				.map(RecipeView::getRecipe).toList();
+				.findDistinctRecentlyViewedRecipes(user.getId(), limit);
 
 		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
 		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);

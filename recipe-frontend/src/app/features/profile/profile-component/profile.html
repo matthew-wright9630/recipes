@@ -38,11 +38,11 @@
     <mat-card class="profile__section">
       <div class="card-header">
         <mat-card-title class="profile__card-title"
-          >Recent Activity</mat-card-title
+          >Liked Recipes</mat-card-title
         >
       </div>
       <div class="profile__recipes__grid">
-        @for(recipe of recipeList(); track recipe.id) {
+        @for(recipe of likedRecipeList(); track recipe.id) {
         <app-recipe [recipe]="recipe"></app-recipe>
         }
       </div>
