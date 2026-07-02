@@ -454,14 +454,24 @@ public class RecipeService {
 		if (recipeLikeRepository.existsByRecipeIdAndUserId(recipeId, user.getId())) {
 			throw new IllegalStateException("Recipe already liked");
 		}
+		if (recipe.getStatus() != RecipeStatus.PUBLISHED) {
+			throw new IllegalStateException("Only published recipes can be liked");
+		}
 
 		RecipeLike like = new RecipeLike(user, recipe, OffsetDateTime.now());
 		recipeLikeRepository.save(like);
 	}
 
 	public void unlikeRecipe(Long recipeId, User user) {
+		Recipe recipe = recipeRepository.findById(recipeId)
+				.orElseThrow(() -> new EntityNotFoundException("Recipe not found"));
+
 		if (!recipeLikeRepository.existsByRecipeIdAndUserId(recipeId, user.getId())) {
 			throw new IllegalStateException("Recipe not liked");
+		}
+
+		if (recipe.getStatus() != RecipeStatus.PUBLISHED) {
+			throw new IllegalStateException("Only published recipes can be liked");
 		}
 
 		recipeLikeRepository.deleteByRecipeIdAndUserId(recipeId, user.getId());

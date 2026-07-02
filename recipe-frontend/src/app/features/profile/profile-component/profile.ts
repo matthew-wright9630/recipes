@@ -32,26 +32,26 @@ export class Profile {
   private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
-    this.recipeStateService.recipeUpdated$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((updatedRecipe) => {
-        if (updatedRecipe) {
-          this.recipeService
-            .getRecipeRevisionHistoryByUser()
-            .subscribe((recipes) => {
-              if (recipes) {
-                this.recipeList.set(recipes);
-              }
-            });
-          this.recipeService
-            .getRecipeViewHistoryByUser(3)
-            .subscribe((recipes) => {
-              if (recipes) {
-                this.recipeHistory.set(recipes);
-              }
-            });
-        }
-      });
+    // this.recipeStateService.recipeUpdated$
+    //   .pipe(takeUntilDestroyed(this.destroyRef))
+    //   .subscribe((updatedRecipe) => {
+    //     if (updatedRecipe) {
+    //       this.recipeService
+    //         .getRecipeRevisionHistoryByUser()
+    //         .subscribe((recipes) => {
+    //           if (recipes) {
+    //             this.recipeList.set(recipes);
+    //           }
+    //         });
+    //       this.recipeService
+    //         .getRecipeViewHistoryByUser(3)
+    //         .subscribe((recipes) => {
+    //           if (recipes) {
+    //             this.recipeHistory.set(recipes);
+    //           }
+    //         });
+    //     }
+    //   });
 
     this.recipeStateService.recipeDeleted$
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -66,20 +66,20 @@ export class Profile {
   authState = inject(AuthStateService);
 
   constructor() {
-    effect(() => {
-      this.recipeService
-        .getRecipeRevisionHistoryByUser()
-        .subscribe((recipes) => {
-          if (recipes) {
-            this.recipeList.set(recipes);
-          }
-        });
-      this.recipeService.getRecipeViewHistoryByUser(3).subscribe((recipes) => {
-        if (recipes) {
-          this.recipeHistory.set(recipes);
-        }
-      });
-    });
+    // effect(() => {
+    //   this.recipeService
+    //     .getRecipeRevisionHistoryByUser()
+    //     .subscribe((recipes) => {
+    //       if (recipes) {
+    //         this.recipeList.set(recipes);
+    //       }
+    //     });
+    //   this.recipeService.getRecipeViewHistoryByUser(3).subscribe((recipes) => {
+    //     if (recipes) {
+    //       this.recipeHistory.set(recipes);
+    //     }
+    //   });
+    // });
   }
 
   logout() {

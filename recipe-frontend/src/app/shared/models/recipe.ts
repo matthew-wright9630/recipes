@@ -17,4 +17,6 @@ export interface Recipe {
   recipeIngredients: RecipeIngredient[];
   createdAt: string;
   createdById: number;
+  likeCount: number;
+  likedByCurrentUser: boolean;
 }

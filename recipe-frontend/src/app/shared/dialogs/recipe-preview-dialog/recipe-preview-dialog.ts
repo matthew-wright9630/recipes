@@ -15,6 +15,7 @@ import { ConfirmationDialog } from '../confirmation-dialog/confirmation-dialog';
 import { RecipeService } from '../../services/recipe-service/recipe.service';
 import { RecipeStateService } from '../../services/recipe-state-service/recipe-state.service';
 import { MatIcon } from '@angular/material/icon';
+import { RecipeLikeService } from '../../services/recipe-like-service/recipe-like.service';
 
 @Component({
   selector: 'app-recipe-preview-dialog',
@@ -33,6 +34,7 @@ export class RecipePreviewDialog {
   recipe = inject(MAT_DIALOG_DATA);
   recipeService = inject(RecipeService);
   recipeStateService = inject(RecipeStateService);
+  recipeLikeService = inject(RecipeLikeService);
   isOwner = computed(
     () => this.authState.currentUser()?.id === this.recipe.createdById,
   );
@@ -134,12 +136,25 @@ export class RecipePreviewDialog {
     confirmRef.afterClosed().subscribe((confirmed) => {
       if (!confirmed) return;
       this.recipeService.deleteDraftRecipe(this.recipe.id).subscribe({
-        next: (result) => {
+        next: () => {
           this.recipeStateService.notifyRecipeDeleted(this.recipe.id);
           this.dialog.closeAll();
         },
         error: (err) => console.error(err),
       });
     });
+  }
+
+  toggleFavorite(): void {
+    if (this.recipe.likedByCurrentUser) {
+      this.recipeLikeService.likeRecipe(this.recipe.id).subscribe({
+        next: () => {
+          this.recipeStateService.notifyRecipeDeleted(this.recipe.id);
+          this.dialog.closeAll();
+        },
+        error: (err) => console.error(err),
+      });
+    } else {
+    }
   }
 }
