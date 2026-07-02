@@ -168,13 +168,14 @@ public class RecipeService {
 	}
 
 	public Page<RecipeDto> findAllPublishedRecipes(Pageable pageable, String search, User currentUser) {
+		Long userId = currentUser != null ? currentUser.getId() : null;
 		Page<Recipe> recipes = search.isBlank()
 				? recipeRepository.findAllByStatus(RecipeStatus.PUBLISHED, pageable)
 				: recipeRepository.findAllByStatusAndNameContainingIgnoreCase(RecipeStatus.PUBLISHED, search, pageable);
 
 		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
 		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
-		Set<Long> likedIds = getLikedRecipeIds(recipeIds, currentUser.getId());
+		Set<Long> likedIds = getLikedRecipeIds(recipeIds, userId);
 
 		return recipes.map(recipe -> RecipeMapper.toDto(
 				recipe,
