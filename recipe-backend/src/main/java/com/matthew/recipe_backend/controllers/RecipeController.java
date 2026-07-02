@@ -86,8 +86,8 @@ public class RecipeController {
 	}
 
 	@GetMapping("/me/liked/preview")
-	public ResponseEntity<Page<RecipeDto>> getLikedRecipes(@AuthenticationPrincipal User user) {
-		Page<RecipeDto> recipes = recipeService.findLikedRecipePreview(user);
+	public ResponseEntity<List<RecipeDto>> getLikedRecipes(@AuthenticationPrincipal User user) {
+		List<RecipeDto> recipes = recipeService.findLikedRecipePreview(user);
 		return ResponseEntity.ok(recipes);
 	}
 

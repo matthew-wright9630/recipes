@@ -182,15 +182,17 @@ public class RecipeService {
 				likedIds.contains(recipe.getId())));
 	}
 
-	public Page<RecipeDto> findLikedRecipePreview(User user) {
-		Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "updatedAt"));
+	public List<RecipeDto> findLikedRecipePreview(User user) {
+		Pageable pageable = PageRequest.of(0, 3);
 
 		Page<Recipe> recipes = recipeRepository.findLikedRecipesByUserId(user.getId(), pageable);
 		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
 		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
-		return recipes.map(recipe -> RecipeMapper.toDto(recipe,
-				likeCountMap.getOrDefault(recipe.getId(), 0),
-				true));
+		return recipes.stream()
+				.map(recipe -> RecipeMapper.toDto(recipe,
+						likeCountMap.getOrDefault(recipe.getId(), 0),
+						true))
+				.toList();
 	}
 
 	public Page<RecipeDto> findAllLikedRecipesByUser(Pageable pageable, User user) {
