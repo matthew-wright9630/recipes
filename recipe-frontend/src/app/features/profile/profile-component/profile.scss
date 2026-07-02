@@ -9,8 +9,8 @@
   position: sticky;
   top: 1rem;
   align-self: stretch;
-  justify-content: space-around;
   align-items: center;
+  gap: 5vh;
 }
 
 .profile__header {
@@ -39,7 +39,6 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  // height: 50%;
 }
 
 .profile-content {

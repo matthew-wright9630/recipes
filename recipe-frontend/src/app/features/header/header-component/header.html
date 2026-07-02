@@ -1,6 +1,6 @@
 <mat-toolbar>
   <div class="logo-container">
-    <img src="/favicon.io" alt="Logo" />
+    <div class="header__title" routerLink="/">The Wright Kitchen</div>
   </div>
 
   <span class="spacer"></span>
@@ -20,7 +20,12 @@
 
   @if(this.authState.currentUser()) {
 
-  <button mat-icon-button class="mobile-menu" [matMenuTriggerFor]="menu">
+  <button
+    aria-label="Menu"
+    mat-icon-button
+    class="mobile-menu"
+    [matMenuTriggerFor]="menu"
+  >
     <mat-icon>menu</mat-icon>
   </button>
   <mat-menu #menu="matMenu">

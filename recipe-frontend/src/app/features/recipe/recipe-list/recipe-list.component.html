@@ -1,12 +1,16 @@
 <article>
   <div class="recipe-list">
     <div class="recipe-list__search">
-      <mat-form-field appearance="outline">
+      <mat-form-field
+        class="recipe-list__search-container"
+        appearance="outline"
+      >
         <mat-label>Search Recipes</mat-label>
         <input
           matInput
           [formControl]="searchControl"
           placeholder="Search by title..."
+          class="recipe-list__search"
         />
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>

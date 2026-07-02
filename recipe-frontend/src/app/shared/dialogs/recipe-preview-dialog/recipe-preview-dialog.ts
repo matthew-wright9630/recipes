@@ -21,7 +21,6 @@ import { MatIcon } from '@angular/material/icon';
   imports: [
     MatDialogModule,
     MatDialogContent,
-    MatDialogActions,
     MatDialogTitle,
     RouterLink,
     CommonModule,
