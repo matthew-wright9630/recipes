@@ -3,6 +3,8 @@ package com.matthew.recipe_backend.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -64,8 +66,14 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
 	List<Recipe> findByCreatedBy(User createdBy);
 
+	Page<Recipe> findByCreatedByAndStatusNotIn(User user, List<RecipeStatus> statuses, Pageable pageable);
+
 	Optional<Recipe> findByIdAndStatusIn(Long id, List<RecipeStatus> statuses);
 
 	Optional<Recipe> findByRootRecipeIdAndStatusIn(Long rootRecipeId, List<RecipeStatus> statuses);
+
+	Page<Recipe> findAllByStatus(RecipeStatus status, Pageable pageable);
+
+	Page<Recipe> findAllByStatusAndNameContainingIgnoreCase(RecipeStatus status, String name, Pageable pageable);
 
 }

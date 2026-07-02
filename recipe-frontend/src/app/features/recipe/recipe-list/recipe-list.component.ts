@@ -7,44 +7,96 @@ import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-c
 import { RecipeService } from '../../../shared/services/recipe-service/recipe.service';
 import { RecipeStateService } from '../../../shared/services/recipe-state-service/recipe-state.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Page } from '../../../shared/models/page';
+import { MatIcon } from '@angular/material/icon';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-recipe-list',
-  imports: [CommonModule, MatCardModule, RecipeComponent, MatGridListModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    RecipeComponent,
+    MatGridListModule,
+    MatIcon,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+  ],
   templateUrl: './recipe-list.component.html',
   styleUrl: './recipe-list.component.scss',
 })
 export class RecipeListComponent {
-  recipeList = signal<Recipe[]>([]);
-
   private recipeStateService = inject(RecipeStateService);
   private destroyRef = inject(DestroyRef);
+  private recipeService = inject(RecipeService);
+
+  currentPage: number = 0;
+  searchTerm: string = '';
+  recipeData: Page<Recipe> | null = null;
+
+  searchControl = new FormControl('');
 
   ngOnInit(): void {
+    this.loadRecipes();
+
     this.recipeStateService.recipeUpdated$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((updatedRecipe) => {
         if (updatedRecipe) {
-          this.recipeService.getAllRecipes().subscribe((recipes) => {
-            this.recipeList.set(recipes);
-          });
+          this.loadRecipes();
         }
       });
 
+    this.recipeStateService.recipeDeleted$;
     this.recipeStateService.recipeDeleted$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((deletedId) => {
-        this.recipeList.update((recipes) =>
-          recipes.filter((r) => r.id !== deletedId),
-        );
+      .subscribe(() => this.loadRecipes());
+
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((value) => {
+        this.searchTerm = value || '';
+        this.currentPage = 0;
+        this.loadRecipes();
       });
   }
 
-  constructor(private recipeService: RecipeService) {
-    effect(() => {
-      this.recipeService.getAllRecipes().subscribe((recipes) => {
-        this.recipeList.set(recipes);
+  loadRecipes(): void {
+    this.recipeService
+      .getPublishedRecipes(this.currentPage, 12, this.searchTerm)
+      .subscribe({
+        next: (data) => {
+          this.recipeData = data;
+        },
       });
-    });
+  }
+
+  nextPage(): void {
+    if (!this.recipeData?.last) {
+      this.currentPage++;
+      this.loadRecipes();
+    }
+  }
+
+  previousPage(): void {
+    if (!this.recipeData?.first) {
+      this.currentPage--;
+      this.loadRecipes();
+    }
+  }
+
+  onSearch(event: Event): void {
+    this.searchTerm = (event.target as HTMLInputElement).value;
+    this.currentPage = 0;
+    this.loadRecipes();
   }
 }

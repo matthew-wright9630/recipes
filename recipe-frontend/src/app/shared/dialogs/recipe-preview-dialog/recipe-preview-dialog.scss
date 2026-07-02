@@ -2,18 +2,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1vw;
   margin: 0 2vw;
 }
 
 h2 {
-  max-width: 60%;
-}
-
-mat-dialog-actions {
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 40%;
-  gap: 1vw;
+  width: 70%;
 }
 
 button {
@@ -25,10 +19,15 @@ button {
   flex-direction: column;
   gap: 1vh;
   align-items: center;
+  // width: 50%;
+}
+
+.recipe-dialog__img-container {
+  width: 70%;
 }
 
 .recipe-dialog__img {
-  width: 70%;
+  width: 100%;
 }
 
 .recipe-dialog__p {
@@ -36,8 +35,74 @@ button {
   font-size: 1rem;
 }
 
+.recipe-dialog__section {
+  display: flex;
+  justify-content: space-between;
+}
+
+.recipe-dialog__div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+}
+
+.recipe-dialog__h3 {
+  margin: 0;
+}
+
 .recipe-dialog__ingredient {
   font-size: 1.2rem;
+}
+
+.recipe-dialog__direction {
+  font-size: 1.2rem;
+}
+
+.recipe-dialog__header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1vw;
+  flex-direction: column;
+}
+
+.recipe-dialog__close-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.full-recipe-btn {
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1vh 0;
+}
+
+.recipe-dialog__full-recipe {
+  margin: 2vh 0;
+}
+
+.recipe-dialog__btn {
+  font-size: 1rem;
+}
+
+.recipe-dialog__full-recipe {
+  width: 150px;
+  height: 65px;
+  border-radius: 16px;
+  font-size: 1rem;
+}
+
+.recipe-dialog__delete {
+  color: var(--mat-sys-error);
+  border-color: var(--mat-sys-error);
+}
+
+.recipe-dialog__delete:hover {
+  background: color-mix(in srgb, var(--mat-sys-error) 8%, transparent);
 }
 
 @media screen and (max-width: 875px) {
@@ -46,30 +111,35 @@ button {
   }
 
   h2 {
+    width: 90%;
+    // max-width: 100%;
+  }
+
+  .recipe-dialog__close-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+
+  .recipe-dialog__section {
+    flex-direction: column;
+  }
+
+  .recipe-dialog__div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    max-width: 100%;
-  }
-
-  mat-dialog-actions {
-    // flex-direction: column;
-    // align-items: stretch;
-    max-width: none;
-    width: 70%;
-  }
-
-  .recipe-dialog__btn {
-    width: 45%;
-    max-width: none;
   }
 }
 
 @media screen and (max-width: 675px) {
   mat-dialog-actions {
-    flex-direction: column;
-    padding: 2vh 0;
+    justify-content: center;
   }
 
-  .recipe-dialog__btn {
-    width: 100%;
+  .recipe-dialog__owner-actions {
+    justify-content: center;
   }
 }

@@ -36,11 +36,13 @@ export class Profile {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((updatedRecipe) => {
         if (updatedRecipe) {
-          this.recipeService.getRecipesByUser().subscribe((recipes) => {
-            if (recipes) {
-              this.recipeList.set(recipes);
-            }
-          });
+          this.recipeService
+            .getRecipeRevisionHistoryByUser()
+            .subscribe((recipes) => {
+              if (recipes) {
+                this.recipeList.set(recipes);
+              }
+            });
           this.recipeService
             .getRecipeViewHistoryByUser(3)
             .subscribe((recipes) => {
@@ -65,11 +67,13 @@ export class Profile {
 
   constructor() {
     effect(() => {
-      this.recipeService.getRecipesByUser().subscribe((recipes) => {
-        if (recipes) {
-          this.recipeList.set(recipes);
-        }
-      });
+      this.recipeService
+        .getRecipeRevisionHistoryByUser()
+        .subscribe((recipes) => {
+          if (recipes) {
+            this.recipeList.set(recipes);
+          }
+        });
       this.recipeService.getRecipeViewHistoryByUser(3).subscribe((recipes) => {
         if (recipes) {
           this.recipeHistory.set(recipes);

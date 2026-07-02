@@ -30,7 +30,8 @@ public class RecipeMapper {
 						})
 						.toList();
 
-		return new RecipeDto(recipe.getId(), recipe.getName(), recipe.getDescription(), recipe.getNotes(),
+		return new RecipeDto(recipe.getId(), recipe.getName(), recipe.getDescription(), recipe.getImageUrl(),
+				recipe.getNotes(),
 				recipe.getServings(),
 				recipe.getPrepTime(), recipe.getCookTime(), recipe.getVersion(),
 				recipe.getStatus(), directionsDtos, ingredientDtos, recipe.getCreatedAt(),

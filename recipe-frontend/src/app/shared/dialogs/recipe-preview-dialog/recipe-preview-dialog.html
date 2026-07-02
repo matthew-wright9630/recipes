@@ -1,20 +1,132 @@
 <div class="recipe-dialog__header">
   <h2 mat-dialog-title>{{ recipe.name }}</h2>
 
-  <mat-dialog-actions align="end">
-    <button class="recipe-dialog__btn" mat-button mat-dialog-close>
-      Close
-    </button>
+  <!-- <div class="recipe-dialog__header-actions"> -->
 
-    <button
-      mat-raised-button
-      color="primary"
+  @if(this.isOwner() && this.recipe.status === "DRAFT") {
+  <button
+    mat-raised-button
+    color="primary"
+    mat-dialog-close
+    class="recipe-dialog__btn"
+    (click)="openEditDialog()"
+  >
+    Edit Recipe
+  </button>
+  <button
+    mat-stroked-button
+    color="warn"
+    mat-dialog-close
+    class="recipe-dialog__delete recipe-dialog__btn"
+    (click)="onDelete()"
+  >
+    Delete Recipe
+  </button>
+  } @if (this.isOwner() && (this.recipe.status === "PUBLISHED" ||
+  this.recipe.status === "ARCHIVED")) {
+  <button
+    mat-raised-button
+    color="primary"
+    mat-dialog-close
+    class="recipe-dialog__btn"
+    (click)="onRevise()"
+  >
+    Revise Recipe
+  </button>
+  } @if (this.isOwner() && this.recipe.status === "PUBLISHED") {
+
+  <button
+    mat-stroked-button
+    color="warn"
+    mat-dialog-close
+    class="recipe-dialog__btn"
+    (click)="onArchive()"
+  >
+    Archive Recipe
+  </button>
+  }
+  <button
+    mat-icon-button
+    mat-dialog-close
+    class="recipe-dialog__close-btn recipe-dialog__btn"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <!-- </div> -->
+</div>
+
+<mat-dialog-content>
+  <div class="recipe-dialog__description">
+    <a
+      class="recipe-dialog__img-container"
       mat-dialog-close
-      class="recipe-dialog__btn"
       [routerLink]="['/recipe', recipe.id]"
     >
-      Open Full Recipe
-    </button>
+      <img
+        class="recipe-dialog__img"
+        [src]="recipe.imageUrl + '-medium.jpg'"
+        [alt]="recipe.name"
+      />
+    </a>
+    <p class="recipe-dialog__p">{{ recipe.description }}</p>
+  </div>
+
+  <div class="recipe-dialog__section">
+    <div class="recipe-dialog__div">
+      <h3 class="recipe-dialog__h3">Ingredients</h3>
+
+      <ul>
+        @for(ingredient of sortedIngredients(); track $index) {
+        <li class="recipe-dialog__ingredient">
+          {{ingredient.quantity}} {{ingredient.unit}} of {{ingredient.name}}
+        </li>
+        }
+      </ul>
+    </div>
+
+    <div class="recipe-dialog__div">
+      <h3 class="recipe-dialog__h3">Directions</h3>
+
+      <ul>
+        @if (sortedDirections().length === 0) { } @else if
+        (sortedDirections().length === 1) {
+        <li class="recipe-dialog__direction">
+          Step {{sortedDirections().at(0).stepNumber}}:
+          {{sortedDirections().at(0).description}}
+        </li>
+        } @else {
+        <li class="recipe-dialog__direction">
+          Step {{sortedDirections().at(0).stepNumber}}:
+          {{sortedDirections().at(0).description}}
+        </li>
+        <li class="recipe-dialog__direction">
+          Step {{sortedDirections().at(1).stepNumber}}:
+          {{sortedDirections().at(1).description}}
+        </li>
+        }
+        <!-- <li class="recipe-dialog__direction">
+          <a mat-button mat-dialog-close [routerLink]="['/recipe', recipe.id]">
+            ...See full recipe
+          </a>
+        </li> -->
+      </ul>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<div class="full-recipe-btn">
+  <button
+    mat-raised-button
+    mat-dialog-close
+    class="recipe-dialog__full-recipe"
+    [routerLink]="['/recipe', recipe.id]"
+  >
+    See full recipe
+  </button>
+</div>
+
+<!-- <mat-dialog-actions>
+  <div class="recipe-dialog__owner-actions">
     @if(this.isOwner() && this.recipe.status === "DRAFT") {
     <button
       mat-raised-button
@@ -26,10 +138,10 @@
       Edit Recipe
     </button>
     <button
-      mat-raised-button
-      color="primary"
+      mat-stroked-button
+      color="warn"
       mat-dialog-close
-      class="recipe-dialog__btn"
+      class="recipe-dialog__delete recipe-dialog__btn"
       (click)="onDelete()"
     >
       Delete Recipe
@@ -45,9 +157,11 @@
     >
       Revise Recipe
     </button>
+    } @if (this.isOwner() && this.recipe.status === "PUBLISHED") {
+
     <button
-      mat-raised-button
-      color="primary"
+      mat-stroked-button
+      color="warn"
       mat-dialog-close
       class="recipe-dialog__btn"
       (click)="onArchive()"
@@ -55,27 +169,5 @@
       Archive Recipe
     </button>
     }
-  </mat-dialog-actions>
-</div>
-
-<mat-dialog-content>
-  <div class="recipe-dialog__description">
-    <img
-      class="recipe-dialog__img"
-      [src]="'food-PLACEHOLDER.jpg'"
-      [alt]="recipe.name"
-    />
-
-    <p class="recipe-dialog__p">{{ recipe.description }}</p>
   </div>
-
-  <h3>Ingredients</h3>
-
-  <ul>
-    @for(ingredient of sortedIngredients(); track ingredient.sortOrder) {
-    <li class="recipe-dialog__ingredient">
-      {{ingredient.quantity}} {{ingredient.unit}} of {{ingredient.name}}
-    </li>
-    }
-  </ul>
-</mat-dialog-content>
+</mat-dialog-actions> -->

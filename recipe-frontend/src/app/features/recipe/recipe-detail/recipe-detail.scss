@@ -9,6 +9,7 @@
   display: flex;
   gap: 2rem;
   justify-content: space-between;
+  margin: 0 2vw;
 }
 
 .recipe-hero__info {
@@ -54,6 +55,5 @@
 
   .recipe-image {
     width: 100%;
-    max-width: 400px;
   }
 }

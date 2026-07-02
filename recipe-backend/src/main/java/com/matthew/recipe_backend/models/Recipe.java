@@ -34,6 +34,9 @@ public class Recipe {
 	@Column
 	private String description;
 
+	@Column(name = "image_url")
+	private String imageUrl;
+
 	@Column
 	private String notes;
 
@@ -77,9 +80,10 @@ public class Recipe {
 
 	}
 
-	public Recipe(User createdBy, String name, String description) {
+	public Recipe(User createdBy, String name, String description, String imageUrl) {
 		this.name = name;
 		this.description = description;
+		this.imageUrl = imageUrl;
 		this.notes = null;
 		this.servings = 0;
 		this.prepTime = 0;
@@ -93,10 +97,12 @@ public class Recipe {
 		this.recipeIngredients = null;
 	}
 
-	public Recipe(String name, String description, String notes, Integer servings, Integer prepTime, Integer cookTime,
+	public Recipe(String name, String description, String imageUrl, String notes, Integer servings, Integer prepTime,
+			Integer cookTime,
 			User createdBy, Integer version, Recipe rootRecipe) {
 		this.name = name;
 		this.description = description;
+		this.imageUrl = imageUrl;
 		this.notes = notes;
 		this.servings = servings;
 		this.prepTime = prepTime;
@@ -149,6 +155,14 @@ public class Recipe {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 
 	public String getNotes() {

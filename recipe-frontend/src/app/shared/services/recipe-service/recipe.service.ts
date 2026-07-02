@@ -2,6 +2,7 @@ import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Recipe } from '../../models/recipe';
 import { map, Observable } from 'rxjs';
+import { Page } from '../../models/page';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,16 @@ export class RecipeService {
       .pipe(map((res) => res.body || []));
   }
 
+  getPublishedRecipes(
+    page: number = 0,
+    size: number = 12,
+    searchTerm: string = '',
+  ): Observable<Page<Recipe>> {
+    return this.http.get<Page<Recipe>>(
+      this.baseURL + `/publish?page=${page}&size=${size}&search=${searchTerm}`,
+    );
+  }
+
   getRecipeById(id: number): Observable<Recipe | null> {
     return this.http
       .get<Recipe>(this.baseURL + '/' + id, {
@@ -29,6 +40,12 @@ export class RecipeService {
   getRecipesByUser() {
     return this.http
       .get<Recipe[]>(this.baseURL + '/me', { observe: 'response' })
+      .pipe(map((res) => res.body || []));
+  }
+
+  getRecipeRevisionHistoryByUser() {
+    return this.http
+      .get<Recipe[]>(this.baseURL + '/me/history', { observe: 'response' })
       .pipe(map((res) => res.body || []));
   }
 

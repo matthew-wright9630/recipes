@@ -4,7 +4,10 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -122,6 +125,17 @@ public class RecipeService {
 				.toList();
 	}
 
+	public List<RecipeDto> findRecipeByCreatedByWithLimit(String username, int limit) {
+		User user = userRepository.findByEmail(username)
+				.orElseThrow(() -> new UserNotFoundException(username));
+
+		Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "updatedAt"));
+
+		return recipeRepository.findByCreatedByAndStatusNotIn(user, List.of(RecipeStatus.SUPERSEDED), pageable)
+				.map(RecipeMapper::toDto)
+				.toList();
+	}
+
 	public List<RecipeDto> findRecentlyViewedRecipes(User user, int limit) {
 		return recipeViewRepository
 				.findRecentViewsByUser(user, PageRequest.of(0, limit))
@@ -129,6 +143,16 @@ public class RecipeService {
 				.map(RecipeView::getRecipe)
 				.map(RecipeMapper::toDto)
 				.toList();
+	}
+
+	public Page<RecipeDto> findAllPublishedRecipes(Pageable pageable, String search) {
+		if (search == null || search.isBlank()) {
+			return recipeRepository.findAllByStatus(RecipeStatus.PUBLISHED, pageable)
+					.map(RecipeMapper::toDto);
+		}
+		return recipeRepository.findAllByStatusAndNameContainingIgnoreCase(
+				RecipeStatus.PUBLISHED, search, pageable)
+				.map(RecipeMapper::toDto);
 	}
 
 	/**
@@ -139,7 +163,7 @@ public class RecipeService {
 	 * @return the newly created {@link RecipeDto}
 	 */
 	public RecipeDto createDraftRecipe(CreateRecipeDto draftRecipe, User user) {
-		Recipe recipe = new Recipe(user, draftRecipe.name(), draftRecipe.description());
+		Recipe recipe = new Recipe(user, draftRecipe.name(), draftRecipe.description(), draftRecipe.imageUrl());
 		recipeRepository.save(recipe);
 		return RecipeMapper.toDto(recipe);
 	}
@@ -389,7 +413,8 @@ public class RecipeService {
 				? foundRecipe.getRootRecipe()
 				: foundRecipe;
 
-		Recipe newDraftRecipe = new Recipe(foundRecipe.getName(), foundRecipe.getDescription(), foundRecipe.getNotes(),
+		Recipe newDraftRecipe = new Recipe(foundRecipe.getName(), foundRecipe.getDescription(),
+				foundRecipe.getImageUrl(), foundRecipe.getNotes(),
 				foundRecipe.getServings(), foundRecipe.getPrepTime(), foundRecipe.getCookTime(),
 				foundRecipe.getCreatedBy(), foundRecipe.getVersion() + 1, rootRecipe);
 

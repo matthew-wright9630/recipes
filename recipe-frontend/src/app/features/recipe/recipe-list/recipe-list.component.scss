@@ -1,9 +1,36 @@
-.recipe-list {
-  // min-height: 70vh;
+.recipe-list__search-container {
+  width: 95%;
+  background: white;
+  margin: 2vh 3vw;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.recipe-list__search {
+  width: 50%;
+  margin: 0 auto;
 }
 
 .recipe-list__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
+  margin-bottom: 2vh;
+}
+
+.recipe-list__pagination {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: 1vw;
+}
+
+.recipe-list__btn:enabled {
+  cursor: pointer;
+}
+
+@media screen and (max-width: 650px) {
+  .recipe-list__search {
+    width: 100%;
+  }
 }

@@ -14,16 +14,17 @@ import { RecipeEditDialog } from '../recipe-edit-dialog/recipe-edit-dialog';
 import { ConfirmationDialog } from '../confirmation-dialog/confirmation-dialog';
 import { RecipeService } from '../../services/recipe-service/recipe.service';
 import { RecipeStateService } from '../../services/recipe-state-service/recipe-state.service';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-recipe-preview-dialog',
   imports: [
     MatDialogModule,
     MatDialogContent,
-    MatDialogActions,
     MatDialogTitle,
     RouterLink,
     CommonModule,
+    MatIcon,
   ],
   templateUrl: './recipe-preview-dialog.html',
   styleUrl: './recipe-preview-dialog.scss',
@@ -40,6 +41,10 @@ export class RecipePreviewDialog {
     [...this.recipe.recipeIngredients].sort(
       (a, b) => a.sortOrder - b.sortOrder,
     ),
+  );
+
+  sortedDirections = computed(() =>
+    [...this.recipe.recipeDirections].sort((a, b) => a.sortOrder - b.sortOrder),
   );
 
   private dialog = inject(MatDialog);

@@ -1,6 +1,6 @@
 <mat-toolbar>
   <div class="logo-container">
-    <img src="/favicon.io" alt="Logo" />
+    <div class="header__title" routerLink="/">The Wright Kitchen</div>
   </div>
 
   <span class="spacer"></span>
@@ -8,7 +8,7 @@
   <div class="header__buttons desktop-nav">
     @if(this.authState.currentUser()) {
     <button mat-raised-button routerLink="/">Browse Recipes</button>
-    <button mat-raised-button routerLink="/cookbooks">Cookbooks</button>
+    <!-- <button mat-raised-button routerLink="/cookbooks">Cookbooks</button> -->
     <button mat-raised-button routerLink="/recipes">My Recipes</button>
     <button mat-raised-button routerLink="/profile">Profile</button>
     } @else {
@@ -20,12 +20,17 @@
 
   @if(this.authState.currentUser()) {
 
-  <button mat-icon-button class="mobile-menu" [matMenuTriggerFor]="menu">
+  <button
+    aria-label="Menu"
+    mat-icon-button
+    class="mobile-menu"
+    [matMenuTriggerFor]="menu"
+  >
     <mat-icon>menu</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
     <button mat-menu-item routerLink="/">Browse Recipes</button>
-    <button mat-menu-item routerLink="/cookbooks">Cookbooks</button>
+    <!-- <button mat-menu-item routerLink="/cookbooks">Cookbooks</button> -->
     <button mat-menu-item routerLink="/recipes">My Recipes</button>
     <button mat-menu-item routerLink="/profile">Profile</button>
   </mat-menu>
