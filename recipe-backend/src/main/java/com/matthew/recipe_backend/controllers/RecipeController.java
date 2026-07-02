@@ -39,29 +39,33 @@ public class RecipeController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<RecipeDto>> getAllRecipes() {
-		List<RecipeDto> recipes = recipeService.findAllRecipes();
+	public ResponseEntity<List<RecipeDto>> getAllRecipes(
+			@AuthenticationPrincipal User user) {
+		List<RecipeDto> recipes = recipeService.findAllRecipes(user);
 		return ResponseEntity.ok(recipes);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<RecipeDto> getRecipeById(@PathVariable long id) {
-		RecipeDto recipe = recipeService.findRecipeById(id);
+	public ResponseEntity<RecipeDto> getRecipeById(@PathVariable long id,
+			@AuthenticationPrincipal User user) {
+		RecipeDto recipe = recipeService.findRecipeById(id, user);
 		return ResponseEntity.ok(recipe);
 	}
 
 	@GetMapping("/me")
 	public ResponseEntity<List<RecipeDto>> getRecipeByUser(@AuthenticationPrincipal User user) {
-		List<RecipeDto> recipes = recipeService.findRecipeByCreatedBy(user.getUsername());
+		List<RecipeDto> recipes = recipeService.findRecipeByCreatedBy(user);
 		return ResponseEntity.ok(recipes);
 	}
 
-	@GetMapping("/me/history")
-	public ResponseEntity<List<RecipeDto>> getRecipeHistoryByUser(@AuthenticationPrincipal User user,
-			@RequestParam(defaultValue = "3") int limit) {
-		List<RecipeDto> recipes = recipeService.findRecipeByCreatedByWithLimit(user.getUsername(), limit);
-		return ResponseEntity.ok(recipes);
-	}
+	// @GetMapping("/me/history")
+	// public ResponseEntity<List<RecipeDto>>
+	// getRecipeHistoryByUser(@AuthenticationPrincipal User user,
+	// @RequestParam(defaultValue = "3") int limit) {
+	// List<RecipeDto> recipes =
+	// recipeService.findRecipeByCreatedByWithLimit(user.getUsername(), limit);
+	// return ResponseEntity.ok(recipes);
+	// }
 
 	@GetMapping("/history")
 	public ResponseEntity<List<RecipeDto>> getRecipeHistory(@AuthenticationPrincipal User user,
@@ -74,9 +78,26 @@ public class RecipeController {
 	public ResponseEntity<Page<RecipeDto>> getPublishedRecipes(
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "12") int size,
-			@RequestParam(defaultValue = "") String search) {
+			@RequestParam(defaultValue = "") String search,
+			@AuthenticationPrincipal User user) {
 		Pageable pageable = PageRequest.of(page, size);
-		Page<RecipeDto> recipes = recipeService.findAllPublishedRecipes(pageable, search);
+		Page<RecipeDto> recipes = recipeService.findAllPublishedRecipes(pageable, search, user);
+		return ResponseEntity.ok(recipes);
+	}
+
+	@GetMapping("/me/liked/preview")
+	public ResponseEntity<Page<RecipeDto>> getLikedRecipes(@AuthenticationPrincipal User user) {
+		Page<RecipeDto> recipes = recipeService.findLikedRecipePreview(user);
+		return ResponseEntity.ok(recipes);
+	}
+
+	@GetMapping("me/liked")
+	public ResponseEntity<Page<RecipeDto>> getLikedRecipes(
+			@AuthenticationPrincipal User user,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "12") int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Page<RecipeDto> recipes = recipeService.findAllLikedRecipesByUser(pageable, user);
 		return ResponseEntity.ok(recipes);
 	}
 
@@ -110,16 +131,10 @@ public class RecipeController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Object> deleteRecipe(@PathVariable long id) {
+	public ResponseEntity<Object> deleteRecipe(@PathVariable long id,
+			@AuthenticationPrincipal User user) {
 		recipeService.deleteDraftRecipe(id);
 		return ResponseEntity.noContent().build();
-	}
-
-	@PatchMapping("{id}/status")
-	public ResponseEntity<RecipeDto> updateRecipeStatus(@PathVariable long id,
-			@RequestBody StatusUpdateRequestDto request) {
-		RecipeDto recipe = recipeService.updateRecipeStatus(id, request.getStatus());
-		return ResponseEntity.ok(recipe);
 	}
 
 	@PostMapping("/{id}/revise")

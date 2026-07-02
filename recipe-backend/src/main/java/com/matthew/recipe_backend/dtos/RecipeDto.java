@@ -9,7 +9,8 @@ public record RecipeDto(Long id, String name, String description, String imageUr
 		Integer prepTime,
 		Integer cookTime, Integer version, RecipeStatus status,
 		List<RecipeDirectionsDto> recipeDirections,
-		List<RecipeIngredientDto> recipeIngredients, OffsetDateTime createdAt, Long createdById) {
+		List<RecipeIngredientDto> recipeIngredients, OffsetDateTime createdAt, Long createdById, int likeCount,
+		boolean likedByCurrentUser) {
 
 	public String getThumbUrl() {
 		return imageUrl + "/thumb.jpg";

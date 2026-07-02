@@ -43,11 +43,11 @@ export class RecipeService {
       .pipe(map((res) => res.body || []));
   }
 
-  getRecipeRevisionHistoryByUser() {
-    return this.http
-      .get<Recipe[]>(this.baseURL + '/me/history', { observe: 'response' })
-      .pipe(map((res) => res.body || []));
-  }
+  // getRecipeRevisionHistoryByUser() {
+  //   return this.http
+  //     .get<Recipe[]>(this.baseURL + '/me/history', { observe: 'response' })
+  //     .pipe(map((res) => res.body || []));
+  // }
 
   getRecipeViewHistoryByUser(limit: number) {
     const params = new HttpParams().set('limit', limit.toString());

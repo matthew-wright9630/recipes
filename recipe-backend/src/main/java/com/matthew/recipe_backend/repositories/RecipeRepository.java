@@ -76,4 +76,23 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
 	Page<Recipe> findAllByStatusAndNameContainingIgnoreCase(RecipeStatus status, String name, Pageable pageable);
 
+	// @Query("""
+	// SELECT r FROM Recipe r
+	// JOIN RecipeLike rl ON rl.recipe.id = r.id
+	// WHERE rl.user.id = :userId
+	// ORDER BY rl.createdAt DESC
+	// """)
+	// Page<Recipe> findLikedRecipesByUserId(@Param("userId") Long userId);
+
+	@Query(value = """
+			SELECT r FROM Recipe r
+			JOIN RecipeLike rl ON rl.recipe.id = r.id
+			WHERE rl.user.id = :userId
+			ORDER BY rl.createdAt DESC
+			""", countQuery = """
+			SELECT COUNT(r) FROM Recipe r
+			JOIN RecipeLike rl ON rl.recipe.id = r.id
+			WHERE rl.user.id = :userId
+			""")
+	Page<Recipe> findLikedRecipesByUserId(@Param("userId") Long userId, Pageable pageable);
 }
