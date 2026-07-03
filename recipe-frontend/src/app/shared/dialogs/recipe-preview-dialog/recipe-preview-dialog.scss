@@ -1,9 +1,10 @@
 .recipe-dialog__header {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1vw;
-  margin: 0 2vw;
+  padding: 25px 2vw;
 }
 
 h2 {
@@ -19,7 +20,6 @@ button {
   flex-direction: column;
   gap: 1vh;
   align-items: center;
-  // width: 50%;
 }
 
 .recipe-dialog__img-container {
@@ -67,10 +67,48 @@ button {
   flex-direction: column;
 }
 
-.recipe-dialog__close-btn {
+.recipe-dialog__action-btns {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.recipe-dialog__owner-actions {
+  display: flex;
+  gap: 1vw;
+  flex-direction: column;
+}
+
+.recipe-dialog__close-btn,
+.recipe-dialog__like-btn {
   width: 40px;
   height: 40px;
-  border-radius: 10px;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.08);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.recipe-dialog__like-btn:hover {
+  background: rgba(244, 67, 54, 0.08); // subtle red tint
+  transform: scale(1.1);
+}
+
+.liked {
+  color: #e53935;
 }
 
 .full-recipe-btn {
@@ -112,13 +150,10 @@ button {
 
   h2 {
     width: 90%;
-    // max-width: 100%;
   }
 
-  .recipe-dialog__close-btn {
-    position: absolute;
-    right: 10px;
-    top: 10px;
+  mat-dialog-content {
+    max-height: 50vh;
   }
 
   .recipe-dialog__section {
@@ -139,7 +174,7 @@ button {
     justify-content: center;
   }
 
-  .recipe-dialog__owner-actions {
-    justify-content: center;
-  }
+  // .recipe-dialog__owner-actions {
+  //   justify-content: center;
+  // }
 }

@@ -23,6 +23,7 @@ export class RecipeService {
     size: number = 12,
     searchTerm: string = '',
   ): Observable<Page<Recipe>> {
+    console.log('called');
     return this.http.get<Page<Recipe>>(
       this.baseURL + `/publish?page=${page}&size=${size}&search=${searchTerm}`,
     );
@@ -43,16 +44,18 @@ export class RecipeService {
       .pipe(map((res) => res.body || []));
   }
 
-  getRecipeRevisionHistoryByUser() {
-    return this.http
-      .get<Recipe[]>(this.baseURL + '/me/history', { observe: 'response' })
-      .pipe(map((res) => res.body || []));
-  }
-
   getRecipeViewHistoryByUser(limit: number) {
     const params = new HttpParams().set('limit', limit.toString());
     return this.http
       .get<Recipe[]>(this.baseURL + '/history', { observe: 'response', params })
+      .pipe(map((res) => res.body));
+  }
+
+  getLikedRecipePreview() {
+    return this.http
+      .get<
+        Recipe[]
+      >(this.baseURL + '/me/liked/preview', { observe: 'response' })
       .pipe(map((res) => res.body));
   }
 

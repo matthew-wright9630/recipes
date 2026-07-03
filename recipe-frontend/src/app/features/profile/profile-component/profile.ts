@@ -24,62 +24,39 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './profile.scss',
 })
 export class Profile {
-  recipeList = signal<Recipe[]>([]);
+  likedRecipeList = signal<Recipe[]>([]);
 
   recipeHistory = signal<Recipe[]>([]);
 
+  private recipeService = inject(RecipeService);
+  authState = inject(AuthStateService);
   private recipeStateService = inject(RecipeStateService);
   private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
+    this.recipeService.getLikedRecipePreview().subscribe((recipes) => {
+      if (recipes) this.likedRecipeList.set(recipes);
+    });
+
+    this.recipeService.getRecipeViewHistoryByUser(3).subscribe((recipes) => {
+      if (recipes) this.recipeHistory.set(recipes);
+    });
+
     this.recipeStateService.recipeUpdated$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((updatedRecipe) => {
-        if (updatedRecipe) {
-          this.recipeService
-            .getRecipeRevisionHistoryByUser()
-            .subscribe((recipes) => {
-              if (recipes) {
-                this.recipeList.set(recipes);
-              }
-            });
-          this.recipeService
-            .getRecipeViewHistoryByUser(3)
-            .subscribe((recipes) => {
-              if (recipes) {
-                this.recipeHistory.set(recipes);
-              }
-            });
-        }
+      .subscribe(() => {
+        this.recipeService.getLikedRecipePreview().subscribe((recipes) => {
+          if (recipes) this.likedRecipeList.set(recipes);
+        });
       });
 
     this.recipeStateService.recipeDeleted$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((deletedId) => {
-        this.recipeList.update((recipes) =>
+        this.likedRecipeList.update((recipes) =>
           recipes.filter((r) => r.id !== deletedId),
         );
       });
-  }
-
-  private recipeService = inject(RecipeService);
-  authState = inject(AuthStateService);
-
-  constructor() {
-    effect(() => {
-      this.recipeService
-        .getRecipeRevisionHistoryByUser()
-        .subscribe((recipes) => {
-          if (recipes) {
-            this.recipeList.set(recipes);
-          }
-        });
-      this.recipeService.getRecipeViewHistoryByUser(3).subscribe((recipes) => {
-        if (recipes) {
-          this.recipeHistory.set(recipes);
-        }
-      });
-    });
   }
 
   logout() {

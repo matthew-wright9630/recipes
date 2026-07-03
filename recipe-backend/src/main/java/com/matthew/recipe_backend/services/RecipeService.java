@@ -1,7 +1,11 @@
 package com.matthew.recipe_backend.services;
 
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -26,10 +30,12 @@ import com.matthew.recipe_backend.models.Ingredient;
 import com.matthew.recipe_backend.models.Recipe;
 import com.matthew.recipe_backend.models.RecipeDirection;
 import com.matthew.recipe_backend.models.RecipeIngredient;
+import com.matthew.recipe_backend.models.RecipeLike;
 import com.matthew.recipe_backend.models.RecipeView;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.repositories.IngredientRepository;
 import com.matthew.recipe_backend.repositories.RecipeDirectionRepository;
+import com.matthew.recipe_backend.repositories.RecipeLikeRepository;
 import com.matthew.recipe_backend.repositories.RecipeRepository;
 import com.matthew.recipe_backend.repositories.RecipeViewRepository;
 import com.matthew.recipe_backend.repositories.UserRepository;
@@ -57,6 +63,7 @@ public class RecipeService {
 	private final RecipeViewRepository recipeViewRepository;
 	private final RecipeDirectionRepository recipeDirectionRepository;
 	private final IngredientRepository ingredientRepository;
+	private final RecipeLikeRepository recipeLikeRepository;
 	private final EntityManager entityManager;
 
 	/**
@@ -67,7 +74,8 @@ public class RecipeService {
 	public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository,
 			RecipeIngredientService recipeIngredientService, RecipeViewService recipeViewService,
 			RecipeViewRepository recipeViewRepository, RecipeDirectionRepository recipeDirectionRepository,
-			IngredientRepository ingredientRepository, EntityManager entityManager) {
+			IngredientRepository ingredientRepository, RecipeLikeRepository recipeLikeRepository,
+			EntityManager entityManager) {
 		this.recipeRepository = recipeRepository;
 		this.userRepository = userRepository;
 		this.recipeIngredientService = recipeIngredientService;
@@ -75,6 +83,7 @@ public class RecipeService {
 		this.recipeViewRepository = recipeViewRepository;
 		this.recipeDirectionRepository = recipeDirectionRepository;
 		this.ingredientRepository = ingredientRepository;
+		this.recipeLikeRepository = recipeLikeRepository;
 		this.entityManager = entityManager;
 	}
 
@@ -83,10 +92,17 @@ public class RecipeService {
 	 *
 	 * @return a list of {@link RecipeDto} representing all recipes in the system
 	 */
-	public List<RecipeDto> findAllRecipes() {
+	public List<RecipeDto> findAllRecipes(User user) {
 		List<Recipe> recipes = recipeRepository.findAllWithIngredients();
-		List<RecipeDto> recipeDtos = recipes.stream().map(RecipeMapper::toDto).toList();
-		return recipeDtos;
+
+		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
+		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
+		Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
+
+		return recipes.stream().map(recipe -> RecipeMapper.toDto(
+				recipe,
+				likeCountMap.getOrDefault(recipe.getId(), 0),
+				likedIds.contains(recipe.getId()))).toList();
 	}
 
 	/**
@@ -101,7 +117,7 @@ public class RecipeService {
 	 * @return the matching {@link RecipeDto}
 	 * @throws EntityNotFoundException if no recipe exists with the given ID
 	 */
-	public RecipeDto findRecipeById(Long id) {
+	public RecipeDto findRecipeById(Long id, User user) {
 		// Fetch the recipe with its directions first, throwing if not found
 		Recipe recipe = recipeRepository.findByIdWithDirections(id)
 				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
@@ -110,49 +126,82 @@ public class RecipeService {
 		// avoiding a multi-bag fetch exception on the same entity
 		recipeRepository.findByIdWithIngredients(id);
 
-		RecipeDto recipeDto = RecipeMapper.toDto(recipe);
+		List<Long> recipeIds = List.of(recipe.getId());
+		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
+		Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
+
+		RecipeDto recipeDto = RecipeMapper.toDto(recipe,
+				likeCountMap.getOrDefault(recipe.getId(), 0),
+				likedIds.contains(recipe.getId()));
 		recipeViewService.addView(recipe);
 		return recipeDto;
 	}
 
-	public List<RecipeDto> findRecipeByCreatedBy(String username) {
-		User user = userRepository.findByEmail(username)
-				.orElseThrow(() -> new UserNotFoundException(username));
+	public List<RecipeDto> findRecipeByCreatedBy(User user) {
 
-		return recipeRepository.findByCreatedBy(user)
-				.stream()
-				.map(RecipeMapper::toDto)
-				.toList();
-	}
+		List<Recipe> recipes = recipeRepository.findByCreatedBy(user);
 
-	public List<RecipeDto> findRecipeByCreatedByWithLimit(String username, int limit) {
-		User user = userRepository.findByEmail(username)
-				.orElseThrow(() -> new UserNotFoundException(username));
+		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
+		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
+		Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
 
-		Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "updatedAt"));
-
-		return recipeRepository.findByCreatedByAndStatusNotIn(user, List.of(RecipeStatus.SUPERSEDED), pageable)
-				.map(RecipeMapper::toDto)
-				.toList();
+		return recipes.stream().map(recipe -> RecipeMapper.toDto(
+				recipe,
+				likeCountMap.getOrDefault(recipe.getId(), 0),
+				likedIds.contains(recipe.getId()))).toList();
 	}
 
 	public List<RecipeDto> findRecentlyViewedRecipes(User user, int limit) {
-		return recipeViewRepository
-				.findRecentViewsByUser(user, PageRequest.of(0, limit))
-				.stream()
-				.map(RecipeView::getRecipe)
-				.map(RecipeMapper::toDto)
+		List<Recipe> recipes = recipeViewRepository
+				.findDistinctRecentlyViewedRecipes(user.getId(), limit);
+
+		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
+		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
+		Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
+
+		return recipes.stream().map(recipe -> RecipeMapper.toDto(
+				recipe,
+				likeCountMap.getOrDefault(recipe.getId(), 0),
+				likedIds.contains(recipe.getId()))).toList();
+	}
+
+	public Page<RecipeDto> findAllPublishedRecipes(Pageable pageable, String search, User currentUser) {
+		Long userId = currentUser != null ? currentUser.getId() : null;
+		Page<Recipe> recipes = search.isBlank()
+				? recipeRepository.findAllByStatus(RecipeStatus.PUBLISHED, pageable)
+				: recipeRepository.findAllByStatusAndNameContainingIgnoreCase(RecipeStatus.PUBLISHED, search, pageable);
+
+		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
+		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
+		Set<Long> likedIds = getLikedRecipeIds(recipeIds, userId);
+
+		return recipes.map(recipe -> RecipeMapper.toDto(
+				recipe,
+				likeCountMap.getOrDefault(recipe.getId(), 0),
+				likedIds.contains(recipe.getId())));
+	}
+
+	public List<RecipeDto> findLikedRecipePreview(User user) {
+		Pageable pageable = PageRequest.of(0, 3);
+
+		Page<Recipe> recipes = recipeRepository.findLikedRecipesByUserId(user.getId(), pageable);
+		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
+		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
+		return recipes.stream()
+				.map(recipe -> RecipeMapper.toDto(recipe,
+						likeCountMap.getOrDefault(recipe.getId(), 0),
+						true))
 				.toList();
 	}
 
-	public Page<RecipeDto> findAllPublishedRecipes(Pageable pageable, String search) {
-		if (search == null || search.isBlank()) {
-			return recipeRepository.findAllByStatus(RecipeStatus.PUBLISHED, pageable)
-					.map(RecipeMapper::toDto);
-		}
-		return recipeRepository.findAllByStatusAndNameContainingIgnoreCase(
-				RecipeStatus.PUBLISHED, search, pageable)
-				.map(RecipeMapper::toDto);
+	public Page<RecipeDto> findAllLikedRecipesByUser(Pageable pageable, User user) {
+		Page<Recipe> recipes = recipeRepository.findLikedRecipesByUserId(user.getId(), pageable);
+		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
+		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
+		return recipes
+				.map(recipe -> RecipeMapper.toDto(recipe,
+						likeCountMap.getOrDefault(recipe.getId(), 0),
+						true));
 	}
 
 	/**
@@ -165,7 +214,7 @@ public class RecipeService {
 	public RecipeDto createDraftRecipe(CreateRecipeDto draftRecipe, User user) {
 		Recipe recipe = new Recipe(user, draftRecipe.name(), draftRecipe.description(), draftRecipe.imageUrl());
 		recipeRepository.save(recipe);
-		return RecipeMapper.toDto(recipe);
+		return RecipeMapper.toDto(recipe, 0, false);
 	}
 
 	/**
@@ -207,7 +256,7 @@ public class RecipeService {
 		recipeIngredientService.computeAndSaveSortOrder(foundRecipe);
 
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
-		return RecipeMapper.toDto(savedRecipe);
+		return RecipeMapper.toDto(savedRecipe, 0, false);
 	}
 
 	@Transactional
@@ -323,7 +372,7 @@ public class RecipeService {
 		recipeIngredientService.computeAndSaveSortOrder(foundRecipe);
 
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
-		return RecipeMapper.toDto(savedRecipe);
+		return RecipeMapper.toDto(savedRecipe, 0, false);
 	}
 
 	public RecipeDto archiveRecipe(Long id, User user) {
@@ -336,44 +385,7 @@ public class RecipeService {
 		foundRecipe.setUpdatedAt(OffsetDateTime.now());
 		foundRecipe.setStatus(RecipeStatus.ARCHIVED);
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
-		return RecipeMapper.toDto(savedRecipe);
-	}
-
-	/**
-	 * Transitions a recipe to a new {@link RecipeStatus}.
-	 *
-	 * <p>
-	 * If the target status is {@code PUBLISHED}, additional validation is
-	 * performed to ensure the recipe is complete, and the version number is
-	 * incremented to reflect the new publication.
-	 *
-	 * @param id        the ID of the recipe whose status is being updated
-	 * @param newStatus the desired target status
-	 * @return the updated {@link RecipeDto}
-	 * @throws EntityNotFoundException if no recipe exists with the given ID
-	 * @throws IllegalStateException   if the status transition is not permitted
-	 * @throws IllegalStateException   if the recipe does not meet publish
-	 *                                 requirements
-	 */
-	public RecipeDto updateRecipeStatus(Long id, RecipeStatus newStatus) {
-		Recipe foundRecipe = recipeRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
-
-		RecipeStatus currentStatus = foundRecipe.getStatus();
-
-		// Validate that the requested transition is allowed by the status machine
-		RecipeValidator.validateStatusTransition(currentStatus, newStatus);
-
-		if (newStatus.equals(RecipeStatus.PUBLISHED)) {
-			// Ensure the recipe has all required fields before going live
-			RecipeValidator.validateRecipePublish(foundRecipe);
-			// Bump the version number on each new publication
-			foundRecipe.setVersion(foundRecipe.getVersion() + 1);
-		}
-
-		foundRecipe.setStatus(newStatus);
-		foundRecipe.setUpdatedAt(OffsetDateTime.now());
-		return RecipeMapper.toDto(foundRecipe);
+		return RecipeMapper.toDto(savedRecipe, 0, false);
 	}
 
 	/**
@@ -431,6 +443,50 @@ public class RecipeService {
 
 		recipeRepository.save(newDraftRecipe);
 
-		return RecipeMapper.toDto(newDraftRecipe);
+		return RecipeMapper.toDto(newDraftRecipe, 0, false);
+	}
+
+	public void likeRecipe(Long recipeId, User user) {
+		Recipe recipe = recipeRepository.findById(recipeId)
+				.orElseThrow(() -> new EntityNotFoundException("Recipe not found"));
+
+		if (recipeLikeRepository.existsByRecipeIdAndUserId(recipeId, user.getId())) {
+			throw new IllegalStateException("Recipe already liked");
+		}
+		if (recipe.getStatus() != RecipeStatus.PUBLISHED) {
+			throw new IllegalStateException("Only published recipes can be liked");
+		}
+
+		RecipeLike like = new RecipeLike(user, recipe, OffsetDateTime.now());
+		recipeLikeRepository.save(like);
+	}
+
+	public void unlikeRecipe(Long recipeId, User user) {
+		Recipe recipe = recipeRepository.findById(recipeId)
+				.orElseThrow(() -> new EntityNotFoundException("Recipe not found"));
+
+		if (!recipeLikeRepository.existsByRecipeIdAndUserId(recipeId, user.getId())) {
+			throw new IllegalStateException("Recipe not liked");
+		}
+
+		if (recipe.getStatus() != RecipeStatus.PUBLISHED) {
+			throw new IllegalStateException("Only published recipes can be liked");
+		}
+
+		recipeLikeRepository.deleteByRecipeIdAndUserId(recipeId, user.getId());
+	}
+
+	private Map<Long, Integer> getLikeCountMap(List<Long> recipeIds) {
+		return recipeLikeRepository.countLikesByRecipeIds(recipeIds)
+				.stream()
+				.collect(Collectors.toMap(
+						row -> (Long) row[0],
+						row -> ((Long) row[1]).intValue()));
+	}
+
+	private Set<Long> getLikedRecipeIds(List<Long> recipeIds, Long userId) {
+		if (userId == null)
+			return Set.of();
+		return new HashSet<>(recipeLikeRepository.findLikedRecipeIds(recipeIds, userId));
 	}
 }

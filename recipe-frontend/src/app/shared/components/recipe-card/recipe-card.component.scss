@@ -29,7 +29,36 @@ mat-card-title {
 
 .recipe-card__img {
   width: 80%;
-  aspect-ratio: 16 / 9;
   border-radius: 16px;
-  margin: 0 auto 2vh;
+}
+
+.recipe-card__like-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.08);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.recipe-card__like-btn:hover {
+  background: rgba(244, 67, 54, 0.08); // subtle red tint
+  transform: scale(1.1);
+}
+
+.liked {
+  color: #e53935;
 }
