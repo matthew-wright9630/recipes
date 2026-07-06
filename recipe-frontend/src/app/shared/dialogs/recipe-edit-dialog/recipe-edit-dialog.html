@@ -1,5 +1,5 @@
-<div class="edit-recipe-dialog">
-  <h2 mat-dialog-title class="edit-recipe-dialog__title">Edit Recipe</h2>
+<div class="edit-recipe">
+  <h2 mat-dialog-title class="edit-recipe__title">Edit Recipe</h2>
   <button mat-icon-button (click)="onClose()">
     <mat-icon>close</mat-icon>
   </button>
@@ -16,6 +16,42 @@
       <input matInput formControlName="name" />
       <mat-error>Name is required to publish</mat-error>
     </mat-form-field>
+
+    <div class="recipe-edit__image-section">
+      <div class="recipe-edit__image-section__header">
+        <p>Display Image:</p>
+        <img [src]="form.get('imageUrl')?.value + '-thumb.jpg'" alt="preview" />
+      </div>
+
+      <div class="recipe-edit__image-options">
+        <button
+          mat-icon-button
+          (click)="scrollImages(-1)"
+          [disabled]="this.currentOffset === 0"
+        >
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <div class="recipe-edit__image-track-container" #imageTrack>
+          <div class="recipe-edit__image-track">
+            @for(image of defaultImages; track image) {
+            <img
+              [src]="image + '-thumb.jpg'"
+              [class.selected]="form.get('imageUrl')?.value === image"
+              (click)="selectImage(image)"
+            />
+            }
+            <button mat-stroked-button (click)="openUpload()">Upload</button>
+          </div>
+        </div>
+        <button
+          mat-icon-button
+          (click)="scrollImages(1)"
+          [disabled]="this.currentOffset === this.maxOffset()"
+        >
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Description</mat-label>

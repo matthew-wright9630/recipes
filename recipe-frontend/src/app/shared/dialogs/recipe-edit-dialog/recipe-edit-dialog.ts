@@ -1,4 +1,12 @@
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  ElementRef,
+  inject,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -25,6 +33,7 @@ import { RecipeStateService } from '../../services/recipe-state-service/recipe-s
 import { MatIcon } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmationDialog } from '../confirmation-dialog/confirmation-dialog';
+import { DEFAULT_RECIPE_IMAGES } from '../../constants/default-images';
 
 @Component({
   selector: 'app-recipe-edit-dialog',
@@ -50,9 +59,11 @@ export class RecipeEditDialog {
   private destroyRef = inject(DestroyRef);
   data = inject<Recipe>(MAT_DIALOG_DATA);
   readonly RecipeStatus = RecipeStatus;
+  defaultImages = DEFAULT_RECIPE_IMAGES;
 
   form = this.fb.group({
     name: [this.data.name, [Validators.minLength(3), Validators.required]],
+    imageUrl: [this.data.imageUrl],
     description: [
       this.data.description,
       [Validators.minLength(2), Validators.required],
@@ -187,6 +198,33 @@ export class RecipeEditDialog {
   statuses = Object.values(RecipeStatus).filter(
     (s) => s !== RecipeStatus.REMOVED,
   );
+
+  selectImage(image: string): void {
+    this.form.get('imageUrl')?.setValue(image);
+  }
+
+  openUpload(): void {}
+
+  @ViewChild('imageTrack') imageTrack!: ElementRef;
+  currentOffset = 0;
+  readonly SCROLL_AMOUNT = 156; // image width + gap
+  @ViewChild('imageTrack') imageTrackContainer!: ElementRef;
+  maxOffset = signal(100);
+
+  scrollImages(direction: number): void {
+    const container = this.imageTrackContainer.nativeElement;
+    const track = container.querySelector('.recipe-edit__image-track');
+    this.maxOffset.set(track.scrollWidth - container.clientWidth);
+
+    this.currentOffset = Math.max(
+      0,
+      Math.min(
+        this.currentOffset + direction * this.SCROLL_AMOUNT,
+        this.maxOffset(),
+      ),
+    );
+    track.style.transform = `translateX(-${this.currentOffset}px)`;
+  }
 
   addIngredient(): void {
     this.ingredients.push(
