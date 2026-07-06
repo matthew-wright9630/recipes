@@ -20,7 +20,10 @@
     <div class="recipe-edit__image-section">
       <div class="recipe-edit__image-section__header">
         <p>Display Image:</p>
-        <img [src]="form.get('imageUrl')?.value + '-thumb.jpg'" alt="preview" />
+        <img
+          [src]="'http://localhost:8083/uploads/' + form.get('imageUrl')?.value + '-thumb.jpg'"
+          alt="preview"
+        />
       </div>
 
       <div class="recipe-edit__image-options">
@@ -35,12 +38,34 @@
           <div class="recipe-edit__image-track">
             @for(image of defaultImages; track image) {
             <img
-              [src]="image + '-thumb.jpg'"
+              [src]="'http://localhost:8083/uploads/' + image + '-thumb.jpg'"
+              [class.selected]="form.get('imageUrl')?.value === image"
+              (click)="selectImage(image)"
+            />
+            } @for(image of userImages; track image) {
+            <img
+              [src]="'http://localhost:8083/uploads/' + image + '-thumb.jpg'"
               [class.selected]="form.get('imageUrl')?.value === image"
               (click)="selectImage(image)"
             />
             }
-            <button mat-stroked-button (click)="openUpload()">Upload</button>
+            <button
+              type="button"
+              class="recipe-edit__upload-card"
+              (click)="fileInput.click()"
+              aria-label="Upload image"
+            >
+              <mat-icon>add</mat-icon>
+              <span>Upload</span>
+            </button>
+
+            <input
+              #fileInput
+              type="file"
+              accept="image/*"
+              hidden
+              (change)="onFileSelected($event)"
+            />
           </div>
         </div>
         <button

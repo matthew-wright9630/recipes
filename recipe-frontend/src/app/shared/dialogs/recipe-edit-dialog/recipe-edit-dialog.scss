@@ -38,7 +38,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  width: 100%;
+  width: 95%;
 }
 
 .recipe-edit__image-track-container {
@@ -53,16 +53,62 @@
 }
 
 .recipe-edit__image-options img {
-  width: 145px;
-  height: 145px;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
   cursor: pointer;
   flex-shrink: 0;
   border: 2px solid transparent;
   border-radius: 4px;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
 
   &.selected {
-    border-color: your-primary-color;
+    border-color: blue;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  &.selected:hover {
+    transform: scale(1.05);
+  }
+}
+
+.recipe-edit__upload-card {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  cursor: pointer;
+  flex-shrink: 0;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+  justify-content: center;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &.selected {
+    border-color: blue;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  &.selected:hover {
+    transform: scale(1.05);
   }
 }
 

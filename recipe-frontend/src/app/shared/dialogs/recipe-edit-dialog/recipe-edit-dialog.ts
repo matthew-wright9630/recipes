@@ -34,6 +34,8 @@ import { MatIcon } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmationDialog } from '../confirmation-dialog/confirmation-dialog';
 import { DEFAULT_RECIPE_IMAGES } from '../../constants/default-images';
+import { UserImageService } from '../../services/user-image-service/user-image.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-recipe-edit-dialog',
@@ -56,10 +58,15 @@ export class RecipeEditDialog {
   private dialogRef = inject(MatDialogRef<RecipeEditDialog>);
   private recipeService = inject(RecipeService);
   private recipeStateService = inject(RecipeStateService);
+  private imageService = inject(UserImageService);
   private destroyRef = inject(DestroyRef);
+
+  private imageBaseUrl: string = 'uploads';
+
   data = inject<Recipe>(MAT_DIALOG_DATA);
   readonly RecipeStatus = RecipeStatus;
   defaultImages = DEFAULT_RECIPE_IMAGES;
+  userImages: string[] = [];
 
   form = this.fb.group({
     name: [this.data.name, [Validators.minLength(3), Validators.required]],
@@ -103,6 +110,9 @@ export class RecipeEditDialog {
   };
 
   ngOnInit(): void {
+    console.log(
+      'http://localhost:8083/uploads/' + this.defaultImages[0] + '-thumb.jpg',
+    );
     this.updateValidators(RecipeStatus.PUBLISHED);
 
     this.form.valueChanges
@@ -133,6 +143,8 @@ export class RecipeEditDialog {
 
         this.updateValidators(RecipeStatus.PUBLISHED);
       });
+
+    this.getListOfImages();
   }
 
   private updateValidators(status: RecipeStatus): void {
@@ -203,11 +215,9 @@ export class RecipeEditDialog {
     this.form.get('imageUrl')?.setValue(image);
   }
 
-  openUpload(): void {}
-
   @ViewChild('imageTrack') imageTrack!: ElementRef;
   currentOffset = 0;
-  readonly SCROLL_AMOUNT = 156; // image width + gap
+  readonly SCROLL_AMOUNT = 133; // image width + gap
   @ViewChild('imageTrack') imageTrackContainer!: ElementRef;
   maxOffset = signal(100);
 
@@ -224,6 +234,60 @@ export class RecipeEditDialog {
       ),
     );
     track.style.transform = `translateX(-${this.currentOffset}px)`;
+  }
+
+  selectedImageFile: File | null = null;
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files || input.files.length === 0) {
+      return;
+    }
+
+    const file = input.files[0];
+
+    if (!file.type.startsWith('image/')) {
+      return;
+    }
+
+    this.selectedImageFile = file;
+
+    this.form.patchValue({
+      imageUrl: null,
+    });
+
+    this.selectedImageFile = file;
+    this.uploadImage();
+  }
+
+  uploadImage(): void {
+    if (!this.selectedImageFile) return;
+
+    const formData = new FormData();
+    formData.append('file', this.selectedImageFile);
+
+    this.imageService.uploadImage(formData).subscribe({
+      next: (baseKey) => {
+        this.form.get('imageUrl')?.setValue(baseKey);
+        this.selectedImageFile = null;
+        this.getListOfImages();
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  getImageUrl(baseKey: string, size: 'thumb' | 'medium'): string {
+    return `${environment.imageBaseUrl}/${baseKey}-${size}.jpg`;
+  }
+
+  getListOfImages(): void {
+    this.imageService.getImages().subscribe({
+      next: (images) => {
+        this.userImages = images;
+      },
+      error: (err) => console.error(err),
+    });
   }
 
   addIngredient(): void {
