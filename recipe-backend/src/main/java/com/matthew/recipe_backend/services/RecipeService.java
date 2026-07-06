@@ -240,6 +240,7 @@ public class RecipeService {
 
 		foundRecipe.setName(recipeDto.name());
 		foundRecipe.setDescription(recipeDto.description());
+		foundRecipe.setImageUrl(recipeDto.imageUrl());
 		foundRecipe.setNotes(recipeDto.notes());
 		foundRecipe.setServings(recipeDto.servings());
 		foundRecipe.setPrepTime(recipeDto.prepTime());
@@ -333,6 +334,7 @@ public class RecipeService {
 
 		foundRecipe.setName(recipeDto.name());
 		foundRecipe.setDescription(recipeDto.description());
+		foundRecipe.setImageUrl(recipeDto.imageUrl());
 		foundRecipe.setNotes(recipeDto.notes());
 		foundRecipe.setServings(recipeDto.servings());
 		foundRecipe.setPrepTime(recipeDto.prepTime());

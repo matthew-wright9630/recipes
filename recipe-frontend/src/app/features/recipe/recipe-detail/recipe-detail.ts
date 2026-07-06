@@ -26,6 +26,8 @@ export class RecipeDetail {
 
   recipe = signal<Recipe | null>(null);
 
+  backendUrl: string = 'http://localhost:8083/uploads/';
+
   constructor(private recipeService: RecipeService) {
     effect(() => {
       const id = Number(this.route.snapshot.paramMap.get('id'));

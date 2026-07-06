@@ -23,11 +23,18 @@ button {
 }
 
 .recipe-dialog__img-container {
-  width: 70%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .recipe-dialog__img {
-  width: 100%;
+  width: 60%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 16px;
 }
 
 .recipe-dialog__p {

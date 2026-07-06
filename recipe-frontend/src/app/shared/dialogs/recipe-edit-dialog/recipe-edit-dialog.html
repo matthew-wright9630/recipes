@@ -21,7 +21,7 @@
       <div class="recipe-edit__image-section__header">
         <p>Display Image:</p>
         <img
-          [src]="'http://localhost:8083/uploads/' + form.get('imageUrl')?.value + '-thumb.jpg'"
+          [src]="backendUrl + form.get('imageUrl')?.value + '-thumb.jpg'"
           alt="preview"
         />
       </div>
@@ -38,13 +38,13 @@
           <div class="recipe-edit__image-track">
             @for(image of defaultImages; track image) {
             <img
-              [src]="'http://localhost:8083/uploads/' + image + '-thumb.jpg'"
+              [src]="backendUrl + image + '-thumb.jpg'"
               [class.selected]="form.get('imageUrl')?.value === image"
               (click)="selectImage(image)"
             />
             } @for(image of userImages; track image) {
             <img
-              [src]="'http://localhost:8083/uploads/' + image + '-thumb.jpg'"
+              [src]="backendUrl + image + '-thumb.jpg'"
               [class.selected]="form.get('imageUrl')?.value === image"
               (click)="selectImage(image)"
             />

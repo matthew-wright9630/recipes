@@ -67,6 +67,7 @@ export class RecipeEditDialog {
   readonly RecipeStatus = RecipeStatus;
   defaultImages = DEFAULT_RECIPE_IMAGES;
   userImages: string[] = [];
+  backendUrl: string = 'http://localhost:8083/uploads/';
 
   form = this.fb.group({
     name: [this.data.name, [Validators.minLength(3), Validators.required]],
