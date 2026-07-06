@@ -76,7 +76,7 @@
     >
       <img
         class="recipe-dialog__img"
-        [src]="recipe.imageUrl + '-medium.jpg'"
+        [src]="backendUrl + recipe.imageUrl + '-thumb.jpg'"
         [alt]="recipe.name"
       />
     </a>
@@ -124,50 +124,3 @@
     See full recipe
   </button>
 </div>
-
-<!-- <mat-dialog-actions>
-  <div class="recipe-dialog__owner-actions">
-    @if(this.isOwner() && this.recipe.status === "DRAFT") {
-    <button
-      mat-raised-button
-      color="primary"
-      mat-dialog-close
-      class="recipe-dialog__btn"
-      (click)="openEditDialog()"
-    >
-      Edit Recipe
-    </button>
-    <button
-      mat-stroked-button
-      color="warn"
-      mat-dialog-close
-      class="recipe-dialog__delete recipe-dialog__btn"
-      (click)="onDelete()"
-    >
-      Delete Recipe
-    </button>
-    } @if (this.isOwner() && (this.recipe.status === "PUBLISHED" ||
-    this.recipe.status === "ARCHIVED")) {
-    <button
-      mat-raised-button
-      color="primary"
-      mat-dialog-close
-      class="recipe-dialog__btn"
-      (click)="onRevise()"
-    >
-      Revise Recipe
-    </button>
-    } @if (this.isOwner() && this.recipe.status === "PUBLISHED") {
-
-    <button
-      mat-stroked-button
-      color="warn"
-      mat-dialog-close
-      class="recipe-dialog__btn"
-      (click)="onArchive()"
-    >
-      Archive Recipe
-    </button>
-    }
-  </div>
-</mat-dialog-actions> -->

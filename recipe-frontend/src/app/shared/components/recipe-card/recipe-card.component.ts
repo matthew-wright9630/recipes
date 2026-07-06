@@ -22,6 +22,7 @@ export class RecipeComponent {
   authState = inject(AuthStateService);
   recipeStateService = inject(RecipeStateService);
   recipeLikeService = inject(RecipeLikeService);
+  backendUrl: string = 'http://localhost:8083/uploads/';
 
   constructor() {}
   openRecipe(recipe: Recipe) {

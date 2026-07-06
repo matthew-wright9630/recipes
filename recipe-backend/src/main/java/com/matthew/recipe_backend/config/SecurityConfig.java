@@ -41,8 +41,9 @@ public class SecurityConfig {
 		return http.csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults()).authorizeHttpRequests(auth -> auth
 				.requestMatchers("/api/recipes/{recipeId}/directions").authenticated()
 				.requestMatchers("/auth/register", "/auth/login").permitAll()
+				.requestMatchers("/uploads/**").permitAll()
 				// .requestMatchers("/api/users/me").authenticated()
-				.anyRequest().permitAll())
+				.anyRequest().authenticated())
 				.sessionManagement(session -> session
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(jwtConfig, UsernamePasswordAuthenticationFilter.class)

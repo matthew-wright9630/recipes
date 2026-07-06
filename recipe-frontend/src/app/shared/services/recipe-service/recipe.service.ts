@@ -66,6 +66,7 @@ export class RecipeService {
   }
 
   updateDraftRecipe(recipe: Recipe) {
+    console.log(recipe);
     return this.http.put<Recipe>(
       this.baseURL + '/' + recipe.id + '/draft',
       recipe,

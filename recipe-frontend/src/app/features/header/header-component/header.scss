@@ -31,12 +31,16 @@ mat-toolbar {
   display: none;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 750px) {
   .desktop-nav {
     display: none;
   }
 
   .mobile-menu {
     display: block;
+  }
+
+  .header__title {
+    font-size: 1.5rem;
   }
 }
