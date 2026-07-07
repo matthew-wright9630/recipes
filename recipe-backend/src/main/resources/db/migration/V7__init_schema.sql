@@ -1,3 +1,2 @@
-ALTER TABLE cookbooks DROP COLUMN owner;
-ALTER TABLE cookbooks ADD COLUMN TEXT image_url;
-ALTER TABLE cookbooks ADD COLUMN TEXT description;
+ALTER TABLE cookbooks ADD COLUMN image_url TEXT;
+ALTER TABLE cookbooks ADD COLUMN description TEXT;

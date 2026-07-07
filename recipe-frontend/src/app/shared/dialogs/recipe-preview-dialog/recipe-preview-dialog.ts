@@ -16,6 +16,7 @@ import { RecipeService } from '../../services/recipe-service/recipe.service';
 import { RecipeStateService } from '../../services/recipe-state-service/recipe-state.service';
 import { MatIcon } from '@angular/material/icon';
 import { RecipeLikeService } from '../../services/recipe-like-service/recipe-like.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-recipe-preview-dialog',
@@ -36,7 +37,7 @@ export class RecipePreviewDialog {
   recipeStateService = inject(RecipeStateService);
   recipeLikeService = inject(RecipeLikeService);
   authState = inject(AuthStateService);
-  backendUrl: string = 'http://localhost:8083/uploads/';
+  backendUrl: string = environment.apiUrl + '/uploads/';
 
   isOwner = computed(
     () => this.authState.currentUser()?.id === this.recipe.createdById,

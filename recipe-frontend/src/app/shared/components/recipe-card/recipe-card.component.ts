@@ -8,6 +8,7 @@ import { AuthStateService } from '../../services/auth-state-service/auth-state.s
 import { RecipeStateService } from '../../services/recipe-state-service/recipe-state.service';
 import { RecipeLikeService } from '../../services/recipe-like-service/recipe-like.service';
 import { MatIcon } from '@angular/material/icon';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-recipe',
@@ -22,7 +23,7 @@ export class RecipeComponent {
   authState = inject(AuthStateService);
   recipeStateService = inject(RecipeStateService);
   recipeLikeService = inject(RecipeLikeService);
-  backendUrl: string = 'http://localhost:8083/uploads/';
+  backendUrl: string = environment.apiUrl + '/uploads/';
 
   constructor() {}
   openRecipe(recipe: Recipe) {

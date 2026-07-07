@@ -1,6 +1,6 @@
 -- ENUM Types
-CREATE TYPE user_role AS ENUM ('Admin', 'User', 'OWNER', 'REVOKED');
-CREATE TYPE cookbook_permission AS ENUM ('read', 'read_write');
+CREATE TYPE user_role AS ENUM ('ADMIN', 'USER');
+CREATE TYPE cookbook_permission AS ENUM ('READ', 'READ_WRITE', 'OWNER', 'REVOKED');
 CREATE TYPE recipe_status AS ENUM ('DRAFT', 'PUBLISHED', 'ARCHIVED', 'REMOVED');
 
 
@@ -81,6 +81,8 @@ CREATE TABLE recipe_ingredients (
     ingredient_id INTEGER NOT NULL REFERENCES ingredients(id) ON DELETE RESTRICT,
     quantity      NUMERIC,
     unit          VARCHAR(50),
+    notes         VARCHAR(255),
+    sort_order    INTEGER,
     PRIMARY KEY (recipe_id, ingredient_id)
 );
 
@@ -91,7 +93,7 @@ CREATE TABLE cookbooks (
     owner_id   INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     deleted    BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    CONSTRAINT unique_owner_name UNIQUE (owner_id, username)
+    CONSTRAINT unique_owner_name UNIQUE (owner_id, name)
 );
 
 -- Cookbook <-> Recipe join table
@@ -115,4 +117,4 @@ CREATE VIEW active_cookbooks AS
   SELECT id, name, created_at FROM cookbooks WHERE deleted = FALSE;
 
 CREATE VIEW active_recipes AS
-  SELECT id, name, description, created_at, version FROM recipes WHERE deleted = FALSE;
+  SELECT id, name, description, created_at, version FROM recipes WHERE status != 'REMOVED';

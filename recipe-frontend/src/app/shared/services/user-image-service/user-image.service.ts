@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserImageService {
-  baseURL: string = 'http://localhost:8083/api/images';
+  baseURL: string = environment.apiUrl + '/api/images';
   private http = inject(HttpClient);
 
   getImages(): Observable<string[]> {

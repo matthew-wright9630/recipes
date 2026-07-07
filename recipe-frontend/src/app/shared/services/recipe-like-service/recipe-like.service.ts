@@ -1,12 +1,13 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RecipeLikeService {
-  baseURL: string = 'http://localhost:8083/api/recipe-likes';
+  baseURL: string = environment.apiUrl + '/api/recipe-likes';
 
   constructor(private http: HttpClient) {}
 

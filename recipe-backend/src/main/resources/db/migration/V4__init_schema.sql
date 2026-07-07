@@ -1,2 +1,2 @@
 ALTER TABLE users
-    ADD COLUMN TEXT (avatar_url);
+    ADD COLUMN avatar_url TEXT;
