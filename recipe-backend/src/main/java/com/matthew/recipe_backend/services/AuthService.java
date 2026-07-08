@@ -128,6 +128,7 @@ public class AuthService {
         authProvider.setUser(user);
         authProvider.setProvider(provider);
         authProvider.setProviderId(providerId);
+        authProvider.setCreatedAt(LocalDateTime.now());
         authProviderRepository.save(authProvider);
     }
 

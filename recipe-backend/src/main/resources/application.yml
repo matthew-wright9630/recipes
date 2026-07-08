@@ -63,3 +63,7 @@ logging:
     org.springframework.jdbc.datasource: INFO
     root: INFO
     org.hibernate.SQL: INFO
+
+aws:
+  bucket: "${AWS_BUCKET}"
+  region: "${AWS_REGION}"

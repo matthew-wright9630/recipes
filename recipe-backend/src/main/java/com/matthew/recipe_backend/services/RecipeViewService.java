@@ -63,8 +63,13 @@ public class RecipeViewService {
         if (!viewedRecently) {
             RecipeView recipeView = new RecipeView();
 
-            recipeView.setUser(user);
-            recipeView.setVisitorId(visitorId);
+            if (user != null) {
+                recipeView.setUser(user);
+                recipeView.setVisitorId(null);
+            } else {
+                recipeView.setUser(null);
+                recipeView.setVisitorId(visitorId);
+            }
             recipeView.setRecipe(recipe);
             recipeView.setViewedAt(Instant.now());
 

@@ -8,8 +8,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "recipe_views")
 public class RecipeView {
 
     @Id
@@ -25,7 +27,7 @@ public class RecipeView {
     @Column(name = "viewed_at")
     private Instant viewedAt;
 
-    @Column(name = "vistor_id")
+    @Column(name = "visitor_id")
     private String visitorId;
 
     public RecipeView() {

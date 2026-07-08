@@ -24,6 +24,7 @@ export class RecipeComponent {
   recipeStateService = inject(RecipeStateService);
   recipeLikeService = inject(RecipeLikeService);
   backendUrl: string = environment.apiUrl + '/uploads/';
+  imageUrl: string = environment.imageBaseUrl + 'recipes/';
 
   constructor() {}
   openRecipe(recipe: Recipe) {

@@ -38,7 +38,7 @@ public interface RecipeViewRepository extends JpaRepository<RecipeView, Long> {
 
         @Query(value = """
                         SELECT r.* FROM recipes r
-                        INNER JOIN recipe_view rh ON rh.recipe_id = r.id
+                        INNER JOIN recipe_views rh ON rh.recipe_id = r.id
                         WHERE rh.user_id = :userId
                         GROUP BY r.id
                         ORDER BY MAX(rh.viewed_at) DESC

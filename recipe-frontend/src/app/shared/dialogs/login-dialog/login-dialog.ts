@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import {
+  MatDialog,
   MatDialogContent,
   MatDialogModule,
   MatDialogRef,
@@ -22,6 +23,7 @@ import {
 import { AuthService } from '../../services/auth-service/auth.service';
 import { AuthStateService } from '../../services/auth-state-service/auth-state.service';
 import { User } from '../../models/user';
+import { RegistrationDialog } from '../registration-dialog/registration-dialog';
 
 @Component({
   selector: 'app-login-dialog',
@@ -45,12 +47,13 @@ export class LoginDialogComponent {
   hidePassword = true;
   errorMessage = '';
 
-  constructor(
-    private fb: FormBuilder,
-    private dialogRef: MatDialogRef<LoginDialogComponent>,
-    private authService: AuthService,
-    private authStateService: AuthStateService,
-  ) {
+  private dialog = inject(MatDialog);
+  private fb = inject(FormBuilder);
+  private dialogRef = inject(MatDialogRef<LoginDialogComponent>);
+  private authService = inject(AuthService);
+  private authStateService = inject(AuthStateService);
+
+  constructor() {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -81,6 +84,11 @@ export class LoginDialogComponent {
   }
 
   onRegister(): void {
-    this.dialogRef.close('register');
+    this.dialogRef.close();
+    this.dialog.open(RegistrationDialog, {
+      width: '800px',
+      maxWidth: '95vw',
+      autoFocus: false,
+    });
   }
 }

@@ -9,6 +9,28 @@
   }
 }
 
+.registration-dialog__close {
+  width: 40px;
+  height: 40px;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.08);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
 .registration-dialog__form {
   display: flex;
   flex-direction: column;
@@ -22,7 +44,11 @@
 }
 
 .registration-dialog__submit {
-  width: 50%;
+  width: 150px;
+  height: 65px;
+  border-radius: 16px;
+  font-size: 1rem;
+  margin: 2vh 0;
 }
 
 .registration-dialog__error {

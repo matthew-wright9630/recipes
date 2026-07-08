@@ -37,7 +37,7 @@ export class RecipePreviewDialog {
   recipeStateService = inject(RecipeStateService);
   recipeLikeService = inject(RecipeLikeService);
   authState = inject(AuthStateService);
-  backendUrl: string = environment.apiUrl + '/uploads/';
+  imageUrl: string = environment.imageBaseUrl + "recipes/";
 
   isOwner = computed(
     () => this.authState.currentUser()?.id === this.recipe.createdById,
