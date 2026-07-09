@@ -36,7 +36,6 @@ public class VisitorService {
         cookie.setMaxAge(COOKIE_MAX_AGE);
         cookie.setSecure(false);
 
-        System.out.println("Creating visitor cookie: " + visitorId);
         response.addCookie(cookie);
 
         return visitorId;

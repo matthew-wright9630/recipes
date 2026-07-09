@@ -16,7 +16,7 @@ public class CustomUserDetailsService {
     }
 
     public UserDetails loadUserByUsername(String email) {
-        return userRepository.findByEmail(email)
+        return userRepository.findByEmail(email.toLowerCase())
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
     }
 }

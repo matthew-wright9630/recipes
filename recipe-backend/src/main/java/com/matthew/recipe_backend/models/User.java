@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,6 +21,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -28,7 +31,7 @@ import jakarta.persistence.Table;
 public class User implements UserDetails {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(unique = true)
@@ -41,6 +44,7 @@ public class User implements UserDetails {
 	private String passwordHash;
 
 	@Enumerated(EnumType.STRING)
+	@JdbcTypeCode(SqlTypes.NAMED_ENUM)
 	private UserRole role;
 
 	@Column
@@ -58,7 +62,7 @@ public class User implements UserDetails {
 	public User(String username, String email, String passwordHash, UserRole role, boolean deactivated,
 			LocalDateTime createdAt, String avatarUrl) {
 		this.username = username;
-		this.email = email;
+		this.email = email.toLowerCase();
 		this.passwordHash = passwordHash;
 		this.role = role;
 		this.deactivated = deactivated;
@@ -87,7 +91,7 @@ public class User implements UserDetails {
 	}
 
 	public void setEmail(String email) {
-		this.email = email;
+		this.email = email.toLowerCase();
 	}
 
 	public String getPasswordHash() {

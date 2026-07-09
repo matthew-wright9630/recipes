@@ -44,8 +44,9 @@ public class AuthService {
     }
 
     public AuthResponseDto register(RegisterRequestDto request) {
+        String email = request.email().toLowerCase();
         // Check if email already exists
-        if (userRepository.existsByEmail(request.email())) {
+        if (userRepository.existsByEmail(email)) {
             throw new EmailAlreadyExistsException("Email already in use");
         }
 
@@ -57,7 +58,7 @@ public class AuthService {
         // Create user
         User user = new User();
         user.setUsername(request.username());
-        user.setEmail(request.email());
+        user.setEmail(email);
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         user.setRole(UserRole.USER);
         user.setDeactivated(false);
@@ -75,8 +76,10 @@ public class AuthService {
     }
 
     public AuthResponseDto login(LoginRequestDto request) {
+        String email = request.email().toLowerCase();
+
         // Check user exists
-        User user = userRepository.findByEmail(request.email())
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
 
         // Check account is not deactivated
@@ -94,7 +97,7 @@ public class AuthService {
         // Validate password — throws AuthenticationException if invalid
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.email(),
+                        email,
                         request.password()));
 
         return buildAuthResponse(user);
@@ -104,7 +107,7 @@ public class AuthService {
         // Extract email from refresh token
         String email = jwtService.extractEmail(refreshToken);
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(email.toLowerCase())
                 .orElseThrow(() -> new InvalidTokenException("Invalid refresh token"));
 
         // Validate the refresh token
@@ -128,6 +131,7 @@ public class AuthService {
         authProvider.setUser(user);
         authProvider.setProvider(provider);
         authProvider.setProviderId(providerId);
+        authProvider.setCreatedAt(LocalDateTime.now());
         authProviderRepository.save(authProvider);
     }
 

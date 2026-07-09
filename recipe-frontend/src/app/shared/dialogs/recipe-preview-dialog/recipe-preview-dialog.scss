@@ -126,12 +126,9 @@ button {
   margin: 1vh 0;
 }
 
-.recipe-dialog__full-recipe {
-  margin: 2vh 0;
-}
-
 .recipe-dialog__btn {
   font-size: 1rem;
+  border-radius: 16px;
 }
 
 .recipe-dialog__full-recipe {
@@ -139,6 +136,7 @@ button {
   height: 65px;
   border-radius: 16px;
   font-size: 1rem;
+  margin: 2vh 0;
 }
 
 .recipe-dialog__delete {

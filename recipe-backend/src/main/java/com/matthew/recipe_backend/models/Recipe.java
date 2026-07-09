@@ -20,6 +20,9 @@ import com.matthew.recipe_backend.enums.RecipeStatus;
 import java.util.List;
 import java.util.Objects;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 @Entity
 @Table(name = "recipes")
 public class Recipe {
@@ -63,6 +66,7 @@ public class Recipe {
 	private OffsetDateTime updatedAt;
 
 	@Enumerated(EnumType.STRING)
+	@JdbcTypeCode(SqlTypes.NAMED_ENUM)
 	@Column(columnDefinition = "recipe_status")
 	private RecipeStatus status;
 
@@ -80,10 +84,10 @@ public class Recipe {
 
 	}
 
-	public Recipe(User createdBy, String name, String description, String imageUrl) {
+	public Recipe(User createdBy, String name, String description) {
 		this.name = name;
 		this.description = description;
-		this.imageUrl = imageUrl;
+		this.imageUrl = "food-PLACEHOLDER";
 		this.notes = null;
 		this.servings = 0;
 		this.prepTime = 0;

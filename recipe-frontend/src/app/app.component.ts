@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './features/header/header-component/header';
-import { AuthStateService } from './shared/services/auth-state-service/auth-state.service';
+import { LoadingComponent } from './shared/loading/loading';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent],
+  imports: [RouterOutlet, HeaderComponent, LoadingComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

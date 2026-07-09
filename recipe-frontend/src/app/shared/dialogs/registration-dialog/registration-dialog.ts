@@ -86,7 +86,6 @@ export class RegistrationDialog {
 
   onSave(): void {
     this.form.markAllAsTouched();
-    console.log(this.form, this.form.valid);
     if (this.form.valid)
       if (
         this.form.value?.username &&

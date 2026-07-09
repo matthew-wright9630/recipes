@@ -67,7 +67,8 @@ export class RecipeEditDialog {
   readonly RecipeStatus = RecipeStatus;
   defaultImages = DEFAULT_RECIPE_IMAGES;
   userImages: string[] = [];
-  backendUrl: string = 'http://localhost:8083/uploads/';
+  backendUrl: string = environment.apiUrl + '/uploads/';
+  imageUrl: string = environment.imageBaseUrl + 'recipes/';
 
   form = this.fb.group({
     name: [this.data.name, [Validators.minLength(3), Validators.required]],
@@ -111,9 +112,6 @@ export class RecipeEditDialog {
   };
 
   ngOnInit(): void {
-    console.log(
-      'http://localhost:8083/uploads/' + this.defaultImages[0] + '-thumb.jpg',
-    );
     this.updateValidators(RecipeStatus.PUBLISHED);
 
     this.form.valueChanges

@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { RecipeService } from '../../../shared/services/recipe-service/recipe.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-recipe-detail',
@@ -26,7 +27,7 @@ export class RecipeDetail {
 
   recipe = signal<Recipe | null>(null);
 
-  backendUrl: string = 'http://localhost:8083/uploads/';
+  imageUrl: string = environment.imageBaseUrl + 'recipes/';
 
   constructor(private recipeService: RecipeService) {
     effect(() => {

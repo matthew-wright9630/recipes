@@ -3,6 +3,9 @@ package com.matthew.recipe_backend.models;
 import java.time.Instant;
 import java.util.Objects;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import com.matthew.recipe_backend.enums.CookbookPermission;
 import com.matthew.recipe_backend.keys.CookbookAccessKey;
 
@@ -35,6 +38,7 @@ public class CookbookAccess {
 	private User user;
 
 	@Enumerated(EnumType.STRING)
+	@JdbcTypeCode(SqlTypes.NAMED_ENUM)
 	private CookbookPermission permission;
 
 	@Column(name = "granted_at")
