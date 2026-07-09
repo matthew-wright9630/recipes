@@ -17,6 +17,7 @@ import { RecipeStateService } from '../../services/recipe-state-service/recipe-s
 import { MatIcon } from '@angular/material/icon';
 import { RecipeLikeService } from '../../services/recipe-like-service/recipe-like.service';
 import { environment } from '../../../../environments/environment';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-recipe-preview-dialog',
@@ -27,6 +28,7 @@ import { environment } from '../../../../environments/environment';
     RouterLink,
     CommonModule,
     MatIcon,
+    MatButtonModule,
   ],
   templateUrl: './recipe-preview-dialog.html',
   styleUrl: './recipe-preview-dialog.scss',
@@ -37,7 +39,7 @@ export class RecipePreviewDialog {
   recipeStateService = inject(RecipeStateService);
   recipeLikeService = inject(RecipeLikeService);
   authState = inject(AuthStateService);
-  imageUrl: string = environment.imageBaseUrl + "recipes/";
+  imageUrl: string = environment.imageBaseUrl + 'recipes/';
 
   isOwner = computed(
     () => this.authState.currentUser()?.id === this.recipe.createdById,

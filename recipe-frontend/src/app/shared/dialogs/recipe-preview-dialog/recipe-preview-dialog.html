@@ -71,7 +71,6 @@
   <div class="recipe-dialog__description">
     <a
       class="recipe-dialog__img-container"
-      mat-dialog-close
       [routerLink]="['/recipe', recipe.id]"
     >
       <img
@@ -115,12 +114,11 @@
 </mat-dialog-content>
 
 <div class="full-recipe-btn">
-  <button
+  <a
     mat-raised-button
-    mat-dialog-close
     class="recipe-dialog__full-recipe"
     [routerLink]="['/recipe', recipe.id]"
   >
     See full recipe
-  </button>
+  </a>
 </div>

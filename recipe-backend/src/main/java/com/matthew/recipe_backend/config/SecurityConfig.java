@@ -44,8 +44,12 @@ public class SecurityConfig {
 		return http.csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults()).authorizeHttpRequests(auth -> auth
 				.requestMatchers("/actuator/**").permitAll()
 				.requestMatchers("/actuator/health").permitAll()
-				.requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
+				.requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login").permitAll()
 				.requestMatchers(HttpMethod.GET, "/api/recipes/publish").permitAll()
+				.requestMatchers("/api/recipes/me").authenticated()
+				.requestMatchers("/api/recipes/history").authenticated()
+				.requestMatchers(HttpMethod.GET, "/api/recipes").permitAll()
+				.requestMatchers(HttpMethod.GET, "/api/recipes/*").permitAll()
 				.requestMatchers("/uploads/**").permitAll()
 				.anyRequest().authenticated())
 				.sessionManagement(session -> session
