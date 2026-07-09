@@ -3,8 +3,6 @@ package com.matthew.recipe_backend.validators;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import com.matthew.recipe_backend.enums.RecipeStatus;
 import com.matthew.recipe_backend.models.Recipe;
 
@@ -20,7 +18,7 @@ public class RecipeValidator {
 	 * Validates that a recipe meets all requirements before it can be published.
 	 *
 	 * <p>
-	 * A recipe is considered publishable when it has a name, a description,
+	 * A recipe is considered publishable when it has a name,
 	 * at least one ingredient, and at least one direction. All violations are
 	 * collected before throwing so the caller receives a complete list of errors
 	 * in a single pass.
@@ -36,9 +34,6 @@ public class RecipeValidator {
 
 		if (isNullOrEmpty(recipe.getName()))
 			errors.add("Name is required");
-
-		if (isNullOrEmpty(recipe.getDescription()))
-			errors.add("Description is required");
 
 		if (recipe.getRecipeIngredients() == null || recipe.getRecipeIngredients().isEmpty())
 			errors.add("At least one ingredient is required");

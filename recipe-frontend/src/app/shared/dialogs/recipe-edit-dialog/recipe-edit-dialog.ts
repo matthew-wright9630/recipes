@@ -73,10 +73,7 @@ export class RecipeEditDialog {
   form = this.fb.group({
     name: [this.data.name, [Validators.minLength(3), Validators.required]],
     imageUrl: [this.data.imageUrl],
-    description: [
-      this.data.description,
-      [Validators.minLength(2), Validators.required],
-    ],
+    description: [this.data.description],
     notes: [this.data.notes],
     servings: [this.data.servings],
     prepTime: [this.data.prepTime],
@@ -153,11 +150,9 @@ export class RecipeEditDialog {
     const cookTimeControl = this.form.get('cookTime');
     const prepTimeControl = this.form.get('prepTime');
     const nameControl = this.form.get('name');
-    const descriptionControl = this.form.get('description');
 
     if (status === RecipeStatus.PUBLISHED) {
       nameControl?.addValidators(Validators.required);
-      descriptionControl?.addValidators(Validators.required);
       servingsControl?.addValidators(this.publishValidators.servings);
       cookTimeControl?.addValidators(this.publishValidators.cookTime);
       prepTimeControl?.addValidators(this.publishValidators.prepTime);
@@ -166,7 +161,6 @@ export class RecipeEditDialog {
       this.form.markAllAsTouched();
     } else {
       nameControl?.removeValidators(Validators.required);
-      descriptionControl?.removeValidators(Validators.required);
       servingsControl?.removeValidators(this.publishValidators.servings);
       cookTimeControl?.removeValidators(this.publishValidators.cookTime);
       prepTimeControl?.removeValidators(this.publishValidators.prepTime);
@@ -175,7 +169,6 @@ export class RecipeEditDialog {
     }
 
     nameControl?.updateValueAndValidity();
-    descriptionControl?.updateValueAndValidity();
     servingsControl?.updateValueAndValidity();
     cookTimeControl?.updateValueAndValidity();
     prepTimeControl?.updateValueAndValidity();
