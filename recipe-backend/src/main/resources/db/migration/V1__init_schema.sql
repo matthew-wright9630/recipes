@@ -10,7 +10,7 @@ CREATE TABLE users (
     username        VARCHAR(100) NOT NULL,
     email           VARCHAR(255) NOT NULL UNIQUE,
     password_hash   TEXT NOT NULL,
-    role            user_role NOT NULL DEFAULT 'User',
+    role            user_role NOT NULL DEFAULT 'USER',
     deactivated     BOOLEAN NOT NULL DEFAULT FALSE,
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -108,7 +108,7 @@ CREATE TABLE cookbook_recipes (
 CREATE TABLE cookbook_access (
     cookbook_id INTEGER NOT NULL REFERENCES cookbooks(id) ON DELETE CASCADE,
     user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    permission  cookbook_permission NOT NULL DEFAULT 'read',
+    permission  cookbook_permission NOT NULL DEFAULT 'READ',
     granted_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     PRIMARY KEY (cookbook_id, user_id)
 );
