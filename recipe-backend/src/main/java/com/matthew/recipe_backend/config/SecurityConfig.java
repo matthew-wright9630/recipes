@@ -46,6 +46,7 @@ public class SecurityConfig {
 				.requestMatchers("/actuator/health").permitAll()
 				.requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
 				.requestMatchers(HttpMethod.GET, "/api/recipes/publish").permitAll()
+				.requestMatchers("/uploads/**").permitAll()
 				.anyRequest().authenticated())
 				.sessionManagement(session -> session
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

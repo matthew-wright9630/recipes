@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
+  MatDialog,
   MatDialogActions,
   MatDialogContent,
   MatDialogRef,
@@ -10,6 +11,7 @@ import { Recipe } from '../../models/recipe';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RecipeStateService } from '../../services/recipe-state-service/recipe-state.service';
+import { RecipeEditDialog } from '../recipe-edit-dialog/recipe-edit-dialog';
 
 @Component({
   selector: 'app-recipe-create-dialog',
@@ -29,6 +31,7 @@ export class RecipeCreateDialog {
   private dialogRef = inject(MatDialogRef<RecipeCreateDialog>);
   private recipeService = inject(RecipeService);
   private recipeStateService = inject(RecipeStateService);
+  private dialog = inject(MatDialog);
 
   form = this.fb.group({
     name: ['', [Validators.minLength(3), Validators.required]],
@@ -47,6 +50,12 @@ export class RecipeCreateDialog {
     this.recipeService.createDraftRecipe(draftRecipe).subscribe({
       next: (result) => {
         this.dialogRef.close(result);
+        this.dialog.open(RecipeEditDialog, {
+          width: '800px',
+          maxWidth: '95vw',
+          autoFocus: false,
+          data: this.form.getRawValue(),
+        });
         this.recipeStateService.notifyRecipeUpdated(result.body as Recipe);
       },
       error: (err) => {
