@@ -62,7 +62,7 @@ public class User implements UserDetails {
 	public User(String username, String email, String passwordHash, UserRole role, boolean deactivated,
 			LocalDateTime createdAt, String avatarUrl) {
 		this.username = username;
-		this.email = email;
+		this.email = email.toLowerCase();
 		this.passwordHash = passwordHash;
 		this.role = role;
 		this.deactivated = deactivated;
@@ -91,7 +91,7 @@ public class User implements UserDetails {
 	}
 
 	public void setEmail(String email) {
-		this.email = email;
+		this.email = email.toLowerCase();
 	}
 
 	public String getPasswordHash() {

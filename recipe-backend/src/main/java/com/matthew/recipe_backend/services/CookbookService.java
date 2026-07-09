@@ -26,92 +26,92 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class CookbookService {
 
-    private final CookbookRepository cookbookRepository;
-    private final CookbookAccessRepository cookbookAccessRepository;
-    private final UserRepository userRepository;
+        private final CookbookRepository cookbookRepository;
+        private final CookbookAccessRepository cookbookAccessRepository;
+        private final UserRepository userRepository;
 
-    public CookbookService(CookbookRepository cookbookRepository, UserRepository userRepository,
-            CookbookAccessRepository cookbookAccessRepository) {
-        this.cookbookRepository = cookbookRepository;
-        this.userRepository = userRepository;
-        this.cookbookAccessRepository = cookbookAccessRepository;
-    }
+        public CookbookService(CookbookRepository cookbookRepository, UserRepository userRepository,
+                        CookbookAccessRepository cookbookAccessRepository) {
+                this.cookbookRepository = cookbookRepository;
+                this.userRepository = userRepository;
+                this.cookbookAccessRepository = cookbookAccessRepository;
+        }
 
-    public List<CookbookDto> findMyCookbooks(String username) {
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UserNotFoundException(username));
+        public List<CookbookDto> findMyCookbooks(String username) {
+                User user = userRepository.findByEmail(username.toLowerCase())
+                                .orElseThrow(() -> new UserNotFoundException(username));
 
-        return cookbookAccessRepository
-                .findCookbooksByUserAndPermissions(
-                        user,
-                        List.of(
-                                CookbookPermission.OWNER))
-                .stream()
-                .map(CookbookMapper::toDto)
-                .toList();
-    }
+                return cookbookAccessRepository
+                                .findCookbooksByUserAndPermissions(
+                                                user,
+                                                List.of(
+                                                                CookbookPermission.OWNER))
+                                .stream()
+                                .map(CookbookMapper::toDto)
+                                .toList();
+        }
 
-    public List<CookbookDto> findSharedCookbooks(String username) {
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UserNotFoundException(username));
+        public List<CookbookDto> findSharedCookbooks(String username) {
+                User user = userRepository.findByEmail(username.toLowerCase())
+                                .orElseThrow(() -> new UserNotFoundException(username));
 
-        return cookbookAccessRepository
-                .findCookbooksByUserAndPermissions(
-                        user,
-                        List.of(
-                                CookbookPermission.READ,
-                                CookbookPermission.READ_WRITE))
-                .stream()
-                .map(CookbookMapper::toDto)
-                .toList();
-    }
+                return cookbookAccessRepository
+                                .findCookbooksByUserAndPermissions(
+                                                user,
+                                                List.of(
+                                                                CookbookPermission.READ,
+                                                                CookbookPermission.READ_WRITE))
+                                .stream()
+                                .map(CookbookMapper::toDto)
+                                .toList();
+        }
 
-    public List<CookbookDto> findAllAccessibleCookbooks(String username) {
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UserNotFoundException(username));
+        public List<CookbookDto> findAllAccessibleCookbooks(String username) {
+                User user = userRepository.findByEmail(username.toLowerCase())
+                                .orElseThrow(() -> new UserNotFoundException(username));
 
-        return cookbookAccessRepository
-                .findCookbooksByUserAndPermissions(
-                        user,
-                        List.of(
-                                CookbookPermission.OWNER,
-                                CookbookPermission.READ,
-                                CookbookPermission.READ_WRITE))
-                .stream()
-                .map(CookbookMapper::toDto)
-                .toList();
-    }
+                return cookbookAccessRepository
+                                .findCookbooksByUserAndPermissions(
+                                                user,
+                                                List.of(
+                                                                CookbookPermission.OWNER,
+                                                                CookbookPermission.READ,
+                                                                CookbookPermission.READ_WRITE))
+                                .stream()
+                                .map(CookbookMapper::toDto)
+                                .toList();
+        }
 
-    @Transactional
-    public CookbookDto createCookbook(String username, CookbookDetailsDto cookbookCreationDto) {
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UserNotFoundException(username));
+        @Transactional
+        public CookbookDto createCookbook(String username, CookbookDetailsDto cookbookCreationDto) {
+                User user = userRepository.findByEmail(username.toLowerCase())
+                                .orElseThrow(() -> new UserNotFoundException(username));
 
-        Cookbook cookbook = new Cookbook(cookbookCreationDto.name(), cookbookCreationDto.description(),
-                cookbookCreationDto.imageUrl());
-        cookbookRepository.save(cookbook);
-        CookbookAccess access = new CookbookAccess(cookbook, user, CookbookPermission.OWNER, Instant.now());
-        cookbookAccessRepository.save(access);
+                Cookbook cookbook = new Cookbook(cookbookCreationDto.name(), cookbookCreationDto.description(),
+                                cookbookCreationDto.imageUrl());
+                cookbookRepository.save(cookbook);
+                CookbookAccess access = new CookbookAccess(cookbook, user, CookbookPermission.OWNER, Instant.now());
+                cookbookAccessRepository.save(access);
 
-        return CookbookMapper.toDto(cookbook);
-    }
+                return CookbookMapper.toDto(cookbook);
+        }
 
-    @Transactional
-    public CookbookDto updateCookbook(Long id, String username, CookbookDetailsDto cookbookDetailsDto) {
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UserNotFoundException(username));
+        @Transactional
+        public CookbookDto updateCookbook(Long id, String username, CookbookDetailsDto cookbookDetailsDto) {
+                User user = userRepository.findByEmail(username.toLowerCase())
+                                .orElseThrow(() -> new UserNotFoundException(username));
 
-        Cookbook foundCookbook = cookbookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
+                Cookbook foundCookbook = cookbookRepository.findById(id)
+                                .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
 
-        CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, id, user.getId());
+                CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, id, user.getId());
 
-        foundCookbook.setName(cookbookDetailsDto.name());
-        foundCookbook.setDescription(cookbookDetailsDto.description());
-        foundCookbook.setImageUrl(cookbookDetailsDto.imageUrl());
+                foundCookbook.setName(cookbookDetailsDto.name());
+                foundCookbook.setDescription(cookbookDetailsDto.description());
+                foundCookbook.setImageUrl(cookbookDetailsDto.imageUrl());
 
-        Cookbook savedCookbook = cookbookRepository.save(foundCookbook);
-        return CookbookMapper.toDto(savedCookbook);
-    }
+                Cookbook savedCookbook = cookbookRepository.save(foundCookbook);
+                return CookbookMapper.toDto(savedCookbook);
+        }
 
 }

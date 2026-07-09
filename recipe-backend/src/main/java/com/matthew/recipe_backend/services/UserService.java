@@ -45,7 +45,7 @@ public class UserService {
     }
 
     public UserDetails loadUserByUsername(String username) {
-        return userRepository.findByEmail(username)
+        return userRepository.findByEmail(username.toLowerCase())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
@@ -75,6 +75,7 @@ public class UserService {
     }
 
     public UserDto createUser(User user) {
+        user.setEmail(user.getEmail().toLowerCase());
         User saved = userRepository.save(user);
         UserDto response = UserMapper.toDto(saved);
 

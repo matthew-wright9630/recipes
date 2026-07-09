@@ -15,7 +15,7 @@ import com.matthew.recipe_backend.dtos.RegisterRequestDto;
 import com.matthew.recipe_backend.services.AuthService;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;

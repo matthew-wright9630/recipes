@@ -27,7 +27,7 @@ export class RecipeDetail {
 
   recipe = signal<Recipe | null>(null);
 
-  backendUrl: string = environment.apiUrl + '/uploads/';
+  imageUrl: string = environment.imageBaseUrl + 'recipes/';
 
   constructor(private recipeService: RecipeService) {
     effect(() => {

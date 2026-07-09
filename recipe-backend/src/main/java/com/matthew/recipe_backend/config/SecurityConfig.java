@@ -41,11 +41,8 @@ public class SecurityConfig {
 		return http.csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults()).authorizeHttpRequests(auth -> auth
 				.requestMatchers("/actuator/**").permitAll()
 				.requestMatchers("/actuator/health").permitAll()
-				.requestMatchers("/api/recipes/{recipeId}/directions").authenticated()
-				.requestMatchers("/auth/register", "/auth/login").permitAll()
-				.requestMatchers("/uploads/**").permitAll()
+				.requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
 				.requestMatchers("/api/recipes/publish").permitAll()
-				// .requestMatchers("/api/users/me").authenticated()
 				.anyRequest().authenticated())
 				.sessionManagement(session -> session
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -65,7 +62,7 @@ public class SecurityConfig {
 
 	@Bean
 	public UserDetailsService userDetailsService() {
-		return email -> userRepository.findByEmail(email)
+		return email -> userRepository.findByEmail(email.toLowerCase())
 				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 	}
 
@@ -83,7 +80,9 @@ public class SecurityConfig {
 
 		CorsConfiguration configuration = new CorsConfiguration();
 
-		configuration.setAllowedOrigins(List.of("http://localhost:4200", "http://52.21.113.119"));
+		configuration.setAllowedOrigins(
+				List.of("http://localhost:4200", "http://52.21.113.119", "https://wrightrecipes.com/",
+						"https://www.wrightrecipes.com/"));
 		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(List.of("*"));
 		configuration.setAllowCredentials(true);

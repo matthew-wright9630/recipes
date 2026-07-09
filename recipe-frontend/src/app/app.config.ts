@@ -19,6 +19,7 @@ import {
 import { authInterceptor } from './shared/auth-interceptor';
 import { AuthStateService } from './shared/services/auth-state-service/auth-state.service';
 import { firstValueFrom } from 'rxjs';
+import { loadingInterceptor } from './loading-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -36,5 +37,6 @@ export const appConfig: ApplicationConfig = {
       const authState = inject(AuthStateService);
       return firstValueFrom(authState.initialize());
     }),
+    provideHttpClient(withInterceptors([loadingInterceptor])),
   ],
 };
