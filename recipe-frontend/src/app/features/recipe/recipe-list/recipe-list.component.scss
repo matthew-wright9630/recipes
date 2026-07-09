@@ -13,7 +13,8 @@
 
 .recipe-list__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, 300px);
+  justify-content: center;
   gap: 16px;
   margin-bottom: 2vh;
 }

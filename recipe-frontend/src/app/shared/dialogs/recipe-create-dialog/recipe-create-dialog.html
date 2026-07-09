@@ -4,10 +4,14 @@
        BASIC INFO
   ======================== -->
   <section class="section">
-    <div class="create-recipe__content">
+    <div class="create-recipe__header">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Name</mat-label>
         <input matInput formControlName="name" />
+        @if (form.get('name')?.hasError('required') &&
+        form.get('name')?.touched) {
+        <mat-error>Name is required</mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
@@ -15,9 +19,77 @@
         <textarea matInput formControlName="description"></textarea>
       </mat-form-field>
     </div>
+
+    <div class="recipe-create__image-section">
+      <div class="recipe-create__image-section__header">
+        <p>Display Image:</p>
+        <img
+          [src]="imageUrl + form.get('imageUrl')?.value + '-thumb.jpg'"
+          alt="preview"
+        />
+      </div>
+
+      <div class="recipe-create__image-options">
+        <button
+          mat-icon-button
+          (click)="scrollImages(-1)"
+          [disabled]="this.currentOffset === 0"
+        >
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <div class="recipe-create__image-track-container" #imageTrack>
+          <div class="recipe-create__image-track">
+            @for(image of defaultImages; track image) {
+            <img
+              [src]="imageUrl + image + '-thumb.jpg'"
+              [class.selected]="form.get('imageUrl')?.value === image"
+              (click)="selectImage(image)"
+            />
+            } @for(image of userImages; track image) {
+            <img
+              [src]="imageUrl + image + '-thumb.jpg'"
+              [class.selected]="form.get('imageUrl')?.value === image"
+              (click)="selectImage(image)"
+            />
+            }
+            <button
+              type="button"
+              class="recipe-create__upload-card"
+              (click)="fileInput.click()"
+              aria-label="Upload image"
+            >
+              <mat-icon>add</mat-icon>
+              <span>Upload</span>
+            </button>
+
+            <input
+              #fileInput
+              type="file"
+              accept="image/*"
+              hidden
+              (change)="onFileSelected($event)"
+            />
+          </div>
+        </div>
+        <button
+          mat-icon-button
+          (click)="scrollImages(1)"
+          [disabled]="this.currentOffset === this.maxOffset()"
+        >
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
   </section>
   <mat-dialog-actions class="create-recipe__buttons" align="end">
-    <button mat-button (click)="onCancel()">Cancel</button>
-    <button mat-flat-button color="primary" (click)="onSave()">Save</button>
+    <button mat-button color="primary" (click)="onCancel()">Cancel</button>
+    <button
+      mat-flat-button
+      color="primary"
+      [disabled]="this.form.invalid"
+      (click)="onSave()"
+    >
+      Save
+    </button>
   </mat-dialog-actions>
 </mat-dialog-content>
