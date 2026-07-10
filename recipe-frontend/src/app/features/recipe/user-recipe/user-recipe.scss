@@ -9,6 +9,14 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+  height: 5vh;
+  font-size: 1rem;
+}
+
+.user-recipe__title {
+  margin: 3vh auto;
+  text-align: center;
+  font-size: 1.5rem;
 }
 
 .user-recipe__grid {
