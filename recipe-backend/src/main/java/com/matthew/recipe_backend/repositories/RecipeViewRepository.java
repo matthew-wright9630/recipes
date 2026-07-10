@@ -16,21 +16,21 @@ import com.matthew.recipe_backend.models.User;
 @Repository
 public interface RecipeViewRepository extends JpaRepository<RecipeView, Long> {
 
-        boolean existsByUserAndRecipeAndViewedAtAfter(
+        boolean existsByUserAndRecipeAndCreatedAtAfter(
                         User user,
                         Recipe recipe,
-                        Instant viewedAt);
+                        Instant createdAt);
 
-        boolean existsByRecipeAndVisitorIdAndViewedAtAfter(
+        boolean existsByRecipeAndVisitorIdAndCreatedAtAfter(
                         Recipe recipe,
                         String visitorId,
-                        Instant viewedAt);
+                        Instant createdAt);
 
         @Query("""
                             SELECT rv
                             FROM RecipeView rv
                             WHERE rv.user = :user
-                            ORDER BY rv.viewedAt DESC
+                            ORDER BY rv.createdAt DESC
                         """)
         List<RecipeView> findRecentViewsByUser(
                         @Param("user") User user,

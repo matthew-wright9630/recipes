@@ -58,13 +58,6 @@ public class RecipeController {
 		return ResponseEntity.ok(recipes);
 	}
 
-	@GetMapping("/history")
-	public ResponseEntity<List<RecipeDto>> getRecipeHistory(@AuthenticationPrincipal User user,
-			@RequestParam(defaultValue = "3") int limit) {
-		List<RecipeDto> recipes = recipeService.findRecentlyViewedRecipes(user, limit);
-		return ResponseEntity.ok(recipes);
-	}
-
 	@GetMapping("/publish")
 	public ResponseEntity<Page<RecipeDto>> getPublishedRecipes(
 			@RequestParam(defaultValue = "0") int page,
@@ -73,6 +66,21 @@ public class RecipeController {
 			@AuthenticationPrincipal User user) {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<RecipeDto> recipes = recipeService.findAllPublishedRecipes(pageable, search, user);
+		return ResponseEntity.ok(recipes);
+	}
+
+	@GetMapping("/me/history/preview")
+	public ResponseEntity<List<RecipeDto>> getRecipeHistoryPreview(@AuthenticationPrincipal User user) {
+		List<RecipeDto> recipes = recipeService.findRecentlyViewedRecipesPreview(user);
+		return ResponseEntity.ok(recipes);
+	}
+
+	@GetMapping("/me/history")
+	public ResponseEntity<Page<RecipeDto>> getRecipeHistory(@AuthenticationPrincipal User user,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "12") int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Page<RecipeDto> recipes = recipeService.findRecentlyViewedRecipes(user, pageable);
 		return ResponseEntity.ok(recipes);
 	}
 

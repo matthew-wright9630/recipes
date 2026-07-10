@@ -42,7 +42,7 @@ export class Profile {
       if (recipes) this.likedRecipeList.set(recipes);
     });
 
-    this.recipeService.getRecipeViewHistoryByUser(3).subscribe((recipes) => {
+    this.recipeService.getRecipeViewHistoryPreview().subscribe((recipes) => {
       if (recipes) this.recipeHistory.set(recipes);
     });
 

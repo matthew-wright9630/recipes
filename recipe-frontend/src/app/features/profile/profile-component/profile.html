@@ -63,8 +63,8 @@
         <app-recipe [recipe]="recipe"></app-recipe>
         } @if(recipeHistory().length >= 3) {
         <mat-card class="profile__card">
-          <a class="profile__btn" [routerLink]="['/recipes/liked']">
-            See all history
+          <a class="profile__btn" [routerLink]="['/recipes/viewed']">
+            See all view history
           </a>
         </mat-card>
         }

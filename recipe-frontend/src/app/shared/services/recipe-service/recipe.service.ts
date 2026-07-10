@@ -45,11 +45,18 @@ export class RecipeService {
       .pipe(map((res) => res.body || []));
   }
 
-  getRecipeViewHistoryByUser(limit: number) {
-    const params = new HttpParams().set('limit', limit.toString());
+  getRecipeViewHistoryPreview() {
     return this.http
-      .get<Recipe[]>(this.baseURL + '/history', { observe: 'response', params })
+      .get<
+        Recipe[]
+      >(this.baseURL + '/me/history/preview', { observe: 'response' })
       .pipe(map((res) => res.body));
+  }
+
+  getRecipeViewHistory(page: number = 0, size: number = 12) {
+    return this.http.get<Page<Recipe>>(
+      this.baseURL + `/me/history?page=${page}&size=${size}`,
+    );
   }
 
   getLikedRecipePreview() {

@@ -4,18 +4,15 @@ import { MatCardModule } from '@angular/material/card';
 import { RecipeComponent } from '../../shared/components/recipe-card/recipe-card.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIcon } from '@angular/material/icon';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RecipeStateService } from '../../shared/services/recipe-state-service/recipe-state.service';
 import { RecipeService } from '../../shared/services/recipe-service/recipe.service';
-import { Page } from '../../shared/models/page';
 import { Recipe } from '../../shared/models/recipe';
+import { Page } from '../../shared/models/page';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
-  selector: 'app-liked-recipes',
+  selector: 'app-viewed-recipes',
   imports: [
     CommonModule,
     MatCardModule,
@@ -24,10 +21,10 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
     MatIcon,
     ReactiveFormsModule,
   ],
-  templateUrl: './liked-recipes.html',
-  styleUrl: './liked-recipes.scss',
+  templateUrl: './viewed-recipes.html',
+  styleUrl: './viewed-recipes.scss',
 })
-export class LikedRecipes {
+export class ViewedRecipes {
   private recipeStateService = inject(RecipeStateService);
   private destroyRef = inject(DestroyRef);
   private recipeService = inject(RecipeService);
@@ -54,7 +51,7 @@ export class LikedRecipes {
   }
 
   loadRecipes(): void {
-    this.recipeService.getLikedRecipes(this.currentPage, 12).subscribe({
+    this.recipeService.getRecipeViewHistory(this.currentPage, 12).subscribe({
       next: (data) => {
         this.recipeData = data;
       },

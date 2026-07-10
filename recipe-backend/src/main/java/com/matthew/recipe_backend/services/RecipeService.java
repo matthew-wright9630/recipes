@@ -153,20 +153,6 @@ public class RecipeService {
 				likedIds.contains(recipe.getId()))).toList();
 	}
 
-	public List<RecipeDto> findRecentlyViewedRecipes(User user, int limit) {
-		List<Recipe> recipes = recipeViewRepository
-				.findDistinctRecentlyViewedRecipes(user.getId(), limit);
-
-		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
-		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
-		Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
-
-		return recipes.stream().map(recipe -> RecipeMapper.toDto(
-				recipe,
-				likeCountMap.getOrDefault(recipe.getId(), 0),
-				likedIds.contains(recipe.getId()))).toList();
-	}
-
 	public Page<RecipeDto> findAllPublishedRecipes(Pageable pageable, String search, User currentUser) {
 		Long userId = currentUser != null ? currentUser.getId() : null;
 		Page<Recipe> recipes = search.isBlank()
@@ -181,6 +167,30 @@ public class RecipeService {
 				recipe,
 				likeCountMap.getOrDefault(recipe.getId(), 0),
 				likedIds.contains(recipe.getId())));
+	}
+
+	public List<RecipeDto> findRecentlyViewedRecipesPreview(User user) {
+		List<Recipe> recipes = recipeViewRepository
+				.findDistinctRecentlyViewedRecipes(user.getId(), 3);
+
+		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
+		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
+		Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
+
+		return recipes.stream().map(recipe -> RecipeMapper.toDto(
+				recipe,
+				likeCountMap.getOrDefault(recipe.getId(), 0),
+				likedIds.contains(recipe.getId()))).toList();
+	}
+
+	public Page<RecipeDto> findRecentlyViewedRecipes(User user, Pageable pageable) {
+		Page<Recipe> recipes = recipeRepository.findRecipeHistoryByUserId(user.getId(), pageable);
+		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
+		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
+		return recipes
+				.map(recipe -> RecipeMapper.toDto(recipe,
+						likeCountMap.getOrDefault(recipe.getId(), 0),
+						true));
 	}
 
 	public List<RecipeDto> findLikedRecipePreview(User user) {
