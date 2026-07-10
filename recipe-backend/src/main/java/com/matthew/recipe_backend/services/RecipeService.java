@@ -128,7 +128,9 @@ public class RecipeService {
 
 		List<Long> recipeIds = List.of(recipe.getId());
 		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
-		Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
+		Set<Long> likedIds = getLikedRecipeIds(
+				recipeIds,
+				user != null ? user.getId() : null);
 
 		RecipeDto recipeDto = RecipeMapper.toDto(recipe,
 				likeCountMap.getOrDefault(recipe.getId(), 0),

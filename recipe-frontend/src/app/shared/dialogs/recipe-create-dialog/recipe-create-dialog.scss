@@ -17,10 +17,71 @@ mat-form-field {
   cursor: text;
 }
 
-.create-recipe__content {
+.create-recipe__header {
   display: grid;
   grid-template-columns: 1fr 3fr;
   gap: 2vw;
+}
+
+.recipe-create__image-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3vw;
+}
+
+.recipe-create__image-section__header {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.recipe-create__image-options {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 95%;
+}
+
+.recipe-create__image-track-container {
+  overflow: hidden;
+  flex: 1;
+}
+
+.recipe-create__image-track {
+  display: flex;
+  gap: 8px;
+  transition: transform 0.3s ease;
+}
+
+.recipe-create__image-options img,
+.recipe-create__upload-card {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  cursor: pointer;
+  flex-shrink: 0;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &.selected {
+    border-color: blue;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  &.selected:hover {
+    transform: scale(1.05);
+  }
 }
 
 .create-recipe__buttons {

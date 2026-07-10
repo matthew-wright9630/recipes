@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -24,6 +25,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.matthew.recipe_backend.repositories.UserRepository;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -41,13 +44,22 @@ public class SecurityConfig {
 		return http.csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults()).authorizeHttpRequests(auth -> auth
 				.requestMatchers("/actuator/**").permitAll()
 				.requestMatchers("/actuator/health").permitAll()
-				.requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
-				.requestMatchers("/api/recipes/publish").permitAll()
+				.requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login").permitAll()
+				.requestMatchers(HttpMethod.GET, "/api/recipes/publish").permitAll()
+				.requestMatchers("/api/recipes/me").authenticated()
+				.requestMatchers("/api/recipes/history").authenticated()
+				.requestMatchers(HttpMethod.GET, "/api/recipes").permitAll()
+				.requestMatchers(HttpMethod.GET, "/api/recipes/*").permitAll()
+				.requestMatchers("/uploads/**").permitAll()
 				.anyRequest().authenticated())
 				.sessionManagement(session -> session
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(jwtConfig, UsernamePasswordAuthenticationFilter.class)
 				.exceptionHandling(ex -> ex
+						.authenticationEntryPoint((request, response, e) -> {
+							System.out.println("UNAUTHENTICATED: " + request.getRequestURI());
+							response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+						})
 						.accessDeniedHandler((request, response, e) -> {
 							System.out.println("ACCESS DENIED: " + request.getRequestURI());
 							e.printStackTrace();

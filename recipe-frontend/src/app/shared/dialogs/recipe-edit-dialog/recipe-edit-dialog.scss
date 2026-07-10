@@ -52,34 +52,7 @@
   transition: transform 0.3s ease;
 }
 
-.recipe-edit__image-options img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  cursor: pointer;
-  flex-shrink: 0;
-  border: 2px solid transparent;
-  border-radius: 4px;
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  &.selected {
-    border-color: blue;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
-
-  &.selected:hover {
-    transform: scale(1.05);
-  }
-}
-
+.recipe-edit__image-options img,
 .recipe-edit__upload-card {
   width: 120px;
   height: 120px;
@@ -88,10 +61,6 @@
   flex-shrink: 0;
   border: 2px solid transparent;
   border-radius: 4px;
-  display: flex;
-  align-items: center;
-  gap: 1vw;
-  justify-content: center;
   transition:
     transform 0.2s ease,
     border-color 0.2s ease,
@@ -111,7 +80,6 @@
     transform: scale(1.05);
   }
 }
-
 .full-width {
   width: 100%;
 }
@@ -151,7 +119,7 @@ mat-dialog-actions {
 
 @media screen and (max-width: 700px) {
   .dialog-content {
-    max-height: 70vh;
+    max-height: 60vh;
   }
 
   .ingredient-row {

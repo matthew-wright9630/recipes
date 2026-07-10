@@ -10,7 +10,11 @@
   top: 1rem;
   align-self: stretch;
   align-items: center;
-  gap: 5vh;
+  gap: 2vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .profile__header {
@@ -65,7 +69,7 @@
 
 .profile__recipes__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 33%));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 300px));
   gap: 1rem;
   justify-content: center;
 }
