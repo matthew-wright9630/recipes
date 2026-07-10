@@ -9,6 +9,8 @@ import { MatButton } from '@angular/material/button';
 import { RecipeService } from '../../../shared/services/recipe-service/recipe.service';
 import { RecipeStateService } from '../../../shared/services/recipe-state-service/recipe-state.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { CdkOverlayOrigin } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-profile',
@@ -19,6 +21,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatCardTitle,
     MatDivider,
     MatButton,
+    RouterLink,
+    CdkOverlayOrigin,
   ],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',

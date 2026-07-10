@@ -72,6 +72,31 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 300px));
   gap: 1rem;
   justify-content: center;
+  margin-bottom: 2vh;
+}
+
+.profile__card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.profile__card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+}
+
+.profile__btn {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
 @media screen and (max-width: 650px) {
