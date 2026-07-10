@@ -322,7 +322,6 @@ export class RecipeEditDialog {
   canPublish = computed(
     () =>
       !!this.formState().name?.trim() &&
-      !!this.formState().description?.trim() &&
       this.formState().servings > 0 &&
       this.formState().cookTime >= 0 &&
       this.formState().prepTime >= 0 &&
