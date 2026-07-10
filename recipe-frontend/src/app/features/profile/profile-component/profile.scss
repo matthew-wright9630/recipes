@@ -72,11 +72,12 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 300px));
   gap: 1rem;
   justify-content: center;
-  margin-bottom: 2vh;
+  margin: 2vh 0;
 }
 
 .profile__card {
   width: 100%;
+  min-height: 300px;
   display: flex;
   flex-direction: column;
   cursor: pointer;
