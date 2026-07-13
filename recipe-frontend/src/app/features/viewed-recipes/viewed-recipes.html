@@ -1,0 +1,30 @@
+<article>
+  <div class="viewed-recipes">
+    <div class="viewed-recipes__grid">
+      @for (recipe of recipeData?.content; track recipe.id) {
+      <app-recipe [recipe]="recipe"></app-recipe>
+      } @empty {
+      <p class="viewed-recipes__empty">No recipes to display</p>
+      }
+    </div>
+    <div class="viewed-recipes__pagination">
+      <button
+        mat-icon-button
+        class="viewed-recipes__btn"
+        (click)="previousPage()"
+        [disabled]="recipeData?.first"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <span>Page {{ currentPage + 1 }} of {{ recipeData?.totalPages }}</span>
+      <button
+        mat-icon-button
+        class="viewed-recipes__btn"
+        (click)="nextPage()"
+        [disabled]="recipeData?.last"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+</article>

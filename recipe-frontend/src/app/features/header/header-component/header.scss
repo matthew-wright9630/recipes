@@ -14,6 +14,7 @@ mat-toolbar {
   opacity: 0.7;
   transform: translateY(-1px);
 }
+
 .spacer {
   flex: 1 1 auto;
 }
@@ -27,8 +28,9 @@ mat-toolbar {
   gap: 1rem;
 }
 
-.search-button {
-  display: none;
+.header__btn {
+  height: 5vh;
+  width: 10vw;
 }
 
 @media (max-width: 750px) {

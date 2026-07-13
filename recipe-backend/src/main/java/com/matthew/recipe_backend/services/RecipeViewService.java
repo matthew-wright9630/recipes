@@ -31,14 +31,14 @@ public class RecipeViewService {
     public void addView(User user, Recipe recipe) {
         Instant timeDelay = Instant.now().minus(60, ChronoUnit.MINUTES);
 
-        boolean viewedRecently = recipeViewRepository.existsByUserAndRecipeAndViewedAtAfter(user, recipe, timeDelay);
+        boolean viewedRecently = recipeViewRepository.existsByUserAndRecipeAndCreatedAtAfter(user, recipe, timeDelay);
 
         if (!viewedRecently) {
             RecipeView recipeView = new RecipeView();
 
             recipeView.setUser(user);
             recipeView.setRecipe(recipe);
-            recipeView.setViewedAt(Instant.now());
+            recipeView.setcreatedAt(Instant.now());
 
             recipeViewRepository.save(recipeView);
         }
@@ -54,10 +54,10 @@ public class RecipeViewService {
 
         if (user != null) {
             viewedRecently = recipeViewRepository
-                    .existsByUserAndRecipeAndViewedAtAfter(user, recipe, timeDelay);
+                    .existsByUserAndRecipeAndCreatedAtAfter(user, recipe, timeDelay);
         } else {
             viewedRecently = recipeViewRepository
-                    .existsByRecipeAndVisitorIdAndViewedAtAfter(recipe, visitorId, timeDelay);
+                    .existsByRecipeAndVisitorIdAndCreatedAtAfter(recipe, visitorId, timeDelay);
         }
 
         if (!viewedRecently) {
@@ -71,7 +71,7 @@ public class RecipeViewService {
                 recipeView.setVisitorId(visitorId);
             }
             recipeView.setRecipe(recipe);
-            recipeView.setViewedAt(Instant.now());
+            recipeView.setcreatedAt(Instant.now());
 
             recipeViewRepository.save(recipeView);
         }

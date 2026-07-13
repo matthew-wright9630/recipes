@@ -4,10 +4,13 @@ import java.time.Instant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,14 +21,16 @@ public class RecipeView {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
     @Column(name = "viewed_at")
-    private Instant viewedAt;
+    private Instant createdAt;
 
     @Column(name = "visitor_id")
     private String visitorId;
@@ -33,11 +38,11 @@ public class RecipeView {
     public RecipeView() {
     }
 
-    public RecipeView(Long id, User user, Recipe recipe, Instant viewedAt, String visitorId) {
+    public RecipeView(Long id, User user, Recipe recipe, Instant createdAt, String visitorId) {
         this.id = id;
         this.user = user;
         this.recipe = recipe;
-        this.viewedAt = viewedAt;
+        this.createdAt = createdAt;
         this.visitorId = visitorId;
     }
 
@@ -65,12 +70,12 @@ public class RecipeView {
         this.recipe = recipe;
     }
 
-    public Instant getViewedAt() {
-        return viewedAt;
+    public Instant getcreatedAt() {
+        return createdAt;
     }
 
-    public void setViewedAt(Instant viewedAt) {
-        this.viewedAt = viewedAt;
+    public void setcreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getVisitorId() {
@@ -108,7 +113,7 @@ public class RecipeView {
 
     @Override
     public String toString() {
-        return "RecipeView [id=" + id + ", user=" + user + ", recipe=" + recipe + ", viewedAt=" + viewedAt
+        return "RecipeView [id=" + id + ", user=" + user + ", recipe=" + recipe + ", createdAt=" + createdAt
                 + ", visitorId=" + visitorId + "]";
     }
 

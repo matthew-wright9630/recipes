@@ -2,15 +2,22 @@
   <!-- LEFT SIDEBAR -->
   <mat-card class="profile-sidebar">
     <div class="profile__header">
-      @if (authState.currentUser()?.avatarUrl) {
-      <img
-        class="profile__img"
-        [src]="authState.currentUser()?.avatarUrl"
-        alt="avatar"
-      />
-      } @else {
-      <img class="profile__img" src="/default-avatar.svg" />
-      }
+      <div class="profile__avatar">
+        @if (authState.currentUser()?.avatarUrl) {
+        <img
+          class="profile__img"
+          [src]="imageBaseUrl + '/user/' + authState.currentUser()?.avatarUrl"
+          alt="avatar"
+        />
+        } @else {
+        <div
+          class="avatar"
+          [style.background]="getAvatarColor(authState.currentUser()!.username)"
+        >
+          {{ getInitials(authState.currentUser()!.username) }}
+        </div>
+        }
+      </div>
 
       <p class="profile__p">{{ authState.currentUser()?.username }}</p>
       <p class="profile__p">{{ authState.currentUser()?.email }}</p>
@@ -42,6 +49,12 @@
       <div class="profile__recipes__grid">
         @for(recipe of likedRecipeList(); track recipe.id) {
         <app-recipe [recipe]="recipe"></app-recipe>
+        } @if(likedRecipeList().length >= 3) {
+        <mat-card class="profile__card">
+          <a class="profile__btn" [routerLink]="['/recipes/liked']">
+            See all liked recipes
+          </a>
+        </mat-card>
         }
       </div>
     </mat-card>
@@ -55,6 +68,12 @@
       <div class="profile__recipes__grid">
         @for(recipe of recipeHistory(); track recipe.id) {
         <app-recipe [recipe]="recipe"></app-recipe>
+        } @if(recipeHistory().length >= 3) {
+        <mat-card class="profile__card">
+          <a class="profile__btn" [routerLink]="['/recipes/viewed']">
+            See all view history
+          </a>
+        </mat-card>
         }
       </div>
     </mat-card>

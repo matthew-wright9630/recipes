@@ -7,14 +7,26 @@
 
   <div class="header__buttons desktop-nav">
     @if(this.authState.currentUser()) {
-    <button mat-raised-button routerLink="/">Browse Recipes</button>
+    <button mat-raised-button class="header__btn" routerLink="/">
+      Browse Recipes
+    </button>
     <!-- <button mat-raised-button routerLink="/cookbooks">Cookbooks</button> -->
-    <button mat-raised-button routerLink="/recipes">My Recipes</button>
-    <button mat-raised-button routerLink="/profile">Profile</button>
+    <button mat-raised-button class="header__btn" routerLink="/recipes">
+      My Recipes
+    </button>
+    <button mat-raised-button class="header__btn" routerLink="/profile">
+      Profile
+    </button>
     } @else {
-    <button mat-raised-button routerLink="/">Browse Recipes</button>
-    <button mat-raised-button (click)="openLogin()">Login</button>
-    <button mat-raised-button (click)="openRegistration()">Register</button>
+    <button mat-raised-button class="header__btn" routerLink="/">
+      Browse Recipes
+    </button>
+    <button mat-raised-button class="header__btn" (click)="openLogin()">
+      Login
+    </button>
+    <button mat-raised-button class="header__btn" (click)="openRegistration()">
+      Register
+    </button>
     }
   </div>
 

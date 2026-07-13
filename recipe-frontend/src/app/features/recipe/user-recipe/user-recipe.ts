@@ -14,10 +14,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { RecipeCreateDialog } from '../../../shared/dialogs/recipe-create-dialog/recipe-create-dialog';
 import { RecipeStateService } from '../../../shared/services/recipe-state-service/recipe-state.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-user-recipe',
-  imports: [RecipeComponent, MatIcon],
+  imports: [RecipeComponent, MatIcon, MatButtonModule],
   templateUrl: './user-recipe.html',
   styleUrl: './user-recipe.scss',
 })
