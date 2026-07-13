@@ -113,12 +113,22 @@
   </div>
 </mat-dialog-content>
 
-<div class="full-recipe-btn">
-  <a
-    mat-raised-button
-    class="recipe-dialog__full-recipe"
-    [routerLink]="['/recipe', recipe.id]"
-  >
-    See full recipe
-  </a>
+<div class="recipe-dialog__footer">
+  <div class="full-recipe-btn">
+    <a
+      mat-raised-button
+      class="recipe-dialog__full-recipe"
+      [routerLink]="['/recipe', recipe.id]"
+    >
+      See full recipe
+    </a>
+  </div>
+  <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <mat-menu #actionMenu="matMenu">
+    @for (action of moreActions; track $index) {
+    <button mat-menu-item (click)="action.action()">{{action.label}}</button>
+    }
+  </mat-menu>
 </div>

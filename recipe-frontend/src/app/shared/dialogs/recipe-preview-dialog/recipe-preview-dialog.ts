@@ -18,6 +18,13 @@ import { MatIcon } from '@angular/material/icon';
 import { RecipeLikeService } from '../../services/recipe-like-service/recipe-like.service';
 import { environment } from '../../../../environments/environment';
 import { MatButtonModule } from '@angular/material/button';
+import {
+  MatMenu,
+  MatMenuContent,
+  MatMenuItem,
+  MatMenuModule,
+  MatMenuTrigger,
+} from '@angular/material/menu';
 
 @Component({
   selector: 'app-recipe-preview-dialog',
@@ -29,6 +36,10 @@ import { MatButtonModule } from '@angular/material/button';
     CommonModule,
     MatIcon,
     MatButtonModule,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
+    MatMenuModule,
   ],
   templateUrl: './recipe-preview-dialog.html',
   styleUrl: './recipe-preview-dialog.scss',
@@ -168,5 +179,23 @@ export class RecipePreviewDialog {
         error: (err) => console.error(err),
       });
     }
+  }
+
+  moreActions = [
+    { label: 'Copy Link', action: this.copyLink },
+    { label: 'Share', action: this.shareRecipe },
+    { label: 'Open as PDF', action: this.openAsPdf },
+  ];
+
+  copyLink(): void {
+    console.log('copy link');
+  }
+
+  shareRecipe(): void {
+    console.log('share recipe');
+  }
+
+  openAsPdf(): void {
+    console.log('open as PDF');
   }
 }
