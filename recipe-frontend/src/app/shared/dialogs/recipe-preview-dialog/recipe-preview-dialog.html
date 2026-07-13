@@ -128,7 +128,9 @@
   </button>
   <mat-menu #actionMenu="matMenu">
     @for (action of moreActions; track $index) {
-    <button mat-menu-item (click)="action.action()">{{action.label}}</button>
+    <button mat-menu-item (click)="action.action(recipe)">
+      {{action.label}}
+    </button>
     }
   </mat-menu>
 </div>
