@@ -84,10 +84,10 @@ public class Recipe {
 
 	}
 
-	public Recipe(User createdBy, String name, String description) {
+	public Recipe(User createdBy, String name, String description, String imageUrl) {
 		this.name = name;
 		this.description = description;
-		this.imageUrl = "food-PLACEHOLDER";
+		this.imageUrl = imageUrl;
 		this.notes = null;
 		this.servings = 0;
 		this.prepTime = 0;
