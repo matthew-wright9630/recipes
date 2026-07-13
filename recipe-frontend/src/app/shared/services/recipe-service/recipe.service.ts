@@ -116,4 +116,10 @@ export class RecipeService {
       observe: 'response',
     });
   }
+
+  downloadRecipePdf(id: number): Observable<Blob> {
+    return this.http.get(this.baseURL + '/' + id + '/pdf', {
+      responseType: 'blob',
+    });
+  }
 }

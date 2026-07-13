@@ -123,6 +123,7 @@
       See full recipe
     </a>
   </div>
+  @if(this.recipe.status === "PUBLISHED") {
   <button mat-icon-button [matMenuTriggerFor]="actionMenu">
     <mat-icon>menu</mat-icon>
   </button>
@@ -133,4 +134,5 @@
     </button>
     }
   </mat-menu>
+  }
 </div>

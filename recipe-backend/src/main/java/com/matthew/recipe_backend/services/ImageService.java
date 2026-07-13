@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,18 +22,22 @@ import com.matthew.recipe_backend.repositories.UserImageRepository;
 
 import net.coobird.thumbnailator.Thumbnails;
 import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Service
-public class UserImageService {
+public class ImageService {
 
     private final UserImageRepository userImageRepository;
     private final S3Client s3Client;
+    private final Environment environment;
 
-    public UserImageService(UserImageRepository userImageRepository, S3Client s3Client) {
+    public ImageService(UserImageRepository userImageRepository, S3Client s3Client, Environment environment) {
         this.userImageRepository = userImageRepository;
         this.s3Client = s3Client;
+        this.environment = environment;
     }
 
     public String processAndUploadImage(MultipartFile file, User user) throws IOException {
@@ -95,5 +101,24 @@ public class UserImageService {
                 .stream()
                 .map(UserImage::getBaseKey)
                 .toList();
+    }
+
+    public byte[] downloadFile(String key) {
+
+        if (environment.acceptsProfiles(Profiles.of("test"))) {
+            try {
+                return Files.readAllBytes(
+                        Paths.get("uploads/recipes/", key));
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to load local image", e);
+            }
+        } else {
+            return s3Client.getObject(
+                    GetObjectRequest.builder()
+                            .bucket(bucket)
+                            .key("recipes/" + key)
+                            .build(),
+                    ResponseTransformer.toBytes()).asByteArray();
+        }
     }
 }

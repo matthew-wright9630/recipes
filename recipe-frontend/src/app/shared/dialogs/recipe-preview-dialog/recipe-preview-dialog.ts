@@ -55,6 +55,7 @@ export class RecipePreviewDialog {
   authState = inject(AuthStateService);
   imageUrl: string = environment.imageBaseUrl + 'recipes/';
   frontendUrl: string = environment.baseFrontendUrl;
+  backendUrl: string = environment.apiUrl;
 
   private dialog = inject(MatDialog);
   private snackbar = inject(MatSnackBar);
@@ -189,7 +190,10 @@ export class RecipePreviewDialog {
   moreActions = [
     { label: 'Copy Link', action: (recipe: Recipe) => this.copyLink(recipe) },
     { label: 'Share', action: (recipe: Recipe) => this.shareRecipe(recipe) },
-    { label: 'Open as PDF', action: this.openAsPdf },
+    {
+      label: 'Open as PDF',
+      action: (recipe: Recipe) => this.openAsPdf(recipe),
+    },
   ];
 
   copyLink(recipe: Recipe): void {
@@ -220,6 +224,15 @@ export class RecipePreviewDialog {
   }
 
   openAsPdf(recipe: Recipe): void {
-    console.log('open as PDF');
+    this.recipeService.downloadRecipePdf(recipe.id).subscribe((blob) => {
+      const url = URL.createObjectURL(blob);
+
+      window.open(url, '_blank');
+
+      // Optional cleanup
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 1000);
+    });
   }
 }
