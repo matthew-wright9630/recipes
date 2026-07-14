@@ -10,14 +10,18 @@ import com.matthew.recipe_backend.dtos.StatusUpdateRequestDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
 import com.matthew.recipe_backend.dtos.UserDto;
 import com.matthew.recipe_backend.models.User;
+import com.matthew.recipe_backend.services.RecipePdfService;
 import com.matthew.recipe_backend.services.RecipeService;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,9 +37,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class RecipeController {
 
 	private final RecipeService recipeService;
+	private final RecipePdfService recipePdfService;
 
-	public RecipeController(RecipeService recipeService) {
+	public RecipeController(RecipeService recipeService, RecipePdfService recipePdfService) {
 		this.recipeService = recipeService;
+		this.recipePdfService = recipePdfService;
 	}
 
 	@GetMapping
@@ -142,4 +148,19 @@ public class RecipeController {
 		return ResponseEntity.ok(recipe);
 	}
 
+	@GetMapping("/{id}/pdf")
+	public ResponseEntity<byte[]> getRecipePdf(
+			@PathVariable Long id) throws IOException {
+
+		RecipeDto recipe = recipeService.findRecipeById(id, null);
+
+		byte[] pdf = recipePdfService.generateRecipePdf(recipe);
+
+		return ResponseEntity.ok()
+				.header(
+						HttpHeaders.CONTENT_DISPOSITION,
+						"inline; filename=\"recipe.pdf\"")
+				.contentType(MediaType.APPLICATION_PDF)
+				.body(pdf);
+	}
 }

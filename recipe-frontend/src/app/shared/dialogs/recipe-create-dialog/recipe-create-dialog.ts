@@ -54,7 +54,7 @@ export class RecipeCreateDialog {
   form = this.fb.group({
     name: ['', [Validators.minLength(3), Validators.required]],
     description: [''],
-    imageUrl: ['', [Validators.required]],
+    imageUrl: ['food-PLACEHOLDER', [Validators.required]],
   });
 
   selectImage(image: string): void {

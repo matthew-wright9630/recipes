@@ -224,7 +224,7 @@ public class RecipeService {
 	 * @return the newly created {@link RecipeDto}
 	 */
 	public RecipeDto createDraftRecipe(CreateRecipeDto draftRecipe, User user) {
-		Recipe recipe = new Recipe(user, draftRecipe.name(), draftRecipe.description());
+		Recipe recipe = new Recipe(user, draftRecipe.name(), draftRecipe.description(), draftRecipe.imageUrl());
 		recipeRepository.save(recipe);
 		return RecipeMapper.toDto(recipe, 0, false);
 	}

@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.matthew.recipe_backend.models.User;
-import com.matthew.recipe_backend.services.UserImageService;
+import com.matthew.recipe_backend.services.ImageService;
 
 @RestController
 @RequestMapping("/api/images")
 public class UserImageController {
 
-    private final UserImageService imageService;
+    private final ImageService imageService;
 
-    public UserImageController(UserImageService imageService) {
+    public UserImageController(ImageService imageService) {
         this.imageService = imageService;
     }
 

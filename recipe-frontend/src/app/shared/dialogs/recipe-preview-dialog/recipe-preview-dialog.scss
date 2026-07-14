@@ -118,24 +118,9 @@ button {
   color: #e53935;
 }
 
-.full-recipe-btn {
-  border-top: 1px solid var(--mat-sys-outline-variant);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 1vh 0;
-}
-
 .recipe-dialog__btn {
   font-size: 1rem;
   border-radius: 16px;
-}
-
-.recipe-dialog__full-recipe {
-  width: 150px;
-  height: 65px;
-  border-radius: 16px;
-  margin: 2vh 0;
 }
 
 .recipe-dialog__delete {
@@ -145,6 +130,27 @@ button {
 
 .recipe-dialog__delete:hover {
   background: color-mix(in srgb, var(--mat-sys-error) 8%, transparent);
+}
+
+.recipe-dialog__footer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.recipe-dialog__full-recipe {
+  width: 150px;
+  height: 65px;
+  border-radius: 16px;
+  margin: 2vh 0;
+}
+
+.full-recipe-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1vh 0;
 }
 
 @media screen and (max-width: 875px) {

@@ -18,6 +18,15 @@ import { MatIcon } from '@angular/material/icon';
 import { RecipeLikeService } from '../../services/recipe-like-service/recipe-like.service';
 import { environment } from '../../../../environments/environment';
 import { MatButtonModule } from '@angular/material/button';
+import {
+  MatMenu,
+  MatMenuContent,
+  MatMenuItem,
+  MatMenuModule,
+  MatMenuTrigger,
+} from '@angular/material/menu';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Recipe } from '../../models/recipe';
 
 @Component({
   selector: 'app-recipe-preview-dialog',
@@ -29,6 +38,11 @@ import { MatButtonModule } from '@angular/material/button';
     CommonModule,
     MatIcon,
     MatButtonModule,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
+    MatMenuModule,
+    MatSnackBarModule,
   ],
   templateUrl: './recipe-preview-dialog.html',
   styleUrl: './recipe-preview-dialog.scss',
@@ -40,6 +54,11 @@ export class RecipePreviewDialog {
   recipeLikeService = inject(RecipeLikeService);
   authState = inject(AuthStateService);
   imageUrl: string = environment.imageBaseUrl + 'recipes/';
+  frontendUrl: string = environment.baseFrontendUrl;
+  backendUrl: string = environment.apiUrl;
+
+  private dialog = inject(MatDialog);
+  private snackbar = inject(MatSnackBar);
 
   isOwner = computed(
     () => this.authState.currentUser()?.id === this.recipe.createdById,
@@ -54,8 +73,6 @@ export class RecipePreviewDialog {
   sortedDirections = computed(() =>
     [...this.recipe.recipeDirections].sort((a, b) => a.sortOrder - b.sortOrder),
   );
-
-  private dialog = inject(MatDialog);
 
   openEditDialog() {
     const raw = localStorage.getItem(`recipe-draft-${this.recipe.id}`);
@@ -168,5 +185,54 @@ export class RecipePreviewDialog {
         error: (err) => console.error(err),
       });
     }
+  }
+
+  moreActions = [
+    { label: 'Copy Link', action: (recipe: Recipe) => this.copyLink(recipe) },
+    { label: 'Share', action: (recipe: Recipe) => this.shareRecipe(recipe) },
+    {
+      label: 'Open as PDF',
+      action: (recipe: Recipe) => this.openAsPdf(recipe),
+    },
+  ];
+
+  copyLink(recipe: Recipe): void {
+    navigator.clipboard.writeText(this.frontendUrl + '/recipe/' + recipe.id);
+
+    this.snackbar.open('Recipe link copied!', 'Close', {
+      duration: 3000,
+    });
+  }
+
+  shareRecipe(recipe: Recipe): void {
+    const url = this.frontendUrl + '/recipe/' + recipe.id;
+
+    if (navigator.share) {
+      navigator.share({
+        title: recipe.name,
+        text: `Check out this recipe: ${recipe.name}`,
+        url,
+      });
+    } else {
+      const subject = `Check out this recipe: ${recipe.name}`;
+      const body = `I thought you might like this recipe:\n\n${url}`;
+
+      const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+      window.location.href = mailto;
+    }
+  }
+
+  openAsPdf(recipe: Recipe): void {
+    this.recipeService.downloadRecipePdf(recipe.id).subscribe((blob) => {
+      const url = URL.createObjectURL(blob);
+
+      window.open(url, '_blank');
+
+      // Optional cleanup
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 1000);
+    });
   }
 }
