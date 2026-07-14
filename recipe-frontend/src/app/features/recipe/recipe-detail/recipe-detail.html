@@ -21,6 +21,31 @@
         [alt]="r.name"
       />
     </div>
+    <div class="recipe-hero__user-actions">
+      @if(r.status === "PUBLISHED") { @if (this.authState.currentUser()) {
+
+      <button
+        class="recipe-hero__like-btn"
+        mat-icon-button
+        (click)="toggleFavorite()"
+      >
+        <mat-icon [class.liked]="r.likedByCurrentUser">
+          {{ r.likedByCurrentUser ? 'favorite' : 'favorite_border' }}
+        </mat-icon>
+      </button>
+      }
+      <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <mat-menu #actionMenu="matMenu">
+        @for (action of moreActions; track $index) {
+        <button mat-menu-item (click)="action.action(r)">
+          {{action.label}}
+        </button>
+        }
+      </mat-menu>
+      }
+    </div>
   </mat-card>
   <div class="recipe-content">
     <mat-card>
