@@ -10,8 +10,13 @@ This project started from a simple frustration: every recipe app I tried stored 
 
 ### Recipes
 
+![alt text](image.png)
+
 - Create, edit, and publish recipes
 - Add ingredients, directions, prep/cook times, and images
+
+![alt text](image-1.png)
+
 - Upload a custom image or choose from a curated library of default images
 - Recipe versioning that allows editing published recipes without affecting the live version
 - Paginated recipe browsing with live search
@@ -34,9 +39,6 @@ This project started from a simple frustration: every recipe app I tried stored 
 ## Planned Features (v2)
 
 - 📚 **Cookbooks** — Organize recipes into named collections (Tex-Mex, Family Favorites, Weeknight Dinners, etc.) with sharing support
-- 🤝 **Recipe Sharing** — Share recipes directly with other users
-- 📄 **PDF Export** — Download recipes as printable PDFs
-- ☁️ **AWS Deployment** — Deploy using AWS Lightsail with S3 image storage and CloudFront CDN
 
 ---
 
