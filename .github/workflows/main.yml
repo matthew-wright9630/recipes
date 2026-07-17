@@ -1,0 +1,97 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./recipe-backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+          cache: "maven"
+      - name: Build Jar
+        run: ./mvnw clean package -DskipTests
+      - uses: actions/upload-artifact@v4
+        with:
+          name: backend-jar
+          path: recipe-backend/target/*.jar
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./recipe-frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: recipe-frontend/package-lock.json
+      - run: npm ci
+      - run: npx ng build --configuration production
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: recipe-frontend/dist/recipe-frontend/browser
+
+  deploy:
+    needs: [backend-build, frontend-build]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: backend-jar
+          path: backend-artifact
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend-artifact
+
+      - name: Deploy backend
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ vars.LIGHTSAIL_HOST }}
+          username: ${{ vars.LIGHTSAIL_USER }}
+          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          source: "backend-artifact/*.jar"
+          target: "/opt/wright-kitchen"
+
+      - name: Deploy frontend
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ vars.LIGHTSAIL_HOST }}
+          username: ${{ vars.LIGHTSAIL_USER }}
+          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          source: "frontend-artifact/*"
+          target: "/var/www/wright-kitchen"
+
+      - name: Restart Backend Service
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ vars.LIGHTSAIL_HOST }}
+          user: ${{ vars.LIGHTSAIL_USER }}
+          private_key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          host_fingerprint: ${{ secrets.HOST_FINGERPRINT }}
+          command: sudo systemctl restart wright-kitchen.service
+
+      - name: Restart Frontend Service
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ vars.LIGHTSAIL_HOST }}
+          user: ${{ vars.LIGHTSAIL_USER }}
+          private_key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          host_fingerprint: ${{ secrets.HOST_FINGERPRINT }}
+          command: sudo systemctl reload nginx.service
