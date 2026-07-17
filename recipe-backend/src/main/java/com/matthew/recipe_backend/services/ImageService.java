@@ -10,6 +10,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
@@ -34,7 +35,8 @@ public class ImageService {
     private final S3Client s3Client;
     private final Environment environment;
 
-    public ImageService(UserImageRepository userImageRepository, S3Client s3Client, Environment environment) {
+    public ImageService(UserImageRepository userImageRepository, @Autowired(required = false) S3Client s3Client,
+            Environment environment) {
         this.userImageRepository = userImageRepository;
         this.s3Client = s3Client;
         this.environment = environment;
@@ -86,14 +88,23 @@ public class ImageService {
     private String bucket;
 
     private void saveImage(ByteArrayOutputStream stream, String filename) {
-
-        s3Client.putObject(
-                PutObjectRequest.builder()
-                        .bucket(bucket)
-                        .key("recipes/" + filename)
-                        .contentType("image/jpeg")
-                        .build(),
-                RequestBody.fromBytes(stream.toByteArray()));
+        if (environment.acceptsProfiles(Profiles.of("test"))) {
+            try {
+                Files.write(
+                        Paths.get("uploads/recipes/", filename),
+                        stream.toByteArray());
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to save local image", e);
+            }
+        } else {
+            s3Client.putObject(
+                    PutObjectRequest.builder()
+                            .bucket(bucket)
+                            .key("recipes/" + filename)
+                            .contentType("image/jpeg")
+                            .build(),
+                    RequestBody.fromBytes(stream.toByteArray()));
+        }
     }
 
     public List<String> getImagesByUser(User user) {
