@@ -11,6 +11,7 @@ import {
   AbstractControl,
   FormArray,
   FormBuilder,
+  FormControl,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -28,7 +29,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
-import { debounceTime } from 'rxjs';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { debounceTime, map, startWith } from 'rxjs';
 import { RecipeStateService } from '../../services/recipe-state-service/recipe-state.service';
 import { MatIcon } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -36,6 +38,8 @@ import { ConfirmationDialog } from '../confirmation-dialog/confirmation-dialog';
 import { DEFAULT_RECIPE_IMAGES } from '../../constants/default-images';
 import { UserImageService } from '../../services/user-image-service/user-image.service';
 import { environment } from '../../../../environments/environment';
+import { UNIT_SUGGESTIONS } from '../../constants/unit-suggestions';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-recipe-edit-dialog',
@@ -48,6 +52,8 @@ import { environment } from '../../../../environments/environment';
     MatDialogActions,
     ReactiveFormsModule,
     MatIcon,
+    MatAutocompleteModule,
+    AsyncPipe,
   ],
   templateUrl: './recipe-edit-dialog.html',
   styleUrl: './recipe-edit-dialog.scss',
@@ -66,6 +72,7 @@ export class RecipeEditDialog {
   data = inject<Recipe>(MAT_DIALOG_DATA);
   readonly RecipeStatus = RecipeStatus;
   defaultImages = DEFAULT_RECIPE_IMAGES;
+  unitSuggestions = UNIT_SUGGESTIONS;
   userImages: string[] = [];
   backendUrl: string = environment.apiUrl + '/uploads/';
   imageUrl: string = environment.imageBaseUrl + 'recipes/';
@@ -282,6 +289,23 @@ export class RecipeEditDialog {
     });
   }
 
+  filteredUnits(index: number) {
+    const control = this.ingredients.at(index).get('unit');
+
+    return control!.valueChanges.pipe(
+      startWith(control?.value ?? ''),
+      map((value) => this.filterUnits(value)),
+    );
+  }
+
+  private filterUnits(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return UNIT_SUGGESTIONS.filter((unit) =>
+      unit.toLowerCase().includes(filterValue),
+    );
+  }
+
   addIngredient(): void {
     this.ingredients.push(
       this.fb.group({
@@ -291,6 +315,19 @@ export class RecipeEditDialog {
         notes: [''],
       }),
     );
+
+    setTimeout(() => {
+      const inputs = document.querySelectorAll('.ingredient-row input');
+
+      const lastInput = inputs[inputs.length - 3] as HTMLElement;
+      lastInput?.focus();
+    });
+  }
+
+  onIngredientEnter(index: number): void {
+    if (index === this.ingredients.length - 1) {
+      this.addIngredient();
+    }
   }
 
   removeIngredient(index: number): void {
