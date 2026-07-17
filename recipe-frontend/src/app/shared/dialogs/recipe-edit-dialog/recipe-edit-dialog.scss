@@ -34,6 +34,11 @@
   align-items: center;
 }
 
+.recipe-edit__img {
+  width: 400px;
+  height: 300px;
+}
+
 .recipe-edit__image-options {
   display: flex;
   align-items: center;
@@ -118,6 +123,11 @@ mat-dialog-actions {
 }
 
 @media screen and (max-width: 700px) {
+  .recipe-edit__img {
+    width: 250px;
+    height: 200px;
+  }
+
   .dialog-content {
     max-height: 60vh;
   }

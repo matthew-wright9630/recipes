@@ -2,9 +2,14 @@
 
 <div class="recipe-page">
   <mat-card class="recipe-hero">
+    <img
+      class="recipe-image"
+      [src]="imageUrl + r.imageUrl + '-medium.jpg'"
+      [alt]="r.name"
+    />
     <div class="recipe-hero__content">
       <div class="recipe-hero__info">
-        <h1>{{ recipe()?.name }}</h1>
+        <h1 class="recipe-hero__title">{{ recipe()?.name }}</h1>
         <p class="recipe-description">{{ r.description }}</p>
         <div class="recipe-meta">
           <mat-chip-set>
@@ -15,42 +20,44 @@
           </mat-chip-set>
         </div>
       </div>
-      <img
-        class="recipe-image"
-        [src]="imageUrl + r.imageUrl + '-medium.jpg'"
-        [alt]="r.name"
-      />
     </div>
     <div class="recipe-hero__user-actions">
       @if(r.status === "PUBLISHED") { @if (this.authState.currentUser()) {
-
-      <button
-        class="recipe-hero__like-btn"
-        mat-icon-button
-        (click)="toggleFavorite()"
-      >
-        <mat-icon [class.liked]="r.likedByCurrentUser">
-          {{ r.likedByCurrentUser ? 'favorite' : 'favorite_border' }}
-        </mat-icon>
-      </button>
-      }
-      <button mat-icon-button [matMenuTriggerFor]="actionMenu">
-        <mat-icon>menu</mat-icon>
-      </button>
-      <mat-menu #actionMenu="matMenu">
-        @for (action of moreActions; track $index) {
-        <button mat-menu-item (click)="action.action(r)">
-          {{action.label}}
+      <div class="recipe__action__div">
+        Like:
+        <button
+          class="recipe-hero__like-btn"
+          mat-icon-button
+          (click)="toggleFavorite()"
+        >
+          <mat-icon [class.liked]="r.likedByCurrentUser">
+            {{ r.likedByCurrentUser ? 'favorite' : 'favorite_border' }}
+          </mat-icon>
         </button>
-        }
-      </mat-menu>
+      </div>
+      }
+      <div class="recipe__action__div">
+        Share:
+        <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <mat-menu #actionMenu="matMenu">
+          @for (action of moreActions; track $index) {
+          <button mat-menu-item (click)="action.action(r)">
+            {{action.label}}
+          </button>
+          }
+        </mat-menu>
+      </div>
       }
     </div>
   </mat-card>
   <div class="recipe-content">
     <mat-card>
       <mat-card-header>
-        <mat-card-title> Ingredients </mat-card-title>
+        <mat-card-title class="recipe-content__title">
+          Ingredients
+        </mat-card-title>
       </mat-card-header>
 
       <mat-card-content>
@@ -71,7 +78,9 @@
 
     <mat-card>
       <mat-card-header>
-        <mat-card-title> Directions </mat-card-title>
+        <mat-card-title class="recipe-content__title">
+          Directions
+        </mat-card-title>
       </mat-card-header>
 
       <mat-card-content>
