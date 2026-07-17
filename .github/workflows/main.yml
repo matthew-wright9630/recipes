@@ -69,6 +69,15 @@ jobs:
           source: "backend-artifact/*.jar"
           target: "/opt/wright-kitchen"
 
+      - name: Clear old frontend files
+        uses: D3rHase/ssh-command-action@latest
+        with:
+          host: ${{ vars.LIGHTSAIL_HOST }}
+          user: ${{ vars.LIGHTSAIL_USER }}
+          private_key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          host_fingerprint: ${{ secrets.HOST_FINGERPRINT }}
+          command: sudo rm -rf /var/www/wright-kitchen/*
+
       - name: Deploy frontend
         uses: appleboy/scp-action@v0.1.7
         with:
