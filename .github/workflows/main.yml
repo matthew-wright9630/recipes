@@ -77,6 +77,7 @@ jobs:
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
           source: "frontend-artifact/*"
           target: "/var/www/wright-kitchen"
+          strip_components: 1
 
       - name: Restart Backend Service
         uses: D3rHase/ssh-command-action@v0.2.2
