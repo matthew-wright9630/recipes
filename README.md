@@ -10,18 +10,18 @@ This project started from a simple frustration: every recipe app I tried stored 
 
 ### Recipes
 
-![alt text](image.png)
+![alt text](image-2.png)
+![alt text](image-1.png)
 
 - Create, edit, and publish recipes
 - Add ingredients, directions, prep/cook times, and images
-
-![alt text](image-1.png)
-
 - Upload a custom image or choose from a curated library of default images
 - Recipe versioning that allows editing published recipes without affecting the live version
 - Paginated recipe browsing with live search
 
 ### Users
+
+![alt text](image-3.png)
 
 - Secure registration and authentication with JWT
 - Personal dashboard
@@ -30,6 +30,8 @@ This project started from a simple frustration: every recipe app I tried stored 
 - Activity history with duplicate view tracking
 
 ### Social
+
+![alt text](image-4.png)
 
 - Like recipes created by other users
 - View recently liked and recently viewed recipes
@@ -45,6 +47,8 @@ This project started from a simple frustration: every recipe app I tried stored 
 # Technical Highlights
 
 ## Recipe Versioning
+
+![alt text](image-5.png)
 
 Rather than treating recipes like static documents, The Wright Kitchen implements a versioning workflow designed specifically for content that evolves over time.
 
