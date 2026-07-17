@@ -104,15 +104,15 @@
 }
 
 @media (max-width: 900px) {
+  .recipe-page {
+    padding: 0;
+  }
+
   .recipe-hero__content {
     flex-direction: column;
   }
 
   .recipe-content {
     grid-template-columns: 1fr;
-  }
-
-  .recipe-image {
-    width: 90%;
   }
 }
