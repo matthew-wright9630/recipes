@@ -8,33 +8,36 @@ This project started from a simple frustration: every recipe app I tried stored 
 
 ## Features
 
-### Recipes
+### Browse Recipes
 
-![alt text](image-2.png)
-![alt text](image-1.png)
+Find what you're looking for fast, without digging through a single long list.
 
 - Create, edit, and publish recipes
+- Paginated recipe browsing with live search
+
+![Browse Recipes](browse-homepage.PNG)
+
+### Edit Recipes
+
 - Add ingredients, directions, prep/cook times, and images
 - Upload a custom image or choose from a curated library of default images
 - Recipe versioning that allows editing published recipes without affecting the live version
-- Paginated recipe browsing with live search
+
+![Edit Recipe](edit-recipe.png)
 
 ### Users
 
-![alt text](image-3.png)
-
 - Secure registration and authentication with JWT
 - Personal dashboard
-- Recently viewed recipes
-- Recently liked recipes
-- Activity history with duplicate view tracking
+
+![User Recipes](user-recipes.png)
 
 ### Social
 
-![alt text](image-4.png)
-
 - Like recipes created by other users
 - View recently liked and recently viewed recipes
+
+![Profile Page](profile-page.PNG)
 
 ---
 
@@ -48,8 +51,6 @@ This project started from a simple frustration: every recipe app I tried stored 
 
 ## Recipe Versioning
 
-![alt text](image-5.png)
-
 Rather than treating recipes like static documents, The Wright Kitchen implements a versioning workflow designed specifically for content that evolves over time.
 
 When a published recipe is edited:
@@ -58,6 +59,12 @@ When a published recipe is edited:
 - A draft revision is created
 - Once published, the previous version becomes **SUPERSEDED**
 - Previous versions remain available for history while being hidden from normal browsing
+
+![Revise Recipe button](revise-recipe.PNG)
+_Clicking "Revise Recipe" starts a new draft._
+
+![Published recipe now also has a draft recipe](recipe-being-revised.png)
+_The recipe now exists as both a live published version and an editable draft._
 
 This avoids the common problem where users must unpublish content just to make edits.
 
@@ -141,9 +148,3 @@ src/main/resources/application.properties
 ```
 
 ---
-
-# About
-
-I have a Bachelor's degree in Computer Engineering and two years of professional software development experience building full-stack applications with Angular and Spring Boot.
-
-The Wright Kitchen is my primary portfolio project and reflects the way I enjoy building software: focusing not only on functionality, but also on thoughtful architecture, performance, and user experience. Many of the design decisions—such as recipe versioning, image processing, and scalable data access patterns—were implemented to solve real product problems while demonstrating production-oriented engineering practices.
