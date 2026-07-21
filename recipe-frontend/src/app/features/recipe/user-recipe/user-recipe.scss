@@ -1,8 +1,17 @@
+.user-recipe {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 .user-recipe__header {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   margin-bottom: 2rem;
+}
+
+.user-recipe__header__title {
+  font-size: 2.5rem;
 }
 
 .user-recipe__button {
@@ -14,9 +23,9 @@
 }
 
 .user-recipe__title {
-  margin: 3vh auto;
+  margin: 3vh auto 1.5vh;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 
 .user-recipe__grid {
@@ -25,4 +34,10 @@
   justify-content: center;
   gap: 16px;
   margin-bottom: 2vh;
+}
+
+.user-recipe__empty {
+  text-align: center;
+  font-size: 1.5rem;
+  margin: 0;
 }

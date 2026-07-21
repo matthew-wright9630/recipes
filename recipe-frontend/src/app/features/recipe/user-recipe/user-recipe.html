@@ -1,7 +1,7 @@
 <article>
   <div class="user-recipe">
     <div class="user-recipe__header">
-      <h2>My Recipes</h2>
+      <h2 class="user-recipe__header__title">My Recipes</h2>
 
       <button
         mat-flat-button
@@ -39,7 +39,7 @@
         @for (recipe of archivedRecipes(); track $index) {
         <app-recipe [recipe]="recipe"></app-recipe>
         } @empty {
-        <p class="user-recipe__empty">No recipes archived.</p>
+        <p class="user-recipe__empty">No stale recipes.</p>
         }
       </div>
     </div>

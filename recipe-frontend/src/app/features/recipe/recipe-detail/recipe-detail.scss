@@ -18,11 +18,9 @@
 
 .recipe-hero__content {
   display: flex;
-  // gap: 2rem;
   justify-content: space-between;
   align-items: center;
   margin-left: 2vw;
-  font-size: clamp(1.5rem, 2vw + 1rem, 2rem);
 }
 
 .recipe-hero__info {
@@ -31,11 +29,15 @@
 
 .recipe-hero__title {
   margin: 0;
+  text-wrap: balance;
+  font-size: clamp(1rem, 2vw + 1rem, 2rem);
 }
 
 .recipe-description {
   margin: 0.5vh 0;
   font-weight: 300;
+  text-wrap: balance;
+  font-size: clamp(1rem, 2vw + 1rem, 2rem);
 }
 
 .recipe-meta {

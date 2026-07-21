@@ -8,7 +8,7 @@
   <div class="header__buttons desktop-nav">
     @if(this.authState.currentUser()) {
     <button mat-raised-button class="header__btn" routerLink="/">
-      Browse Recipes
+      Recipes
     </button>
     <!-- <button mat-raised-button routerLink="/cookbooks">Cookbooks</button> -->
     <button mat-raised-button class="header__btn" routerLink="/recipes">
@@ -19,7 +19,7 @@
     </button>
     } @else {
     <button mat-raised-button class="header__btn" routerLink="/">
-      Browse Recipes
+      Recipes
     </button>
     <button mat-raised-button class="header__btn" (click)="openLogin()">
       Login
@@ -41,7 +41,7 @@
     <mat-icon>menu</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item routerLink="/">Browse Recipes</button>
+    <button mat-menu-item routerLink="/">Recipes</button>
     <!-- <button mat-menu-item routerLink="/cookbooks">Cookbooks</button> -->
     <button mat-menu-item routerLink="/recipes">My Recipes</button>
     <button mat-menu-item routerLink="/profile">Profile</button>
@@ -52,7 +52,7 @@
     <mat-icon>menu</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item routerLink="/">Browse Recipes</button>
+    <button mat-menu-item routerLink="/">Recipes</button>
     <button mat-menu-item (click)="openLogin()">Login</button>
     <button mat-menu-item (click)="openRegistration()">Register</button>
   </mat-menu>

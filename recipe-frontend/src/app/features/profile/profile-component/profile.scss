@@ -2,6 +2,8 @@
   display: flex;
   gap: 1.5rem;
   align-items: stretch;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .profile-sidebar {
@@ -80,6 +82,7 @@
 
 .profile__card-title {
   text-align: center;
+  font-size: 2rem;
 }
 
 .profile__recipes__grid {

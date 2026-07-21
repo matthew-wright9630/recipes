@@ -1,3 +1,8 @@
+.recipe-list {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 .recipe-list__search-container {
   width: 95%;
   background: white;
@@ -13,9 +18,9 @@
 
 .recipe-list__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
+  grid-template-columns: repeat(auto-fit, minmax(300px, calc(400px - 2vw)));
   justify-content: center;
-  gap: 16px;
+  gap: 1vw;
   margin-bottom: 2vh;
 }
 
