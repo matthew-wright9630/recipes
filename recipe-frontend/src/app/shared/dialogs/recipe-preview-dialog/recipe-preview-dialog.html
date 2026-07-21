@@ -1,5 +1,5 @@
 <div class="recipe-dialog__header">
-  <h2 mat-dialog-title>{{ recipe.name }}</h2>
+  <h2 mat-dialog-title class="recipe-dialog__title">{{ recipe.name }}</h2>
   <div class="recipe-dialog__header-actions">
     <div class="recipe-dialog__action-btns">
       @if(recipe.status === 'PUBLISHED' && this.authState.currentUser()) {

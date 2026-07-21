@@ -7,8 +7,10 @@
   padding: 25px 2vw;
 }
 
-h2 {
+.recipe-dialog__title {
   width: 70%;
+  font-size: 2.5rem;
+  text-wrap: balance;
 }
 
 button {
@@ -20,10 +22,12 @@ button {
   flex-direction: column;
   gap: 1vh;
   align-items: center;
+  font-size: clamp(1.5rem, 2vw, 2rem);
 }
 
 .recipe-dialog__img-container {
-  width: 100%;
+  width: 75%;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -38,8 +42,7 @@ button {
 }
 
 .recipe-dialog__p {
-  margin: 2vh 0;
-  font-size: 1rem;
+  font-size: 2rem;
 }
 
 .recipe-dialog__section {
@@ -57,6 +60,7 @@ button {
 
 .recipe-dialog__h3 {
   margin: 0;
+  font-size: 1.5rem;
 }
 
 .recipe-dialog__ingredient {
@@ -155,11 +159,12 @@ button {
 
 @media screen and (max-width: 875px) {
   .recipe-dialog__header {
-    flex-direction: column;
+    // flex-direction: column;
   }
 
-  h2 {
+  .recipe-dialog__title {
     width: 90%;
+    font-size: 2rem;
   }
 
   mat-dialog-content {
@@ -173,9 +178,12 @@ button {
   .recipe-dialog__div {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     width: 100%;
+  }
+
+  .recipe-dialog__p {
+    font-size: 1.5rem;
   }
 }
 
@@ -184,19 +192,10 @@ button {
     justify-content: center;
   }
 
-  // .recipe-dialog__owner-actions {
-  //   justify-content: center;
-  // }
   .recipe-dialog__action-btns {
     position: absolute;
     justify-content: end;
     top: 2vw;
     right: 2vh;
   }
-
-  // .recipe-dialog__like-btn {
-  //   position: absolute;
-  //   top: 10px;
-  //   right: 10px;
-  // }
 }
