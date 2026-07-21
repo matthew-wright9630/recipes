@@ -13,10 +13,16 @@
         <p class="recipe-description">{{ r.description }}</p>
         <div class="recipe-meta">
           <mat-chip-set>
-            <mat-chip> Prep: {{ r.prepTime }} min </mat-chip>
-            <mat-chip> Cook: {{ r.cookTime }} min </mat-chip>
-            <mat-chip> Serves {{ r.servings }} </mat-chip>
-            <mat-chip> {{ r.status }} </mat-chip>
+            <mat-chip class="recipe-hero__chip">
+              Prep: {{ r.prepTime }} min
+            </mat-chip>
+            <mat-chip class="recipe-hero__chip">
+              Cook: {{ r.cookTime }} min
+            </mat-chip>
+            <mat-chip class="recipe-hero__chip">
+              Serves {{ r.servings }}
+            </mat-chip>
+            <mat-chip class="recipe-hero__chip"> {{ r.status }} </mat-chip>
           </mat-chip-set>
         </div>
       </div>

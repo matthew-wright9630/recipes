@@ -1,9 +1,13 @@
+.user-recipe {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 .user-recipe__header {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   margin-bottom: 2rem;
-  gap: 15vw;
 }
 
 .user-recipe__header__title {

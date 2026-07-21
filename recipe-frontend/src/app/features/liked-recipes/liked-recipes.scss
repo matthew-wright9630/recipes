@@ -1,21 +1,13 @@
-.liked-recipes__search-container {
-  width: 95%;
-  background: white;
-  margin: 2vh 3vw;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.liked-recipes__search {
-  width: 50%;
+.liked-recipes {
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 .liked-recipes__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
+  grid-template-columns: repeat(auto-fit, minmax(300px, calc(400px - 1vw)));
   justify-content: center;
-  gap: 16px;
+  gap: 1vw;
   margin-bottom: 2vh;
 }
 
