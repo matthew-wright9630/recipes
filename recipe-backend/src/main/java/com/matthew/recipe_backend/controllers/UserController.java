@@ -14,11 +14,15 @@ import com.matthew.recipe_backend.dtos.UserDto;
 import com.matthew.recipe_backend.dtos.UserUpdateDto;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.services.UserService;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/users")
+@SecurityRequirement(name = "bearer-key")
 public class UserController {
 
     private UserService userService;

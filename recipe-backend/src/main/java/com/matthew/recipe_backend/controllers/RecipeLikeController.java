@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.services.RecipeService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
 @RequestMapping("/api/recipe-likes")
+@SecurityRequirement(name = "bearer-key")
 public class RecipeLikeController {
 
     private final RecipeService recipeService;
