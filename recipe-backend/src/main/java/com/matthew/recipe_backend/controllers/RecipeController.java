@@ -13,6 +13,9 @@ import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.services.RecipePdfService;
 import com.matthew.recipe_backend.services.RecipeService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -34,6 +37,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/api/recipes")
+@SecurityRequirement(name = "bearer-key")
 public class RecipeController {
 
 	private final RecipeService recipeService;
@@ -44,12 +48,12 @@ public class RecipeController {
 		this.recipePdfService = recipePdfService;
 	}
 
-	@GetMapping
-	public ResponseEntity<List<RecipeDto>> getAllRecipes(
-			@AuthenticationPrincipal User user) {
-		List<RecipeDto> recipes = recipeService.findAllRecipes(user);
-		return ResponseEntity.ok(recipes);
-	}
+	// @GetMapping
+	// public ResponseEntity<List<RecipeDto>> getAllRecipes(
+	// @AuthenticationPrincipal User user) {
+	// List<RecipeDto> recipes = recipeService.findAllRecipes(user);
+	// return ResponseEntity.ok(recipes);
+	// }
 
 	@GetMapping("/{id}")
 	public ResponseEntity<RecipeDto> getRecipeById(@PathVariable long id,
@@ -65,6 +69,7 @@ public class RecipeController {
 	}
 
 	@GetMapping("/publish")
+	@Operation(security = {})
 	public ResponseEntity<Page<RecipeDto>> getPublishedRecipes(
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "12") int size,

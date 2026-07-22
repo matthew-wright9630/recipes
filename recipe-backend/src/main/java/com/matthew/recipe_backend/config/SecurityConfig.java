@@ -52,6 +52,16 @@ public class SecurityConfig {
 				.requestMatchers(HttpMethod.GET, "/api/recipes/*").permitAll()
 				.requestMatchers(HttpMethod.GET, "/api/recipes/*/pdf").permitAll()
 				.requestMatchers("/uploads/**").permitAll()
+				.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+				.requestMatchers(
+						"/",
+						"/index.html",
+						"/favicon.ico",
+						"/*.js",
+						"/*.css",
+						"/assets/**")
+				.permitAll()
+				.requestMatchers("/error").permitAll()
 				.anyRequest().authenticated())
 				.sessionManagement(session -> session
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

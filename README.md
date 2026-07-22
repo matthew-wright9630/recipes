@@ -110,15 +110,15 @@ Recipe browsing uses:
 
 # Tech Stack
 
-| Layer             | Technology                                    |
-| ----------------- | --------------------------------------------- |
-| Frontend          | Angular, Angular Material                     |
-| Backend           | Spring Boot, Spring Security, Spring Data JPA |
-| Database          | PostgreSQL                                    |
-| Authentication    | JWT                                           |
-| Image Processing  | Thumbnailator                                 |
-| Build Tool        | Maven                                         |
-| Hosting (Planned) | AWS Lightsail, Amazon S3, CloudFront          |
+| Layer            | Technology                                    |
+| ---------------- | --------------------------------------------- |
+| Frontend         | Angular, Angular Material                     |
+| Backend          | Spring Boot, Spring Security, Spring Data JPA |
+| Database         | PostgreSQL                                    |
+| Authentication   | JWT                                           |
+| Image Processing | Thumbnailator                                 |
+| Build Tool       | Maven                                         |
+| Hosting          | AWS Lightsail, Amazon S3, Cloudfare           |
 
 ---
 
@@ -148,3 +148,12 @@ src/main/resources/application.properties
 ```
 
 ---
+
+## API Documentation
+
+The backend API is documented using OpenAPI/Swagger.
+
+When running the application locally, Swagger UI is available at: http://localhost:8083/swagger-ui/index.html
+The OpenAPI specification can be accessed at: http://localhost:8083/v3/api-docs
+
+![swagger ui](swagger-ui.png)
