@@ -3,6 +3,7 @@ package com.matthew.recipe_backend.repositories;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -32,4 +33,12 @@ public interface RecipeLikeRepository extends JpaRepository<RecipeLike, RecipeLi
         boolean existsByRecipeIdAndUserId(Long recipeId, Long userId);
 
         RecipeLike deleteByRecipeIdAndUserId(Long recipeId, Long userId);
+
+        @Modifying
+        @Query(value = """
+                        UPDATE recipe_like
+                        SET recipe_id = :newRecipeId
+                        WHERE recipe_id = :oldRecipeId
+                        """, nativeQuery = true)
+        void moveLikes(Long oldRecipeId, Long newRecipeId);
 }
