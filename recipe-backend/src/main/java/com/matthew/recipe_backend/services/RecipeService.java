@@ -367,6 +367,8 @@ public class RecipeService {
 			// Check if the root recipe (v1) is the active one
 			recipeRepository.findByIdAndStatusIn(rootId, List.of(RecipeStatus.PUBLISHED, RecipeStatus.ARCHIVED))
 					.ifPresent(previous -> {
+						recipeLikeRepository.moveLikes(previous.getId(), foundRecipe.getId());
+						recipeViewRepository.moveViews(previous.getId(), foundRecipe.getId());
 						previous.setStatus(RecipeStatus.SUPERSEDED);
 						recipeRepository.save(previous);
 					});
@@ -375,6 +377,8 @@ public class RecipeService {
 			recipeRepository
 					.findByRootRecipeIdAndStatusIn(rootId, List.of(RecipeStatus.PUBLISHED, RecipeStatus.ARCHIVED))
 					.ifPresent(previous -> {
+						recipeLikeRepository.moveLikes(previous.getId(), foundRecipe.getId());
+						recipeViewRepository.moveViews(previous.getId(), foundRecipe.getId());
 						previous.setStatus(RecipeStatus.SUPERSEDED);
 						recipeRepository.save(previous);
 					});
