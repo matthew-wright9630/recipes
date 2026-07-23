@@ -48,6 +48,12 @@ public class JwtConfig extends OncePerRequestFilter {
 
         String email = extractEmail(token);
 
+        if (email == null) {
+            SecurityContextHolder.clearContext();
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
