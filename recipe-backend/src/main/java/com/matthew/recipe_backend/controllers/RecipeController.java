@@ -154,6 +154,7 @@ public class RecipeController {
 	}
 
 	@GetMapping("/{id}/pdf")
+	@Operation(security = {})
 	public ResponseEntity<byte[]> getRecipePdf(
 			@PathVariable Long id) throws IOException {
 

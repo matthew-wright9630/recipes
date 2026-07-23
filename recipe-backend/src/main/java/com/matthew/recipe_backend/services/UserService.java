@@ -45,6 +45,7 @@ public class UserService {
     }
 
     public UserDetails loadUserByUsername(String username) {
+
         return userRepository.findByEmail(username.toLowerCase())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }

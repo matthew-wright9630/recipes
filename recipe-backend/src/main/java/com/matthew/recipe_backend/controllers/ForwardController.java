@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ForwardController {
 
     @RequestMapping(value = {
-            "/{path:^(?!api|swagger-ui|v3|actuator|index\\.html).*}",
-            "/{path:^(?!api|swagger-ui|v3|actuator|index\\.html).*}/**"
+            "/{path:^(?!api|swagger-ui|v3|actuator|assets|uploads|.*\\.).*$}",
+            "/{path:^(?!api|swagger-ui|v3|actuator|assets|uploads|.*\\.).*$}/**"
     })
     public String forward() {
         return "forward:/index.html";

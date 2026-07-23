@@ -88,7 +88,7 @@ public class ImageService {
     private String bucket;
 
     private void saveImage(ByteArrayOutputStream stream, String filename) {
-        if (environment.acceptsProfiles(Profiles.of("test"))) {
+        if (environment.acceptsProfiles(Profiles.of("dev"))) {
             try {
                 Files.write(
                         Paths.get("uploads/recipes/", filename),
@@ -116,7 +116,7 @@ public class ImageService {
 
     public byte[] downloadFile(String key) {
 
-        if (environment.acceptsProfiles(Profiles.of("test"))) {
+        if (environment.acceptsProfiles(Profiles.of("dev"))) {
             try {
                 return Files.readAllBytes(
                         Paths.get("uploads/recipes/", key));
