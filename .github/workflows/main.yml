@@ -60,6 +60,15 @@ jobs:
           name: frontend-dist
           path: frontend-artifact
 
+      - name: Remove old backend jar
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ vars.LIGHTSAIL_HOST }}
+          user: ${{ vars.LIGHTSAIL_USER }}
+          private_key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          host_fingerprint: ${{ secrets.HOST_FINGERPRINT }}
+          command: rm -f /opt/wright-kitchen/recipe-backend-0.0.1-SNAPSHOT.jar
+
       - name: Deploy backend
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -68,6 +77,7 @@ jobs:
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
           source: "backend-artifact/*.jar"
           target: "/opt/wright-kitchen"
+          strip_components: 1
 
       - name: Clear old frontend files
         uses: D3rHase/ssh-command-action@latest
