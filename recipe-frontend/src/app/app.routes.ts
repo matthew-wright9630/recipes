@@ -6,7 +6,7 @@ import { authGuard } from './auth-guard';
 import { UserRecipe } from './features/recipe/user-recipe/user-recipe';
 import { LikedRecipes } from './features/liked-recipes/liked-recipes';
 import { ViewedRecipes } from './features/viewed-recipes/viewed-recipes';
-import { Cookbook } from './features/cookbook-component/cookbook';
+import { Cookbook } from './features/cookbook/cookbook-component/cookbook';
 
 export const routes: Routes = [
   {
