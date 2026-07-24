@@ -9,6 +9,9 @@ import com.matthew.recipe_backend.services.CookbookService;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,21 +30,30 @@ public class CookbookController {
         this.cookbookService = cookbookService;
     }
 
-    @GetMapping("/owned")
-    public ResponseEntity<List<CookbookDto>> getMyCookbooks(@AuthenticationPrincipal User user) {
-        List<CookbookDto> cookbooks = cookbookService.findMyCookbooks(user.getUsername());
-        return ResponseEntity.ok(cookbooks);
-    }
+    // @GetMapping("/owned")
+    // public ResponseEntity<List<CookbookDto>>
+    // getMyCookbooks(@AuthenticationPrincipal User user) {
+    // List<CookbookDto> cookbooks =
+    // cookbookService.findMyCookbooks(user.getUsername());
+    // return ResponseEntity.ok(cookbooks);
+    // }
 
-    @GetMapping("/shared")
-    public ResponseEntity<List<CookbookDto>> getAllSharedCookbooks(@AuthenticationPrincipal User user) {
-        List<CookbookDto> cookbooks = cookbookService.findSharedCookbooks(user.getUsername());
-        return ResponseEntity.ok(cookbooks);
-    }
+    // @GetMapping("/shared")
+    // public ResponseEntity<List<CookbookDto>>
+    // getAllSharedCookbooks(@AuthenticationPrincipal User user) {
+    // List<CookbookDto> cookbooks =
+    // cookbookService.findSharedCookbooks(user.getUsername());
+    // return ResponseEntity.ok(cookbooks);
+    // }
 
     @GetMapping("/accessible")
-    public ResponseEntity<List<CookbookDto>> getAllAccessibleCookbooks(@AuthenticationPrincipal User user) {
-        List<CookbookDto> cookbooks = cookbookService.findAllAccessibleCookbooks(user.getUsername());
+    public ResponseEntity<Page<CookbookDto>> getAllAccessibleCookbooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size,
+            @RequestParam(defaultValue = "") String search,
+            @AuthenticationPrincipal User user) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CookbookDto> cookbooks = cookbookService.findAllAccessibleCookbooks(pageable, search, user);
         return ResponseEntity.ok(cookbooks);
     }
 

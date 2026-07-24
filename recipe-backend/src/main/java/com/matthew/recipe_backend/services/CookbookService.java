@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.matthew.recipe_backend.dtos.CookbookDetailsDto;
@@ -37,49 +39,45 @@ public class CookbookService {
                 this.cookbookAccessRepository = cookbookAccessRepository;
         }
 
-        public List<CookbookDto> findMyCookbooks(String username) {
-                User user = userRepository.findByEmail(username.toLowerCase())
-                                .orElseThrow(() -> new UserNotFoundException(username));
+        // public List<CookbookDto> findMyCookbooks(String username) {
+        // User user = userRepository.findByEmail(username.toLowerCase())
+        // .orElseThrow(() -> new UserNotFoundException(username));
 
-                return cookbookAccessRepository
-                                .findCookbooksByUserAndPermissions(
-                                                user,
-                                                List.of(
-                                                                CookbookPermission.OWNER))
-                                .stream()
-                                .map(CookbookMapper::toDto)
-                                .toList();
-        }
+        // return cookbookAccessRepository
+        // .findCookbooksByUserAndPermissions(
+        // user,
+        // List.of(
+        // CookbookPermission.OWNER))
+        // .stream()
+        // .map(CookbookMapper::toDto)
+        // .toList();
+        // }
 
-        public List<CookbookDto> findSharedCookbooks(String username) {
-                User user = userRepository.findByEmail(username.toLowerCase())
-                                .orElseThrow(() -> new UserNotFoundException(username));
+        // public List<CookbookDto> findSharedCookbooks(String username) {
+        // User user = userRepository.findByEmail(username.toLowerCase())
+        // .orElseThrow(() -> new UserNotFoundException(username));
 
-                return cookbookAccessRepository
-                                .findCookbooksByUserAndPermissions(
-                                                user,
-                                                List.of(
-                                                                CookbookPermission.READ,
-                                                                CookbookPermission.READ_WRITE))
-                                .stream()
-                                .map(CookbookMapper::toDto)
-                                .toList();
-        }
+        // return cookbookAccessRepository
+        // .findCookbooksByUserAndPermissions(
+        // user,
+        // List.of(
+        // CookbookPermission.READ,
+        // CookbookPermission.READ_WRITE))
+        // .stream()
+        // .map(CookbookMapper::toDto)
+        // .toList();
+        // }
 
-        public List<CookbookDto> findAllAccessibleCookbooks(String username) {
-                User user = userRepository.findByEmail(username.toLowerCase())
-                                .orElseThrow(() -> new UserNotFoundException(username));
-
+        public Page<CookbookDto> findAllAccessibleCookbooks(Pageable pageable, String search, User user) {
                 return cookbookAccessRepository
                                 .findCookbooksByUserAndPermissions(
                                                 user,
                                                 List.of(
                                                                 CookbookPermission.OWNER,
                                                                 CookbookPermission.READ,
-                                                                CookbookPermission.READ_WRITE))
-                                .stream()
-                                .map(CookbookMapper::toDto)
-                                .toList();
+                                                                CookbookPermission.READ_WRITE),
+                                                pageable)
+                                .map(CookbookMapper::toDto);
         }
 
         @Transactional
