@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.matthew.recipe_backend.dtos.CookbookDetailsDto;
 import com.matthew.recipe_backend.dtos.CookbookDto;
+import com.matthew.recipe_backend.dtos.CreateCookbookDto;
 import com.matthew.recipe_backend.enums.CookbookPermission;
 import com.matthew.recipe_backend.exceptions.UserNotFoundException;
 import com.matthew.recipe_backend.mappers.CookbookMapper;
@@ -81,12 +82,12 @@ public class CookbookService {
         }
 
         @Transactional
-        public CookbookDto createCookbook(String username, CookbookDetailsDto cookbookCreationDto) {
+        public CookbookDto createCookbook(String username, CreateCookbookDto cookbookCreationDto) {
                 User user = userRepository.findByEmail(username.toLowerCase())
                                 .orElseThrow(() -> new UserNotFoundException(username));
 
                 Cookbook cookbook = new Cookbook(cookbookCreationDto.name(), cookbookCreationDto.description(),
-                                cookbookCreationDto.imageUrl());
+                                cookbookCreationDto.imageUrl(), user);
                 cookbookRepository.save(cookbook);
                 CookbookAccess access = new CookbookAccess(cookbook, user, CookbookPermission.OWNER, Instant.now());
                 cookbookAccessRepository.save(access);

@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { Cookbook } from '../../shared/models/cookbook';
 import { Page } from '../../shared/models/page';
+import { CreateCookbookRequest } from '../../shared/models/create-cookbook-request';
 
 @Injectable({
   providedIn: 'root',
@@ -22,5 +23,11 @@ export class CookbookService {
       this.baseURL +
         `/accessible?page=${page}&size=${size}&search=${searchTerm}`,
     );
+  }
+
+  createCookbook(cookbook: CreateCookbookRequest) {
+    return this.http
+      .post<Cookbook>(this.baseURL, cookbook, { observe: 'response' })
+      .pipe(map((res) => res.body));
   }
 }

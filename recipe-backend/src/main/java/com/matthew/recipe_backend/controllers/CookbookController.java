@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.matthew.recipe_backend.dtos.CookbookDetailsDto;
 import com.matthew.recipe_backend.dtos.CookbookDto;
+import com.matthew.recipe_backend.dtos.CreateCookbookDto;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.services.CookbookService;
 
@@ -59,7 +60,7 @@ public class CookbookController {
 
     @PostMapping
     public ResponseEntity<CookbookDto> postCookbook(@AuthenticationPrincipal User user,
-            @RequestBody CookbookDetailsDto cookbookDto) {
+            @RequestBody CreateCookbookDto cookbookDto) {
         CookbookDto cookbook = cookbookService.createCookbook(user.getUsername(), cookbookDto);
         return ResponseEntity.ok(cookbook);
     }

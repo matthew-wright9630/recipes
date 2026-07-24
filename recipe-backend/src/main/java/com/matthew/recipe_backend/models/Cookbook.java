@@ -5,9 +5,12 @@ import java.time.OffsetDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -36,26 +39,32 @@ public class Cookbook {
 	@Column(name = "image_url")
 	private String imageUrl;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "owner_id", referencedColumnName = "id")
+	private User ownerId;
+
 	public Cookbook() {
 	}
 
 	public Cookbook(String name, String description, boolean deleted, Instant createdAt, OffsetDateTime updatedAt,
-			String imageUrl) {
+			String imageUrl, User ownerId) {
 		this.name = name;
 		this.description = description;
 		this.deleted = deleted;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 		this.imageUrl = imageUrl;
+		this.ownerId = ownerId;
 	}
 
-	public Cookbook(String name, String description, String imageUrl) {
+	public Cookbook(String name, String description, String imageUrl, User ownerId) {
 		this.name = name;
 		this.description = description;
 		this.imageUrl = imageUrl;
 		this.deleted = false;
 		this.createdAt = Instant.now();
 		this.updatedAt = OffsetDateTime.now();
+		this.ownerId = ownerId;
 	}
 
 	public long getId() {
@@ -112,6 +121,14 @@ public class Cookbook {
 
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
+	}
+
+	public User getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(User ownerId) {
+		this.ownerId = ownerId;
 	}
 
 	@Override
