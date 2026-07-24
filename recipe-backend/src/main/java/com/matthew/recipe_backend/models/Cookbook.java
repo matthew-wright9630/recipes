@@ -1,6 +1,7 @@
 package com.matthew.recipe_backend.models;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,17 +30,22 @@ public class Cookbook {
 	@Column(name = "created_at")
 	private Instant createdAt;
 
+	@Column(name = "updated_at", nullable = false)
+	private OffsetDateTime updatedAt;
+
 	@Column(name = "image_url")
 	private String imageUrl;
 
 	public Cookbook() {
 	}
 
-	public Cookbook(String name, String description, boolean deleted, Instant createdAt, String imageUrl) {
+	public Cookbook(String name, String description, boolean deleted, Instant createdAt, OffsetDateTime updatedAt,
+			String imageUrl) {
 		this.name = name;
 		this.description = description;
 		this.deleted = deleted;
 		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 		this.imageUrl = imageUrl;
 	}
 
@@ -49,6 +55,7 @@ public class Cookbook {
 		this.imageUrl = imageUrl;
 		this.deleted = false;
 		this.createdAt = Instant.now();
+		this.updatedAt = OffsetDateTime.now();
 	}
 
 	public long getId() {
@@ -91,6 +98,14 @@ public class Cookbook {
 		this.createdAt = createdAt;
 	}
 
+	public OffsetDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(OffsetDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
 	public String getImageUrl() {
 		return imageUrl;
 	}
@@ -124,7 +139,7 @@ public class Cookbook {
 	@Override
 	public String toString() {
 		return "Cookbook [id=" + id + ", name=" + name + ", description" + description + ", deleted=" + deleted
-				+ ", createdAt=" + createdAt
+				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt
 				+ ", imageUrl" + imageUrl + "]";
 	}
 
