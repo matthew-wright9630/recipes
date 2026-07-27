@@ -2,6 +2,7 @@ package com.matthew.recipe_backend.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.matthew.recipe_backend.dtos.AddRecipeDto;
 import com.matthew.recipe_backend.dtos.CookbookDetailsDto;
 import com.matthew.recipe_backend.dtos.CookbookDto;
 import com.matthew.recipe_backend.dtos.CreateCookbookDto;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,6 +64,13 @@ public class CookbookController {
     public ResponseEntity<CookbookDto> postCookbook(@AuthenticationPrincipal User user,
             @RequestBody CreateCookbookDto cookbookDto) {
         CookbookDto cookbook = cookbookService.createCookbook(user.getUsername(), cookbookDto);
+        return ResponseEntity.ok(cookbook);
+    }
+
+    @PostMapping("/{id}/recipes")
+    public ResponseEntity<CookbookDto> postCookbookRecipe(@AuthenticationPrincipal User user,
+            @PathVariable Long cookbookId, @RequestBody AddRecipeDto addRecipeDto) {
+        CookbookDto cookbook = cookbookService.addRecipeToCookbook(user.getUsername(), cookbookId, addRecipeDto);
         return ResponseEntity.ok(cookbook);
     }
 
