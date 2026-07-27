@@ -1,15 +1,30 @@
 import { Component, inject } from '@angular/core';
 import { CookbookService } from '../cookbook.service';
-import { FormControl } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Page } from '../../../shared/models/page';
 import { Cookbook } from '../../../shared/models/cookbook';
 import { MatDialog } from '@angular/material/dialog';
 import { CookbookCreateDialog } from '../../../shared/dialogs/cookbook-create-dialog/cookbook-create-dialog';
 import { MatIcon } from '@angular/material/icon';
+import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatCardModule } from '@angular/material/card';
+import { CommonModule } from '@angular/common';
+import { CookbookCard } from '../../../shared/components/cookbook-card/cookbook-card';
 
 @Component({
   selector: 'app-cookbook',
-  imports: [MatIcon],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatGridListModule,
+    MatIcon,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    CookbookCard,
+  ],
   templateUrl: './cookbook.html',
   styleUrl: './cookbook.scss',
 })
@@ -44,5 +59,25 @@ export class CookbookComponent {
       maxWidth: '95vw',
       autoFocus: false,
     });
+  }
+
+  nextPage(): void {
+    if (!this.cookbookData?.last) {
+      this.currentPage++;
+      this.loadCookbooks();
+    }
+  }
+
+  previousPage(): void {
+    if (!this.cookbookData?.first) {
+      this.currentPage--;
+      this.loadCookbooks();
+    }
+  }
+
+  onSearch(event: Event): void {
+    this.searchTerm = (event.target as HTMLInputElement).value;
+    this.currentPage = 0;
+    this.loadCookbooks();
   }
 }

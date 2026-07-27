@@ -1,0 +1,72 @@
+.cookbook {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.cookbook__header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.cookbook__header__title {
+  font-size: 2.5rem;
+}
+
+.cookbook__button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  height: 5vh;
+  font-size: 1rem;
+}
+
+.cookbook__title {
+  margin: 3vh auto 1.5vh;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.cookbook-list {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.cookbook-list__search-container {
+  width: 95%;
+  background: white;
+  margin: 2vh 3vw;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.cookbook-list__search {
+  width: 50%;
+  margin: 0 auto;
+}
+
+.cookbook-list__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, calc(400px - 2vw)));
+  justify-content: center;
+  gap: 1vw;
+  margin-bottom: 2vh;
+}
+
+.cookbook-list__pagination {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: 1vw;
+}
+
+.cookbook-list__btn:enabled {
+  cursor: pointer;
+}
+
+@media screen and (max-width: 650px) {
+  .cookbook-list__search {
+    width: 100%;
+  }
+}
