@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.matthew.recipe_backend.dtos.AddRecipeDto;
 import com.matthew.recipe_backend.dtos.CookbookDetailsDto;
 import com.matthew.recipe_backend.dtos.CookbookDto;
+import com.matthew.recipe_backend.dtos.CookbookRecipeDto;
 import com.matthew.recipe_backend.dtos.CreateCookbookDto;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.services.CookbookService;
