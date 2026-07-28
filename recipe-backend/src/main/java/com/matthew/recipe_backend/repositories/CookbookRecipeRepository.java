@@ -1,5 +1,6 @@
 package com.matthew.recipe_backend.repositories;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +23,12 @@ public interface CookbookRecipeRepository extends JpaRepository<CookbookRecipe, 
                 WHERE cr.id.recipeId = :recipeId
             """)
     Set<Long> findCookbookIdsByRecipeId(Long recipeId);
+
+    @Query("""
+                SELECT cr
+                FROM CookbookRecipe cr
+                JOIN FETCH cr.recipe
+                WHERE cr.cookbook.id = :cookbookId
+            """)
+    List<CookbookRecipe> findByCookbookId(Long cookbookId);
 }

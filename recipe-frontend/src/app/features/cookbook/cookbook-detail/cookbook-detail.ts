@@ -1,9 +1,49 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, inject, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatMenuModule } from '@angular/material/menu';
+import { AuthStateService } from '../../../shared/services/auth-state-service/auth-state.service';
+import { Cookbook } from '../../../shared/models/cookbook';
+import { environment } from '../../../../environments/environment';
+import { CookbookService } from '../cookbook.service';
+import { ActivatedRoute } from '@angular/router';
+import { CookbookDetailInterface } from '../../../shared/models/cookbook-detail-interface';
+import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
 
 @Component({
   selector: 'app-cookbook-detail',
-  imports: [],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatChipsModule,
+    MatDividerModule,
+    MatButtonModule,
+    MatMenuModule,
+    RecipeComponent,
+  ],
   templateUrl: './cookbook-detail.html',
   styleUrl: './cookbook-detail.scss',
 })
-export class CookbookDetail {}
+export class CookbookDetail {
+  private route = inject(ActivatedRoute);
+  private dialog = inject(MatDialog);
+  private cookbookService = inject(CookbookService);
+
+  authState = inject(AuthStateService);
+  cookbook = signal<CookbookDetailInterface | null>(null);
+
+  imageUrl: string = environment.imageBaseUrl + 'recipes/';
+  frontendUrl: string = environment.baseFrontendUrl;
+
+  ngOnInit() {
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.cookbookService.getCookbookById(id).subscribe((response) => {
+      console.log(response);
+      this.cookbook.set(response);
+    });
+  }
+}

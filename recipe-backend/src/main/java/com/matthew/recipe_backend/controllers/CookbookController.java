@@ -6,8 +6,10 @@ import com.matthew.recipe_backend.dtos.AddRecipeDto;
 import com.matthew.recipe_backend.dtos.CookbookDetailsDto;
 import com.matthew.recipe_backend.dtos.CookbookDto;
 import com.matthew.recipe_backend.dtos.CookbookRecipeSelectionDto;
+import com.matthew.recipe_backend.dtos.CookbookWithRecipesDto;
 import com.matthew.recipe_backend.dtos.CookbookRecipeDto;
 import com.matthew.recipe_backend.dtos.CreateCookbookDto;
+import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.services.CookbookService;
 
@@ -50,6 +52,13 @@ public class CookbookController {
     // cookbookService.findSharedCookbooks(user.getUsername());
     // return ResponseEntity.ok(cookbooks);
     // }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CookbookWithRecipesDto> getCookbookById(@AuthenticationPrincipal User user,
+            @PathVariable Long id) {
+        CookbookWithRecipesDto cookbook = cookbookService.findCookbookById(user, id);
+        return ResponseEntity.ok(cookbook);
+    }
 
     @GetMapping("/accessible")
     public ResponseEntity<Page<CookbookDto>> getAllAccessibleCookbooks(

@@ -155,7 +155,6 @@ export class RecipeDetail {
   }
 
   onAddToCookbook(): void {
-    console.log(this.recipe());
     this.dialog.open(CookbookRecipeDialog, {
       width: '800px',
       maxWidth: '95vw',

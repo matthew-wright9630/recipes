@@ -6,6 +6,7 @@ import { Cookbook } from '../../shared/models/cookbook';
 import { Page } from '../../shared/models/page';
 import { CreateCookbookRequest } from '../../shared/models/create-cookbook-request';
 import { CookbookSelection } from '../../shared/models/cookbook-selection';
+import { CookbookDetailInterface } from '../../shared/models/cookbook-detail-interface';
 
 @Injectable({
   providedIn: 'root',
@@ -38,5 +39,13 @@ export class CookbookService {
     return this.http
       .post<Cookbook>(this.baseURL, cookbook, { observe: 'response' })
       .pipe(map((res) => res.body));
+  }
+
+  getCookbookById(id: number): Observable<CookbookDetailInterface> {
+    return this.http.get<CookbookDetailInterface>(this.baseURL + `/${id}`, {});
+  }
+
+  getAllRecipesInCookbook(recipeId: number): Observable<CookbookSelection[]> {
+    return this.http.get<CookbookSelection[]>(this.baseURL + `/list`, {});
   }
 }
