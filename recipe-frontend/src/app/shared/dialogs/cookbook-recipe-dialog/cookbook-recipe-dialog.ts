@@ -10,6 +10,7 @@ import { CreateCookbookRequest } from '../../models/create-cookbook-request';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-cookbook-recipe-dialog',
@@ -20,6 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatLabel,
     ReactiveFormsModule,
     MatButtonModule,
+    MatInput,
   ],
   templateUrl: './cookbook-recipe-dialog.html',
   styleUrl: './cookbook-recipe-dialog.scss',
@@ -76,6 +78,10 @@ export class CookbookRecipeDialog {
       this.creatingCookbook = false;
       this.newCookbookName.reset();
     });
+  }
+
+  onClose(): void {
+    this.dialog.close();
   }
 
   save(): void {

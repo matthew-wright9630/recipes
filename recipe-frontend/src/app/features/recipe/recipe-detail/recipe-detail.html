@@ -55,7 +55,13 @@
           }
         </mat-menu>
       </div>
-      }
+      @if(this.authState.currentUser()) {
+      <div class="recipe__action__div">
+        <button mat-raised-button (click)="onAddToCookbook()">
+          Add to Cookbooks
+        </button>
+      </div>
+      } }
     </div>
   </mat-card>
   <div class="recipe-content">

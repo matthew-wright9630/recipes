@@ -5,7 +5,7 @@
   overflow: auto;
   max-height: 80vh;
   min-height: 50vh;
-  margin: 0 3vw;
+  margin: 5vh 3vw;
 }
 
 .cookbook-recipe__header {
@@ -39,4 +39,8 @@
   &:active {
     transform: scale(0.95);
   }
+}
+
+.cookbook-recipe__input {
+  width: 100%;
 }
