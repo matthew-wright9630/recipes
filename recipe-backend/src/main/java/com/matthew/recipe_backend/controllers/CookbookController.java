@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.matthew.recipe_backend.dtos.AddRecipeDto;
 import com.matthew.recipe_backend.dtos.CookbookDetailsDto;
 import com.matthew.recipe_backend.dtos.CookbookDto;
+import com.matthew.recipe_backend.dtos.CookbookRecipeSelectionDto;
 import com.matthew.recipe_backend.dtos.CookbookRecipeDto;
 import com.matthew.recipe_backend.dtos.CreateCookbookDto;
 import com.matthew.recipe_backend.models.User;
@@ -58,6 +59,13 @@ public class CookbookController {
             @AuthenticationPrincipal User user) {
         Pageable pageable = PageRequest.of(page, size);
         Page<CookbookDto> cookbooks = cookbookService.findAllAccessibleCookbooks(pageable, search, user);
+        return ResponseEntity.ok(cookbooks);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<CookbookRecipeSelectionDto>> getListOfCookbooks(@AuthenticationPrincipal User user,
+            @RequestParam Long recipeId) {
+        List<CookbookRecipeSelectionDto> cookbooks = cookbookService.findAllEditableCookbooks(user, recipeId);
         return ResponseEntity.ok(cookbooks);
     }
 

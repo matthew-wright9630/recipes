@@ -10,8 +10,10 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "cookbook_recipes")
 public class CookbookRecipe {
 
 	@EmbeddedId
@@ -92,8 +94,7 @@ public class CookbookRecipe {
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		}
-		else if (!id.equals(other.id))
+		} else if (!id.equals(other.id))
 			return false;
 		return true;
 	}

@@ -3,6 +3,7 @@ package com.matthew.recipe_backend.services;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,10 +12,12 @@ import org.springframework.stereotype.Service;
 import com.matthew.recipe_backend.dtos.AddRecipeDto;
 import com.matthew.recipe_backend.dtos.CookbookDetailsDto;
 import com.matthew.recipe_backend.dtos.CookbookDto;
+import com.matthew.recipe_backend.dtos.CookbookRecipeSelectionDto;
 import com.matthew.recipe_backend.dtos.CreateCookbookDto;
 import com.matthew.recipe_backend.enums.CookbookPermission;
 import com.matthew.recipe_backend.exceptions.UserNotFoundException;
 import com.matthew.recipe_backend.mappers.CookbookMapper;
+import com.matthew.recipe_backend.mappers.CookbookRecipeSelectionMapper;
 import com.matthew.recipe_backend.models.Cookbook;
 import com.matthew.recipe_backend.models.CookbookAccess;
 import com.matthew.recipe_backend.models.CookbookRecipe;
@@ -90,6 +93,20 @@ public class CookbookService {
                                                                 CookbookPermission.READ_WRITE),
                                                 pageable)
                                 .map(CookbookMapper::toDto);
+        }
+
+        public List<CookbookRecipeSelectionDto> findAllEditableCookbooks(User user, Long recipeId) {
+                List<Cookbook> cookbooks = cookbookAccessRepository.findCookbooksByUserIdAndPermissionIn(
+                                user.getId(),
+                                List.of(CookbookPermission.OWNER, CookbookPermission.READ_WRITE));
+
+                Set<Long> recipeCookbookIds = cookbookRecipeRepository.findCookbookIdsByRecipeId(recipeId);
+
+                return cookbooks.stream()
+                                .map(cookbook -> CookbookRecipeSelectionMapper.toDto(
+                                                cookbook,
+                                                recipeCookbookIds.contains(cookbook.getId())))
+                                .toList();
         }
 
         @Transactional

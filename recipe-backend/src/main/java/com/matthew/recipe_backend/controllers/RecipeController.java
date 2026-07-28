@@ -178,7 +178,7 @@ public class RecipeController {
 			@RequestBody UpdateRecipeCookbooksDto updateRecipeCookbooksDto) {
 
 		recipeService.updateRecipeCookbooks(
-				user.getUsername(),
+				user,
 				recipeId,
 				updateRecipeCookbooksDto);
 

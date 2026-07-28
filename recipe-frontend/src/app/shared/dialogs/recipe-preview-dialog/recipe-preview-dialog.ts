@@ -27,6 +27,7 @@ import {
 } from '@angular/material/menu';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Recipe } from '../../models/recipe';
+import { CookbookRecipeDialog } from '../cookbook-recipe-dialog/cookbook-recipe-dialog';
 
 @Component({
   selector: 'app-recipe-preview-dialog',
@@ -233,6 +234,15 @@ export class RecipePreviewDialog {
       setTimeout(() => {
         URL.revokeObjectURL(url);
       }, 1000);
+    });
+  }
+
+  onAddToCookbook(): void {
+    this.dialog.open(CookbookRecipeDialog, {
+      width: '800px',
+      maxWidth: '95vw',
+      autoFocus: false,
+      data: this.recipe,
     });
   }
 }

@@ -38,7 +38,7 @@ public class CookbookValidator {
                                 CookbookPermission.OWNER));
 
         if (!hasAccess) {
-            throw new IllegalStateException("User does not own this cookbook");
+            throw new IllegalStateException("User does not have access this cookbook");
         }
     }
 }

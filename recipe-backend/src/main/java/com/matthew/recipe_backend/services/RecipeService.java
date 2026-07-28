@@ -1,6 +1,9 @@
 package com.matthew.recipe_backend.services;
 
 import com.matthew.recipe_backend.repositories.CookbookRecipeRepository;
+import com.matthew.recipe_backend.repositories.CookbookRepository;
+
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -72,6 +75,7 @@ public class RecipeService {
 	private final RecipeDirectionRepository recipeDirectionRepository;
 	private final IngredientRepository ingredientRepository;
 	private final RecipeLikeRepository recipeLikeRepository;
+	private final CookbookRepository cookbookRepository;
 	private final CookbookAccessRepository cookbookAccessRepository;
 	private final EntityManager entityManager;
 
@@ -85,7 +89,7 @@ public class RecipeService {
 			RecipeViewRepository recipeViewRepository, RecipeDirectionRepository recipeDirectionRepository,
 			IngredientRepository ingredientRepository, RecipeLikeRepository recipeLikeRepository,
 			CookbookAccessRepository cookbookAccessRepository, EntityManager entityManager,
-			CookbookRecipeRepository cookbookRecipeRepository) {
+			CookbookRecipeRepository cookbookRecipeRepository, CookbookRepository cookbookRepository) {
 		this.recipeRepository = recipeRepository;
 		this.userRepository = userRepository;
 		this.recipeIngredientService = recipeIngredientService;
@@ -97,6 +101,7 @@ public class RecipeService {
 		this.cookbookAccessRepository = cookbookAccessRepository;
 		this.entityManager = entityManager;
 		this.cookbookRecipeRepository = cookbookRecipeRepository;
+		this.cookbookRepository = cookbookRepository;
 	}
 
 	/**
@@ -522,15 +527,12 @@ public class RecipeService {
 
 	@Transactional
 	public void updateRecipeCookbooks(
-			String username,
+			User user,
 			Long recipeId,
 			UpdateRecipeCookbooksDto updateRecipeCookbook) {
 
 		Recipe recipe = recipeRepository.findById(recipeId)
 				.orElseThrow(() -> new RuntimeException("Recipe not found"));
-
-		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new RuntimeException("User not found"));
 
 		for (CookbookUpdateDto cookbookUpdate : updateRecipeCookbook.cookbookUpdates()) {
 			CookbookValidator.assertUserHasAccessToCookbook(
@@ -552,6 +554,11 @@ public class RecipeService {
 					CookbookRecipeKey id = new CookbookRecipeKey(cookbookId, recipeId);
 
 					relationship.setId(id);
+					relationship.setCookbook(
+							cookbookRepository.findById(cookbookUpdate.cookbookId())
+									.orElseThrow(() -> new RuntimeException("Cookbook not found")));
+					relationship.setRecipe(recipe);
+					relationship.setAddedAt(Instant.now());
 
 					cookbookRecipeRepository.save(relationship);
 				}

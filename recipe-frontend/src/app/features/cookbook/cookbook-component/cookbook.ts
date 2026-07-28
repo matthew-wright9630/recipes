@@ -40,7 +40,6 @@ export class CookbookComponent {
 
   ngOnInit(): void {
     this.loadCookbooks();
-    console.log(this.cookbookData);
   }
 
   loadCookbooks(): void {

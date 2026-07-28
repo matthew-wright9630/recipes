@@ -27,6 +27,16 @@ public interface CookbookAccessRepository extends JpaRepository<CookbookAccess, 
                         @Param("user") User user,
                         @Param("permissions") List<CookbookPermission> permissions, Pageable pageable);
 
+        @Query("""
+                            SELECT ca.cookbook
+                            FROM CookbookAccess ca
+                            WHERE ca.user.id = :userId
+                              AND ca.permission IN :permissions
+                        """)
+        List<Cookbook> findCookbooksByUserIdAndPermissionIn(
+                        @Param("userId") Long userId,
+                        @Param("permissions") Collection<CookbookPermission> permissions);
+
         boolean existsByCookbookIdAndUserIdAndPermissionIn(
                         Long cookbookId,
                         Long userId,

@@ -123,11 +123,15 @@
       See full recipe
     </a>
   </div>
-  @if(this.authState.currentUser()) {
-  <button mat-raised-button class="recipe-dialog__full-recipe">
-    Add Recipe to Cookbook
+  @if(this.recipe.status === "PUBLISHED") { @if(this.authState.currentUser()) {
+  <button
+    mat-raised-button
+    class="recipe-dialog__full-recipe"
+    (click)="onAddToCookbook()"
+  >
+    Add to Cookbooks
   </button>
-  } @if(this.recipe.status === "PUBLISHED") {
+  }
   <button mat-icon-button [matMenuTriggerFor]="actionMenu">
     <mat-icon>menu</mat-icon>
   </button>

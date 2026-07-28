@@ -5,6 +5,7 @@ import { map, Observable } from 'rxjs';
 import { Cookbook } from '../../shared/models/cookbook';
 import { Page } from '../../shared/models/page';
 import { CreateCookbookRequest } from '../../shared/models/create-cookbook-request';
+import { CookbookSelection } from '../../shared/models/cookbook-selection';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,14 @@ export class CookbookService {
       this.baseURL +
         `/accessible?page=${page}&size=${size}&search=${searchTerm}`,
     );
+  }
+
+  getAllEditableCookbooks(recipeId: number): Observable<CookbookSelection[]> {
+    return this.http.get<CookbookSelection[]>(this.baseURL + '/list', {
+      params: {
+        recipeId: recipeId.toString(),
+      },
+    });
   }
 
   createCookbook(cookbook: CreateCookbookRequest) {
