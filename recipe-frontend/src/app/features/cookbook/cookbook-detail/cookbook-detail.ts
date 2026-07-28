@@ -13,6 +13,7 @@ import { CookbookService } from '../cookbook.service';
 import { ActivatedRoute } from '@angular/router';
 import { CookbookDetailInterface } from '../../../shared/models/cookbook-detail-interface';
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
+import { CookbookStateService } from '../../../shared/services/cookbook-state/cookbook-state.service';
 
 @Component({
   selector: 'app-cookbook-detail',
@@ -32,6 +33,7 @@ export class CookbookDetail {
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
   private cookbookService = inject(CookbookService);
+  private cookbookStateService = inject(CookbookStateService);
 
   authState = inject(AuthStateService);
   cookbook = signal<CookbookDetailInterface | null>(null);
@@ -39,11 +41,23 @@ export class CookbookDetail {
   imageUrl: string = environment.imageBaseUrl + 'recipes/';
   frontendUrl: string = environment.baseFrontendUrl;
 
+  private cookbookId!: number;
+
   ngOnInit() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.cookbookService.getCookbookById(id).subscribe((response) => {
-      console.log(response);
-      this.cookbook.set(response);
+    this.cookbookId = Number(this.route.snapshot.paramMap.get('id'));
+
+    this.loadCookbook();
+
+    this.cookbookStateService.cookbookUpdated$.subscribe(() => {
+      this.loadCookbook();
     });
+  }
+
+  private loadCookbook(): void {
+    this.cookbookService
+      .getCookbookById(this.cookbookId)
+      .subscribe((response) => {
+        this.cookbook.set(response);
+      });
   }
 }

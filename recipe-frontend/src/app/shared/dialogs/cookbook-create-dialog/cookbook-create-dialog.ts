@@ -22,7 +22,7 @@ import { DEFAULT_RECIPE_IMAGES } from '../../constants/default-images';
 import { environment } from '../../../../environments/environment';
 import { Cookbook } from '../../models/cookbook';
 import { CreateCookbookRequest } from '../../models/create-cookbook-request';
-import { CookbookStateServiceService } from '../../services/cookbook-state-service/cookbook-state-service.service';
+import { CookbookStateService } from '../../services/cookbook-state/cookbook-state.service';
 
 @Component({
   selector: 'app-cookbook-create-dialog',
@@ -45,7 +45,7 @@ export class CookbookCreateDialog {
   private cookbookService = inject(CookbookService);
   private dialog = inject(MatDialog);
   private imageService = inject(UserImageService);
-  private cookbookStateService = inject(CookbookStateServiceService);
+  private cookbookStateService = inject(CookbookStateService);
 
   userImages: string[] = [];
   defaultImages = DEFAULT_RECIPE_IMAGES;

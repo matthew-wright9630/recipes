@@ -9,7 +9,7 @@
 
 .cookbook-image {
   width: 100%;
-  height: clamp(250px, 35vw, 350px);
+  height: 20vh;
   object-fit: cover;
   object-position: center;
   object-fit: cover;
@@ -20,7 +20,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-left: 2vw;
+  margin: 2vh 2vw;
 }
 
 .cookbook-hero__info {

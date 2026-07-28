@@ -11,6 +11,7 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInput } from '@angular/material/input';
+import { CookbookStateService } from '../../services/cookbook-state/cookbook-state.service';
 
 @Component({
   selector: 'app-cookbook-recipe-dialog',
@@ -28,8 +29,9 @@ import { MatInput } from '@angular/material/input';
 })
 export class CookbookRecipeDialog {
   recipe = inject(MAT_DIALOG_DATA);
-  recipeService = inject(RecipeService);
-  cookbookService = inject(CookbookService);
+  private recipeService = inject(RecipeService);
+  private cookbookService = inject(CookbookService);
+  private cookbookStateService = inject(CookbookStateService);
 
   listOfCookbooks: CookbookSelection[] = [];
 
@@ -97,7 +99,7 @@ export class CookbookRecipeDialog {
     this.recipeService
       .updateRecipeCookbooks(this.recipe.id, request)
       .subscribe(() => {
-        this.dialog.close();
+        this.dialog.close(this.listOfCookbooks);
       });
   }
 }

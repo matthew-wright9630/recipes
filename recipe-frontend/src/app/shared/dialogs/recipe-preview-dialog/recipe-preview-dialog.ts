@@ -28,6 +28,8 @@ import {
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Recipe } from '../../models/recipe';
 import { CookbookRecipeDialog } from '../cookbook-recipe-dialog/cookbook-recipe-dialog';
+import { CookbookStateService } from '../../services/cookbook-state/cookbook-state.service';
+import { Cookbook } from '../../models/cookbook';
 
 @Component({
   selector: 'app-recipe-preview-dialog',
@@ -52,6 +54,7 @@ export class RecipePreviewDialog {
   recipe = inject(MAT_DIALOG_DATA);
   recipeService = inject(RecipeService);
   recipeStateService = inject(RecipeStateService);
+  cookbookStateService = inject(CookbookStateService);
   recipeLikeService = inject(RecipeLikeService);
   authState = inject(AuthStateService);
   imageUrl: string = environment.imageBaseUrl + 'recipes/';
@@ -238,11 +241,19 @@ export class RecipePreviewDialog {
   }
 
   onAddToCookbook(): void {
-    this.dialog.open(CookbookRecipeDialog, {
+    const dialogRef = this.dialog.open(CookbookRecipeDialog, {
       width: '800px',
       maxWidth: '95vw',
       autoFocus: false,
       data: this.recipe,
+    });
+
+    dialogRef.afterClosed().subscribe((updatedCookbooks) => {
+      if (updatedCookbooks) {
+        updatedCookbooks.forEach((cookbook: Cookbook) => {
+          this.cookbookStateService.notifycookbookUpdated(cookbook);
+        });
+      }
     });
   }
 }

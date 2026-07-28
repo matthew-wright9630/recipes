@@ -5,7 +5,7 @@ import { Cookbook } from '../../models/cookbook';
 @Injectable({
   providedIn: 'root',
 })
-export class CookbookStateServiceService {
+export class CookbookStateService {
   private cookbookUpdated = new ReplaySubject<Cookbook>(1);
   cookbookUpdated$ = this.cookbookUpdated.asObservable();
 
