@@ -77,8 +77,9 @@
           @for ( ingredient of r.recipeIngredients; track $index ) {
 
           <li>
-            {{ ingredient.quantity }} {{ ingredient.unit }} {{ ingredient.name}}
-            @if(ingredient.notes) {, {{ingredient.notes}} }
+            @if(ingredient.quantity > 0) {{{ ingredient.quantity }}} {{
+            ingredient.unit }} {{ ingredient.name }}{{ ingredient.notes ? ', ' +
+            ingredient.notes : '' }}
           </li>
 
           } @empty {
