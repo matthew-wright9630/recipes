@@ -1,8 +1,12 @@
 # The Wright Kitchen
 
-A full-stack recipe management platform built with **Angular** and **Spring Boot**. The Wright Kitchen lets users create, publish, and discover recipes with a focus on clean UX and thoughtful feature design.
+**Live site:** [wrightrecipes.com](https://www.wrightrecipes.com/)
 
-This project started from a simple frustration: every recipe app I tried stored recipes in one long list with no meaningful organization. I wanted a way to group recipes into collections like **Tex-Mex**, **Family Dinners**, or **Weeknight Meals** so they were actually easy to find. That idea evolved into a full-stack application that emphasizes usability, scalability, and maintainable architecture.
+A full-stack recipe management platform built with Angular and Spring Boot.
+
+I started this project out of frustration with my own recipe collection. Between a few different apps and websites, I had over 100 recipes saved — and no good way to actually find anything. Everything lived in one long, undifferentiated list, so "what should I make tonight" always turned into scrolling through recipes I'd forgotten I even saved. The Wright Kitchen is my attempt to fix that: a place to organize recipes into real collections — Tex-Mex, Family Dinners, Weeknight Meals — so finding the right recipe is actually fast, not a chore.
+
+What started as "I just want to group my recipes" grew into a full-stack app, since I also wanted proper editing, versioning (so I can tweak a recipe without breaking the version I've already cooked from), image handling, and search that doesn't feel like an afterthought.
 
 ---
 
@@ -15,7 +19,7 @@ Find what you're looking for fast, without digging through a single long list.
 - Create, edit, and publish recipes
 - Paginated recipe browsing with live search
 
-![Browse Recipes](browse-homepage.PNG)
+![Browse Recipes](browse-homepage.png)
 
 ### Create and Edit Recipes
 
@@ -44,7 +48,7 @@ Find what you're looking for fast, without digging through a single long list.
 - Like recipes created by other users
 - View recently liked and recently viewed recipes
 
-![Profile Page](profile-page.PNG)
+![Profile Page](profile-page.png)
 
 ---
 
@@ -67,7 +71,7 @@ When a published recipe is edited:
 - Once published, the previous version becomes **SUPERSEDED**
 - Previous versions remain available for history while being hidden from normal browsing
 
-![Revise Recipe button](revise-recipe.PNG)
+![Revise Recipe button](revise-recipe.png)
 _Clicking "Revise Recipe" starts a new draft._
 
 ![Published recipe now also has a draft recipe](recipe-being-revised.png)
@@ -125,7 +129,7 @@ Recipe browsing uses:
 | Authentication   | JWT                                           |
 | Image Processing | Thumbnailator                                 |
 | Build Tool       | Maven                                         |
-| Hosting          | AWS Lightsail, Amazon S3, Cloudfare           |
+| Hosting          | AWS Lightsail, Amazon S3, Cloudflare          |
 
 ---
 
