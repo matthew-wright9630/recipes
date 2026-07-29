@@ -21,7 +21,7 @@ import { UserImageService } from '../../services/user-image-service/user-image.s
 import { DEFAULT_RECIPE_IMAGES } from '../../constants/default-images';
 import { environment } from '../../../../environments/environment';
 import { Cookbook } from '../../models/cookbook';
-import { CreateCookbookRequest } from '../../models/create-cookbook-request';
+import { CookbookRequest } from '../../models/cookbook-request';
 import { CookbookStateService } from '../../services/cookbook-state/cookbook-state.service';
 
 @Component({
@@ -146,9 +146,9 @@ export class CookbookCreateDialog {
       return;
     }
 
-    const draftCookbook: CreateCookbookRequest = {
+    const draftCookbook: CookbookRequest = {
       ...this.form.getRawValue(),
-    } as CreateCookbookRequest;
+    } as CookbookRequest;
 
     this.cookbookService.createCookbook(draftCookbook).subscribe({
       next: (result) => {

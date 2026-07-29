@@ -14,6 +14,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CookbookDetailInterface } from '../../../shared/models/cookbook-detail-interface';
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
 import { CookbookStateService } from '../../../shared/services/cookbook-state/cookbook-state.service';
+import { CookbookEditDialog } from '../../../shared/dialogs/cookbook-edit-dialog/cookbook-edit-dialog';
 
 @Component({
   selector: 'app-cookbook-detail',
@@ -59,5 +60,14 @@ export class CookbookDetail {
       .subscribe((response) => {
         this.cookbook.set(response);
       });
+  }
+
+  onEditCookbook(): void {
+    this.dialog.open(CookbookEditDialog, {
+      width: '800px',
+      maxWidth: '95vw',
+      autoFocus: false,
+      data: this.cookbook(),
+    });
   }
 }

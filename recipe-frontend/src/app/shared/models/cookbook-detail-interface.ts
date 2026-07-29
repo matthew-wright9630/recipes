@@ -6,5 +6,6 @@ export interface CookbookDetailInterface {
   imageUrl: string;
   updatedAt: string;
   description: string;
+  owner: boolean;
   recipes: Recipe[];
 }

@@ -112,7 +112,7 @@ public class CookbookService {
                                 likeCountMap.getOrDefault(recipe.getId(), 0),
                                 likedIds.contains(recipe.getId()))).toList();
 
-                return CookbookWithRecipesMapper.toDto(foundCookbook, recipeDtos);
+                return CookbookWithRecipesMapper.toDto(foundCookbook, recipeDtos, user.getId());
         }
 
         public Page<CookbookDto> findAllAccessibleCookbooks(Pageable pageable, String search, User user) {
@@ -198,6 +198,19 @@ public class CookbookService {
                                 .collect(Collectors.toMap(
                                                 row -> (Long) row[0],
                                                 row -> ((Long) row[1]).intValue()));
+        }
+
+        @Transactional
+        public CookbookDto editCookbook(User user, Long cookbookId, CreateCookbookDto cookbookEditDto) {
+                Cookbook foundCookbook = cookbookRepository.findById(cookbookId)
+                                .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
+                CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, cookbookId, user.getId());
+
+                foundCookbook.setImageUrl(cookbookEditDto.imageUrl());
+                foundCookbook.setDescription(cookbookEditDto.description());
+                foundCookbook.setName(cookbookEditDto.name());
+
+                return CookbookMapper.toDto(foundCookbook);
         }
 
         private Set<Long> getLikedRecipeIds(List<Long> recipeIds, Long userId) {

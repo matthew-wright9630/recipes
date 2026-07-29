@@ -6,7 +6,7 @@ import { CookbookService } from '../../../features/cookbook/cookbook.service';
 import { CookbookSelection } from '../../models/cookbook-selection';
 import { MatListModule, MatSelectionListChange } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';
-import { CreateCookbookRequest } from '../../models/create-cookbook-request';
+import { CookbookRequest } from '../../models/cookbook-request';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -62,7 +62,7 @@ export class CookbookRecipeDialog {
       return;
     }
 
-    const draftCookbook: CreateCookbookRequest = {
+    const draftCookbook: CookbookRequest = {
       name,
       description: '',
       imageUrl: 'food-PLACEHOLDER',

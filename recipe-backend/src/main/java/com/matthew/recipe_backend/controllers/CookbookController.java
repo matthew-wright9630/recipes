@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -85,10 +86,17 @@ public class CookbookController {
         return ResponseEntity.ok(cookbook);
     }
 
-    @PostMapping("/{id}/recipes")
+    @PostMapping("/{cookbookId}/recipes")
     public ResponseEntity<CookbookDto> postCookbookRecipe(@AuthenticationPrincipal User user,
             @PathVariable Long cookbookId, @RequestBody AddRecipeDto addRecipeDto) {
         CookbookDto cookbook = cookbookService.addRecipeToCookbook(user.getUsername(), cookbookId, addRecipeDto);
+        return ResponseEntity.ok(cookbook);
+    }
+
+    @PutMapping("/{cookbookId}")
+    public ResponseEntity<CookbookDto> updateCookbook(@AuthenticationPrincipal User user,
+            @PathVariable Long cookbookId, @RequestBody CreateCookbookDto cookbookDto) {
+        CookbookDto cookbook = cookbookService.editCookbook(user, cookbookId, cookbookDto);
         return ResponseEntity.ok(cookbook);
     }
 

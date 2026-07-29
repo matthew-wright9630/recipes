@@ -8,7 +8,14 @@
     />
     <div class="cookbook-hero__content">
       <div class="cookbook-hero__info">
-        <h1 class="cookbook-hero__title">{{ cookbook.name }}</h1>
+        <div class="cookbook-hero__header">
+          <h1 class="cookbook-hero__title">{{ cookbook.name }}</h1>
+          @if(cookbook.owner) {
+          <button mat-raised-button (click)="onEditCookbook()">
+            Edit Cookbook
+          </button>
+          }
+        </div>
         <p class="cookbook-description">{{ cookbook.description }}</p>
         <div class="cookbook-meta"></div>
       </div>

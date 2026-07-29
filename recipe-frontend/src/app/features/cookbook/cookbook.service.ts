@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { Cookbook } from '../../shared/models/cookbook';
 import { Page } from '../../shared/models/page';
-import { CreateCookbookRequest } from '../../shared/models/create-cookbook-request';
+import { CookbookRequest } from '../../shared/models/cookbook-request';
 import { CookbookSelection } from '../../shared/models/cookbook-selection';
 import { CookbookDetailInterface } from '../../shared/models/cookbook-detail-interface';
 
@@ -35,9 +35,15 @@ export class CookbookService {
     });
   }
 
-  createCookbook(cookbook: CreateCookbookRequest) {
+  createCookbook(cookbook: CookbookRequest) {
     return this.http
       .post<Cookbook>(this.baseURL, cookbook, { observe: 'response' })
+      .pipe(map((res) => res.body));
+  }
+
+  editCookbook(cookbook: CookbookRequest, id: number) {
+    return this.http
+      .put<Cookbook>(this.baseURL + `/${id}`, cookbook, { observe: 'response' })
       .pipe(map((res) => res.body));
   }
 

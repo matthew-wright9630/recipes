@@ -4,6 +4,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 public record CookbookWithRecipesDto(Long id, String name, String description, String imageUrl,
-        OffsetDateTime updatedAt, List<RecipeDto> recipes) {
+                OffsetDateTime updatedAt, boolean owner, List<RecipeDto> recipes) {
 
 }

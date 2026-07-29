@@ -5,27 +5,29 @@ import {
   signal,
   ViewChild,
 } from '@angular/core';
+import { CookbookRequest } from '../../models/cookbook-request';
+import { Cookbook } from '../../models/cookbook';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
+  MAT_DIALOG_DATA,
   MatDialog,
   MatDialogActions,
   MatDialogContent,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { RecipeService } from '../../services/recipe-service/recipe.service';
-import { Recipe } from '../../models/recipe';
+import { CookbookService } from '../../../features/cookbook/cookbook.service';
+import { UserImageService } from '../../services/user-image-service/user-image.service';
+import { CookbookStateService } from '../../services/cookbook-state/cookbook-state.service';
+import { DEFAULT_RECIPE_IMAGES } from '../../constants/default-images';
+import { environment } from '../../../../environments/environment';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { RecipeStateService } from '../../services/recipe-state-service/recipe-state.service';
-import { RecipeEditDialog } from '../recipe-edit-dialog/recipe-edit-dialog';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { UserImageService } from '../../services/user-image-service/user-image.service';
-import { environment } from '../../../../environments/environment';
-import { DEFAULT_RECIPE_IMAGES } from '../../constants/default-images';
+import { CookbookDetailInterface } from '../../models/cookbook-detail-interface';
 
 @Component({
-  selector: 'app-recipe-create-dialog',
+  selector: 'app-cookbook-edit-dialog',
   imports: [
     MatDialogContent,
     MatFormField,
@@ -36,25 +38,26 @@ import { DEFAULT_RECIPE_IMAGES } from '../../constants/default-images';
     MatButton,
     MatIcon,
   ],
-  templateUrl: './recipe-create-dialog.html',
-  styleUrl: './recipe-create-dialog.scss',
+  templateUrl: './cookbook-edit-dialog.html',
+  styleUrl: './cookbook-edit-dialog.scss',
 })
-export class RecipeCreateDialog {
+export class CookbookEditDialog {
   private fb = inject(FormBuilder);
-  private dialogRef = inject(MatDialogRef<RecipeCreateDialog>);
-  private recipeService = inject(RecipeService);
-  private recipeStateService = inject(RecipeStateService);
+  private dialogRef = inject(MatDialogRef<CookbookEditDialog>);
+  private cookbookService = inject(CookbookService);
   private dialog = inject(MatDialog);
   private imageService = inject(UserImageService);
+  private cookbookStateService = inject(CookbookStateService);
 
+  data = inject<CookbookDetailInterface>(MAT_DIALOG_DATA);
   userImages: string[] = [];
   defaultImages = DEFAULT_RECIPE_IMAGES;
   imageUrl: string = environment.imageBaseUrl + 'recipes/';
 
   form = this.fb.group({
-    name: ['', [Validators.minLength(3), Validators.required]],
-    description: [''],
-    imageUrl: ['food-PLACEHOLDER', [Validators.required]],
+    name: [this.data.name, [Validators.minLength(3), Validators.required]],
+    description: [this.data.description],
+    imageUrl: [this.data.imageUrl, [Validators.required]],
   });
 
   selectImage(image: string): void {
@@ -69,7 +72,7 @@ export class RecipeCreateDialog {
 
   scrollImages(direction: number): void {
     const container = this.imageTrackContainer.nativeElement;
-    const track = container.querySelector('.recipe-create__image-track');
+    const track = container.querySelector('.cookbook-edit__image-track');
     this.maxOffset.set(track.scrollWidth - container.clientWidth);
 
     this.currentOffset = Math.max(
@@ -146,20 +149,14 @@ export class RecipeCreateDialog {
       return;
     }
 
-    const draftRecipe: Recipe = {
+    const editedCookbook: CookbookRequest = {
       ...this.form.getRawValue(),
-    } as Recipe;
+    } as CookbookRequest;
 
-    this.recipeService.createDraftRecipe(draftRecipe).subscribe({
+    this.cookbookService.editCookbook(editedCookbook, this.data.id).subscribe({
       next: (result) => {
         this.dialogRef.close(result);
-        this.dialog.open(RecipeEditDialog, {
-          width: '800px',
-          maxWidth: '95vw',
-          autoFocus: false,
-          data: result.body,
-        });
-        this.recipeStateService.notifyRecipeUpdated(result.body as Recipe);
+        this.cookbookStateService.notifycookbookUpdated(result as Cookbook);
       },
       error: (err) => {
         console.error(err);

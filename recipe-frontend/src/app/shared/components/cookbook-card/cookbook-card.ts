@@ -10,7 +10,7 @@ import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-cookbook-card',
-  imports: [CommonModule, MatCardModule, MatIcon],
+  imports: [CommonModule, MatCardModule],
   templateUrl: './cookbook-card.html',
   styleUrl: './cookbook-card.scss',
 })
@@ -23,7 +23,6 @@ export class CookbookCard {
   router = inject(Router);
 
   routeToCookbook(): void {
-    console.log('Test', this.cookbook.id);
     this.router.navigate(['/cookbooks', this.cookbook.id]);
   }
 }

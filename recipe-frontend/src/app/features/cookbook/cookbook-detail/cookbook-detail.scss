@@ -27,6 +27,12 @@
   flex: 1;
 }
 
+.cookbook-hero__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .cookbook-hero__title {
   margin: 0;
   text-wrap: balance;

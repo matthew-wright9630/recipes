@@ -11,6 +11,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 import { CookbookCard } from '../../../shared/components/cookbook-card/cookbook-card';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-cookbook',
@@ -24,6 +25,7 @@ import { CookbookCard } from '../../../shared/components/cookbook-card/cookbook-
     MatLabel,
     MatInput,
     CookbookCard,
+    MatButtonModule,
   ],
   templateUrl: './cookbook.html',
   styleUrl: './cookbook.scss',
