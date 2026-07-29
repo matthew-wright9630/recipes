@@ -17,13 +17,20 @@ Find what you're looking for fast, without digging through a single long list.
 
 ![Browse Recipes](browse-homepage.PNG)
 
-### Edit Recipes
+### Create and Edit Recipes
 
 - Add ingredients, directions, prep/cook times, and images
 - Upload a custom image or choose from a curated library of default images
 - Recipe versioning that allows editing published recipes without affecting the live version
 
-![Edit Recipe](edit-recipe.png)
+![Edit Recipe](edit-recipes.png)
+
+### Cookbooks
+
+- Create cookbooks to group your favorite recipes together
+  ![Cookbook](cookbooks.png)
+- Easily add and remove recipes from your cookbooks
+  ![Adding recipe to cookbook](cookbook-recipes.png)
 
 ### Users
 
@@ -41,9 +48,9 @@ Find what you're looking for fast, without digging through a single long list.
 
 ---
 
-## Planned Features (v2)
+## Planned Features (v3)
 
-- 📚 **Cookbooks** — Organize recipes into named collections (Tex-Mex, Family Favorites, Weeknight Dinners, etc.) with sharing support
+- 📚 **Cookbook Sharing** — Share your cookbook collections with other users
 
 ---
 
