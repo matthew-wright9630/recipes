@@ -91,7 +91,6 @@ export class RecipeEditDialog {
         .sort((a, b) => a.sortOrder - b.sortOrder)
         .map((ingredient) => {
           const quantity = this.splitQuantity(ingredient.quantity);
-          console.log(ingredient);
           return this.fb.group({
             name: [ingredient.name],
             quantityWhole: [quantity.whole],
@@ -173,7 +172,7 @@ export class RecipeEditDialog {
       .subscribe(() => {
         const draft = {
           savedAt: new Date().toISOString(),
-          values: this.form.getRawValue(),
+          values: this.buildDraftValues(),
         };
         localStorage.setItem(
           `recipe-draft-${this.data.id}`,
@@ -184,6 +183,22 @@ export class RecipeEditDialog {
       });
 
     this.getListOfImages();
+  }
+
+  private buildDraftValues() {
+    const raw = this.form.getRawValue();
+    return {
+      ...raw,
+      recipeIngredients: raw.recipeIngredients.map((ing: any) => ({
+        id: ing.id,
+        name: ing.name,
+        unit: ing.unit,
+        notes: ing.notes,
+        sortOrder: ing.sortOrder,
+        quantity:
+          Number(ing.quantityWhole ?? 0) + Number(ing.quantityFraction ?? 0),
+      })),
+    };
   }
 
   private updateValidators(status: RecipeStatus): void {
@@ -223,7 +238,7 @@ export class RecipeEditDialog {
   onClose(): void {
     const draft = {
       savedAt: new Date().toISOString(),
-      values: this.form.getRawValue(),
+      values: this.buildDraftValues(),
     };
     localStorage.setItem(`recipe-draft-${this.data.id}`, JSON.stringify(draft));
     this.dialogRef.close();
@@ -347,7 +362,7 @@ export class RecipeEditDialog {
       this.fb.group({
         name: [''],
         quantityWhole: [0],
-        quantityFraction: [0],
+        quantityFraction: [''],
         unit: [''],
         notes: [''],
       }),

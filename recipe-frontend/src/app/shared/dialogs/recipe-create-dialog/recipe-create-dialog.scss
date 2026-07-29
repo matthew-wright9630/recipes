@@ -18,8 +18,8 @@ mat-form-field {
 }
 
 .create-recipe__header {
-  display: grid;
-  grid-template-columns: 1fr 3fr;
+  display: flex;
+  flex-direction: column;
   gap: 2vw;
 }
 

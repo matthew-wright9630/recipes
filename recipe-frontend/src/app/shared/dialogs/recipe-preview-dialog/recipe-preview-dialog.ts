@@ -105,7 +105,7 @@ export class RecipePreviewDialog {
 
   openEditDialog() {
     const raw = localStorage.getItem(`recipe-draft-${this.recipe.id}`);
-    let data;
+    let data = this.recipe;
 
     if (raw) {
       const draft = JSON.parse(raw);
@@ -118,15 +118,13 @@ export class RecipePreviewDialog {
       } else {
         localStorage.removeItem(`recipe-draft-${this.recipe.id}`);
       }
-    } else {
-      data = this.recipe;
     }
 
     this.dialog.open(RecipeEditDialog, {
       width: '800px',
       maxWidth: '95vw',
       autoFocus: false,
-      data: data,
+      data,
     });
   }
 
