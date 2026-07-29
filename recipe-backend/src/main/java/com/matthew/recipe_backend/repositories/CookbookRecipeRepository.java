@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -31,4 +32,12 @@ public interface CookbookRecipeRepository extends JpaRepository<CookbookRecipe, 
                 WHERE cr.cookbook.id = :cookbookId
             """)
     List<CookbookRecipe> findByCookbookId(Long cookbookId);
+
+    @Modifying
+    @Query(value = """
+            UPDATE cookbook_recipes
+            SET recipe_id = :newRecipeId
+            WHERE recipe_id = :oldRecipeId
+            """, nativeQuery = true)
+    void moveRecipes(Long oldRecipeId, Long newRecipeId);
 }

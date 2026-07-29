@@ -386,6 +386,7 @@ public class RecipeService {
 					.ifPresent(previous -> {
 						recipeLikeRepository.moveLikes(previous.getId(), foundRecipe.getId());
 						recipeViewRepository.moveViews(previous.getId(), foundRecipe.getId());
+						cookbookRecipeRepository.moveRecipes(previous.getId(), foundRecipe.getId());
 						previous.setStatus(RecipeStatus.SUPERSEDED);
 						recipeRepository.save(previous);
 					});
@@ -396,6 +397,7 @@ public class RecipeService {
 					.ifPresent(previous -> {
 						recipeLikeRepository.moveLikes(previous.getId(), foundRecipe.getId());
 						recipeViewRepository.moveViews(previous.getId(), foundRecipe.getId());
+						cookbookRecipeRepository.moveRecipes(previous.getId(), foundRecipe.getId());
 						previous.setStatus(RecipeStatus.SUPERSEDED);
 						recipeRepository.save(previous);
 					});
