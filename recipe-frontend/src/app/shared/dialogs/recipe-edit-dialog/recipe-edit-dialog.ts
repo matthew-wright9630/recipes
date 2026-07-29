@@ -152,8 +152,6 @@ export class RecipeEditDialog {
   }
 
   ngOnInit(): void {
-    console.log(this.data.recipeIngredients[0]);
-    console.log(this.data.recipeIngredients[0].quantity);
     this.updateValidators(RecipeStatus.PUBLISHED);
 
     this.form.valueChanges
@@ -349,6 +347,7 @@ export class RecipeEditDialog {
       this.fb.group({
         name: [''],
         quantityWhole: [0],
+        quantityFraction: [0],
         unit: [''],
         notes: [''],
       }),

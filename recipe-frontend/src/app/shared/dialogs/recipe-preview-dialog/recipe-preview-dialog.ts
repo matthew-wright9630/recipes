@@ -78,6 +78,31 @@ export class RecipePreviewDialog {
     [...this.recipe.recipeDirections].sort((a, b) => a.sortOrder - b.sortOrder),
   );
 
+  getWholeNumber(quantity: number): number {
+    return Math.floor(quantity);
+  }
+
+  getFraction(quantity: number): string {
+    const decimal = quantity % 1;
+
+    switch (decimal) {
+      case 0.125:
+        return '⅛';
+      case 0.25:
+        return '¼';
+      case 0.333:
+        return '⅓';
+      case 0.5:
+        return '½';
+      case 0.667:
+        return '⅔';
+      case 0.75:
+        return '¾';
+      default:
+        return '';
+    }
+  }
+
   openEditDialog() {
     const raw = localStorage.getItem(`recipe-draft-${this.recipe.id}`);
     let data;

@@ -89,8 +89,10 @@
       <ul>
         @for(ingredient of sortedIngredients(); track $index) {
         <li class="recipe-dialog__ingredient">
-          @if(ingredient.quantity > 0) {{{ ingredient.quantity }}} {{
-          ingredient.unit }} {{ ingredient.name }}{{ ingredient.notes ? ', ' +
+          @if(getWholeNumber(ingredient.quantity) > 0) {{{
+          getWholeNumber(ingredient.quantity)}}}
+          @if(getFraction(ingredient.quantity)){{{getFraction(ingredient.quantity)}}}
+          {{ ingredient.unit }} {{ingredient.name }}{{ ingredient.notes ? ', ' +
           ingredient.notes : '' }}
         </li>
         }
