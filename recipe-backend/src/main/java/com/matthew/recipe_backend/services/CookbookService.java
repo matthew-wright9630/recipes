@@ -20,6 +20,7 @@ import com.matthew.recipe_backend.dtos.CookbookWithRecipesDto;
 import com.matthew.recipe_backend.dtos.CreateCookbookDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.enums.CookbookPermission;
+import com.matthew.recipe_backend.enums.RecipeStatus;
 import com.matthew.recipe_backend.exceptions.UserNotFoundException;
 import com.matthew.recipe_backend.mappers.CookbookMapper;
 import com.matthew.recipe_backend.mappers.CookbookRecipeSelectionMapper;
@@ -98,9 +99,10 @@ public class CookbookService {
                                 .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
                 CookbookValidator.assertUserHasAccessToCookbook(cookbookAccessRepository, cookbookId, user.getId());
 
-                List<Recipe> recipes = cookbookRecipeRepository.findByCookbookId(cookbookId)
-                                .stream()
-                                .map(CookbookRecipe::getRecipe)
+                List<Recipe> recipes = cookbookRecipeRepository.findByCookbookIdAndStatus(
+                                cookbookId,
+                                RecipeStatus.PUBLISHED)
+                                .stream().map(CookbookRecipe::getRecipe)
                                 .toList();
 
                 List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();

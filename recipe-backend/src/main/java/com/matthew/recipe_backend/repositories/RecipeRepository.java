@@ -80,6 +80,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 			    SELECT rv.recipe
 			    FROM RecipeView rv
 			    WHERE rv.user.id = :userId
+				AND rv.recipe.status = 'PUBLISHED'
 			    GROUP BY rv.recipe
 			    ORDER BY MAX(rv.createdAt) DESC
 			""")
@@ -89,11 +90,13 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 			SELECT r FROM Recipe r
 			JOIN RecipeLike rl ON rl.recipe.id = r.id
 			WHERE rl.user.id = :userId
+			AND r.status = 'PUBLISHED'
 			ORDER BY rl.createdAt DESC
 			""", countQuery = """
 			SELECT COUNT(r) FROM Recipe r
 			JOIN RecipeLike rl ON rl.recipe.id = r.id
 			WHERE rl.user.id = :userId
+			AND r.status = 'PUBLISHED'
 			""")
 	Page<Recipe> findLikedRecipesByUserId(@Param("userId") Long userId, Pageable pageable);
 }

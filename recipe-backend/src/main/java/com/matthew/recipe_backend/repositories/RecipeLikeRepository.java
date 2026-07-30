@@ -27,6 +27,7 @@ public interface RecipeLikeRepository extends JpaRepository<RecipeLike, RecipeLi
                         FROM RecipeLike rl
                         WHERE rl.recipe.id IN :recipeIds
                         AND rl.user.id = :userId
+                        AND rl.recipe.status = 'PUBLISHED'
                         """)
         List<Long> findLikedRecipeIds(@Param("recipeIds") List<Long> recipeIds, @Param("userId") Long userId);
 

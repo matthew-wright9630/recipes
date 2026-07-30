@@ -38,7 +38,7 @@ public class CookbookAccess {
 	private User user;
 
 	@Enumerated(EnumType.STRING)
-	@JdbcTypeCode(SqlTypes.NAMED_ENUM)
+	@Column(length = 20, nullable = false)
 	private CookbookPermission permission;
 
 	@Column(name = "granted_at")

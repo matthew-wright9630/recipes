@@ -44,7 +44,7 @@ public class User implements UserDetails {
 	private String passwordHash;
 
 	@Enumerated(EnumType.STRING)
-	@JdbcTypeCode(SqlTypes.NAMED_ENUM)
+	@Column(name = "role", length = 20, nullable = false)
 	private UserRole role;
 
 	@Column
