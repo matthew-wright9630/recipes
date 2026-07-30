@@ -29,7 +29,7 @@ Find what you're looking for fast, without digging through a single long list.
 
 ![Edit Recipe](edit-recipes.png)
 
-### Cookbooks
+### Cookbook Management
 
 - Create cookbooks to group your favorite recipes together
   ![Cookbook](cookbooks.png)
@@ -80,6 +80,15 @@ _The recipe now exists as both a live published version and an editable draft._
 This avoids the common problem where users must unpublish content just to make edits.
 
 ---
+
+## Automatic Liked Recipes Management
+
+When a user is created, a Liked Recipes cookbook is automatically created. This cookbook contains recipes the user has liked, making it easy to find favorite recipes again.
+When a recipe is liked, it is automatically added to this cookbook. When a recipe is unliked, it is automatically removed.
+
+![Cookbook created automatically](liked-recipe-cookbook-created.png)
+
+![Liked recipe added to cookbook](liked-recipe-adding.png)
 
 ## Image Processing
 
