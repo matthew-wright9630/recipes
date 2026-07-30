@@ -78,7 +78,7 @@ public class AuthService {
         // Create local auth provider
         createAuthProvider(saved, "local", null);
 
-        Cookbook likedRecipes = new Cookbook("Liked Recipes", "", "food-PLACEHOLDER", saved);
+        Cookbook likedRecipes = new Cookbook("Liked Recipes", "", "liked-recipes", saved);
         cookbookRepository.save(likedRecipes);
         CookbookAccess access = new CookbookAccess(likedRecipes, user, CookbookPermission.OWNER, Instant.now());
         cookbookAccessRepository.save(access);

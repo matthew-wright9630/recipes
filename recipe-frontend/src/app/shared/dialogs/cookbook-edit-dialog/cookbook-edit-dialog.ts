@@ -60,6 +60,10 @@ export class CookbookEditDialog {
     imageUrl: [this.data.imageUrl, [Validators.required]],
   });
 
+  ngOnInit() {
+    this.getListOfImages();
+  }
+
   selectImage(image: string): void {
     this.form.get('imageUrl')?.setValue(image);
   }

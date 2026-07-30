@@ -57,6 +57,10 @@ export class CookbookCreateDialog {
     imageUrl: ['food-PLACEHOLDER', [Validators.required]],
   });
 
+  ngOnInit() {
+    this.getListOfImages();
+  }
+
   selectImage(image: string): void {
     this.form.get('imageUrl')?.setValue(image);
   }
