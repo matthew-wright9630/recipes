@@ -40,4 +40,8 @@ public interface CookbookRecipeRepository extends JpaRepository<CookbookRecipe, 
             WHERE recipe_id = :oldRecipeId
             """, nativeQuery = true)
     void moveRecipes(Long oldRecipeId, Long newRecipeId);
+
+    boolean existsByCookbookIdAndRecipeId(Long cookbookId, Long recipeId);
+
+    void deleteByCookbookIdAndRecipeId(Long cookbookId, Long recipeId);
 }

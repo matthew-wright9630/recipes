@@ -78,7 +78,9 @@ public class AuthService {
         // Create local auth provider
         createAuthProvider(saved, "local", null);
 
-        Cookbook likedRecipes = new Cookbook("Liked Recipes", "", "liked-recipes", saved);
+        Cookbook likedRecipes = new Cookbook("Liked Recipes",
+                "A collection of recipes you''ve liked, making it easy to find your favorites again.", "liked-recipes",
+                saved);
         cookbookRepository.save(likedRecipes);
         CookbookAccess access = new CookbookAccess(likedRecipes, user, CookbookPermission.OWNER, Instant.now());
         cookbookAccessRepository.save(access);
@@ -130,12 +132,6 @@ public class AuthService {
         return buildAuthResponse(user);
     }
 
-    public void logout(String token) {
-        // If you add a token blacklist later, invalidate it here
-        // For now JWT is stateless so logout is handled client-side
-        // by discarding the token
-    }
-
     // --- Private Helpers ---
 
     private void createAuthProvider(User user, String provider, String providerId) {
@@ -146,16 +142,6 @@ public class AuthService {
         authProvider.setCreatedAt(LocalDateTime.now());
         authProviderRepository.save(authProvider);
     }
-
-    // MW: TO BE ADDED
-    // private void createDefaultCookbook(User user) {
-    // Cookbook liked = new Cookbook();
-    // liked.setName("Liked Recipes");
-    // liked.setOwner(user);
-    // liked.setDeleted(false);
-    // liked.setCreatedAt(LocalDateTime.now());
-    // cookbookRepository.save(liked);
-    // }
 
     private AuthResponseDto buildAuthResponse(User user) {
         String accessToken = jwtService.generateToken(user);

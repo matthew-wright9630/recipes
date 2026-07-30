@@ -3,8 +3,15 @@ package com.matthew.recipe_backend.models;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import com.matthew.recipe_backend.enums.CookbookType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,7 +26,7 @@ public class Cookbook {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 
 	@Column
 	private String name;
@@ -41,37 +48,44 @@ public class Cookbook {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "owner_id", referencedColumnName = "id")
-	private User ownerId;
+	private User owner;
+
+	@Enumerated(EnumType.STRING)
+	@JdbcTypeCode(SqlTypes.NAMED_ENUM)
+	@Column(nullable = false)
+	private CookbookType type = CookbookType.NORMAL;
 
 	public Cookbook() {
 	}
 
 	public Cookbook(String name, String description, boolean deleted, Instant createdAt, OffsetDateTime updatedAt,
-			String imageUrl, User ownerId) {
+			String imageUrl, User owner) {
 		this.name = name;
 		this.description = description;
 		this.deleted = deleted;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 		this.imageUrl = imageUrl;
-		this.ownerId = ownerId;
+		this.owner = owner;
+		this.type = CookbookType.NORMAL;
 	}
 
-	public Cookbook(String name, String description, String imageUrl, User ownerId) {
+	public Cookbook(String name, String description, String imageUrl, User owner) {
 		this.name = name;
 		this.description = description;
 		this.imageUrl = imageUrl;
 		this.deleted = false;
 		this.createdAt = Instant.now();
 		this.updatedAt = OffsetDateTime.now();
-		this.ownerId = ownerId;
+		this.owner = owner;
+		this.type = CookbookType.NORMAL;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -123,12 +137,20 @@ public class Cookbook {
 		this.imageUrl = imageUrl;
 	}
 
-	public User getOwnerId() {
-		return ownerId;
+	public User getOwner() {
+		return owner;
 	}
 
-	public void setOwnerId(User ownerId) {
-		this.ownerId = ownerId;
+	public void setOwner(User owner) {
+		this.owner = owner;
+	}
+
+	public CookbookType getType() {
+		return type;
+	}
+
+	public void setType(CookbookType type) {
+		this.type = type;
 	}
 
 	@Override
