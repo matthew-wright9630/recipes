@@ -51,9 +51,8 @@ public class Cookbook {
 	private User owner;
 
 	@Enumerated(EnumType.STRING)
-	@JdbcTypeCode(SqlTypes.NAMED_ENUM)
-	@Column(nullable = false)
-	private CookbookType type = CookbookType.NORMAL;
+	@Column(length = 20, nullable = false)
+	private CookbookType type;
 
 	public Cookbook() {
 	}

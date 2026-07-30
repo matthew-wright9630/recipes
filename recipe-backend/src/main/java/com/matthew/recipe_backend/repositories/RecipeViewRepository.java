@@ -38,14 +38,18 @@ public interface RecipeViewRepository extends JpaRepository<RecipeView, Long> {
                         Pageable pageable);
 
         @Query(value = """
-                        SELECT r.* FROM recipes r
+                        SELECT r.*
+                        FROM recipes r
                         INNER JOIN recipe_views rh ON rh.recipe_id = r.id
                         WHERE rh.user_id = :userId
+                        AND r.status = 'PUBLISHED'
                         GROUP BY r.id
                         ORDER BY MAX(rh.viewed_at) DESC
                         LIMIT :limit
                         """, nativeQuery = true)
-        List<Recipe> findDistinctRecentlyViewedRecipes(@Param("userId") Long userId, @Param("limit") int limit);
+        List<Recipe> findDistinctRecentlyViewedRecipes(
+                        @Param("userId") Long userId,
+                        @Param("limit") int limit);
 
         @Modifying
         @Query(value = """

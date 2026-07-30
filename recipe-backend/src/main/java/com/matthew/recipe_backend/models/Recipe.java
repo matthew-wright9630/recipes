@@ -66,8 +66,7 @@ public class Recipe {
 	private OffsetDateTime updatedAt;
 
 	@Enumerated(EnumType.STRING)
-	@JdbcTypeCode(SqlTypes.NAMED_ENUM)
-	@Column(columnDefinition = "recipe_status")
+	@Column(name = "status", length = 20, nullable = false)
 	private RecipeStatus status;
 
 	@OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)

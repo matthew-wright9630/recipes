@@ -6,8 +6,10 @@ import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.matthew.recipe_backend.enums.RecipeStatus;
 import com.matthew.recipe_backend.keys.CookbookRecipeKey;
 import com.matthew.recipe_backend.models.CookbookRecipe;
 
@@ -26,12 +28,15 @@ public interface CookbookRecipeRepository extends JpaRepository<CookbookRecipe, 
     Set<Long> findCookbookIdsByRecipeId(Long recipeId);
 
     @Query("""
-                SELECT cr
-                FROM CookbookRecipe cr
-                JOIN FETCH cr.recipe
-                WHERE cr.cookbook.id = :cookbookId
+            SELECT cr
+            FROM CookbookRecipe cr
+            JOIN FETCH cr.recipe r
+            WHERE cr.cookbook.id = :cookbookId
+              AND r.status = :status
             """)
-    List<CookbookRecipe> findByCookbookId(Long cookbookId);
+    List<CookbookRecipe> findByCookbookIdAndStatus(
+            @Param("cookbookId") Long cookbookId,
+            @Param("status") RecipeStatus status);
 
     @Modifying
     @Query(value = """
