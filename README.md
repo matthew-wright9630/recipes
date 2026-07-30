@@ -52,7 +52,7 @@ Find what you're looking for fast, without digging through a single long list.
 
 ---
 
-## Planned Features (v3)
+## Planned Features
 
 - 📚 **Cookbook Sharing** — Share your cookbook collections with other users
 
