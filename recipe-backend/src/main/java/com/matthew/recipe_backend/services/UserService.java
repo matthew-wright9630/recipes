@@ -21,6 +21,7 @@ import com.matthew.recipe_backend.exceptions.UsernameAlreadyExistsException;
 import com.matthew.recipe_backend.mappers.UserMapper;
 import com.matthew.recipe_backend.models.Cookbook;
 import com.matthew.recipe_backend.models.User;
+import com.matthew.recipe_backend.repositories.CookbookRepository;
 import com.matthew.recipe_backend.repositories.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -79,11 +80,6 @@ public class UserService {
         user.setEmail(user.getEmail().toLowerCase());
         User saved = userRepository.save(user);
         UserDto response = UserMapper.toDto(saved);
-
-        // Cookbook likedRecipes = new Cookbook();
-        // likedRecipes.setName("Liked Recipes");
-        // likedRecipes.setOwner(saved);
-        // cookbookRepository.save(likedRecipes);
 
         return response;
     }
