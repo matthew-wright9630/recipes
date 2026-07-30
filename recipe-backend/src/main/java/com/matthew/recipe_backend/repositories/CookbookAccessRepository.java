@@ -1,7 +1,10 @@
 package com.matthew.recipe_backend.repositories;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,12 +23,22 @@ public interface CookbookAccessRepository extends JpaRepository<CookbookAccess, 
                             WHERE ca.user = :user
                               AND ca.permission IN :permissions
                         """)
-        List<Cookbook> findCookbooksByUserAndPermissions(
+        Page<Cookbook> findCookbooksByUserAndPermissions(
                         @Param("user") User user,
-                        @Param("permissions") List<CookbookPermission> permissions);
+                        @Param("permissions") List<CookbookPermission> permissions, Pageable pageable);
 
-        boolean existsByCookbookIdAndUserIdAndPermission(
+        @Query("""
+                            SELECT ca.cookbook
+                            FROM CookbookAccess ca
+                            WHERE ca.user.id = :userId
+                              AND ca.permission IN :permissions
+                        """)
+        List<Cookbook> findCookbooksByUserIdAndPermissionIn(
+                        @Param("userId") Long userId,
+                        @Param("permissions") Collection<CookbookPermission> permissions);
+
+        boolean existsByCookbookIdAndUserIdAndPermissionIn(
                         Long cookbookId,
                         Long userId,
-                        CookbookPermission permission);
+                        Collection<CookbookPermission> permissions);
 }

@@ -27,6 +27,9 @@ import {
 } from '@angular/material/menu';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Recipe } from '../../models/recipe';
+import { CookbookRecipeDialog } from '../cookbook-recipe-dialog/cookbook-recipe-dialog';
+import { CookbookStateService } from '../../services/cookbook-state/cookbook-state.service';
+import { Cookbook } from '../../models/cookbook';
 
 @Component({
   selector: 'app-recipe-preview-dialog',
@@ -51,6 +54,7 @@ export class RecipePreviewDialog {
   recipe = inject(MAT_DIALOG_DATA);
   recipeService = inject(RecipeService);
   recipeStateService = inject(RecipeStateService);
+  cookbookStateService = inject(CookbookStateService);
   recipeLikeService = inject(RecipeLikeService);
   authState = inject(AuthStateService);
   imageUrl: string = environment.imageBaseUrl + 'recipes/';
@@ -74,9 +78,34 @@ export class RecipePreviewDialog {
     [...this.recipe.recipeDirections].sort((a, b) => a.sortOrder - b.sortOrder),
   );
 
+  getWholeNumber(quantity: number): number {
+    return Math.floor(quantity);
+  }
+
+  getFraction(quantity: number): string {
+    const decimal = quantity % 1;
+
+    switch (decimal) {
+      case 0.125:
+        return '⅛';
+      case 0.25:
+        return '¼';
+      case 0.333:
+        return '⅓';
+      case 0.5:
+        return '½';
+      case 0.667:
+        return '⅔';
+      case 0.75:
+        return '¾';
+      default:
+        return '';
+    }
+  }
+
   openEditDialog() {
     const raw = localStorage.getItem(`recipe-draft-${this.recipe.id}`);
-    let data;
+    let data = this.recipe;
 
     if (raw) {
       const draft = JSON.parse(raw);
@@ -89,15 +118,13 @@ export class RecipePreviewDialog {
       } else {
         localStorage.removeItem(`recipe-draft-${this.recipe.id}`);
       }
-    } else {
-      data = this.recipe;
     }
 
     this.dialog.open(RecipeEditDialog, {
       width: '800px',
       maxWidth: '95vw',
       autoFocus: false,
-      data: data,
+      data,
     });
   }
 
@@ -233,6 +260,23 @@ export class RecipePreviewDialog {
       setTimeout(() => {
         URL.revokeObjectURL(url);
       }, 1000);
+    });
+  }
+
+  onAddToCookbook(): void {
+    const dialogRef = this.dialog.open(CookbookRecipeDialog, {
+      width: '800px',
+      maxWidth: '95vw',
+      autoFocus: false,
+      data: this.recipe,
+    });
+
+    dialogRef.afterClosed().subscribe((updatedCookbooks) => {
+      if (updatedCookbooks) {
+        updatedCookbooks.forEach((cookbook: Cookbook) => {
+          this.cookbookStateService.notifycookbookUpdated(cookbook);
+        });
+      }
     });
   }
 }

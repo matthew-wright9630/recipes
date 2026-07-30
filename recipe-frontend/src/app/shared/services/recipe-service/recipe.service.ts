@@ -5,6 +5,7 @@ import { map, Observable } from 'rxjs';
 import { Page } from '../../models/page';
 import { environment } from '../../../../environments/environment';
 import { response } from 'express';
+import { UpdateRecipeCookbookRequest } from '../../models/update-recipe-cookbook-request';
 
 @Injectable({
   providedIn: 'root',
@@ -121,5 +122,15 @@ export class RecipeService {
     return this.http.get(this.baseURL + '/' + id + '/pdf', {
       responseType: 'blob',
     });
+  }
+
+  updateRecipeCookbooks(
+    recipeId: number,
+    cookbookUpdates: UpdateRecipeCookbookRequest,
+  ): Observable<void> {
+    return this.http.put<void>(
+      `${this.baseURL}/${recipeId}/cookbooks`,
+      cookbookUpdates,
+    );
   }
 }

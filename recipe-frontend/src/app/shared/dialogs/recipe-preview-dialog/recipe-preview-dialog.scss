@@ -193,7 +193,7 @@ button {
   }
 }
 
-@media screen and (max-width: 875px) {
+@media screen and (max-width: 650px) {
   .recipe-dialog__header {
     padding: 50px 2vw;
   }
@@ -207,5 +207,9 @@ button {
     justify-content: end;
     top: 2vw;
     right: 2vh;
+  }
+
+  .recipe-dialog__full-recipe {
+    width: 100px;
   }
 }

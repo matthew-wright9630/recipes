@@ -1,5 +1,6 @@
 package com.matthew.recipe_backend.services;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.matthew.recipe_backend.dtos.AuthResponseDto;
 import com.matthew.recipe_backend.dtos.LoginRequestDto;
 import com.matthew.recipe_backend.dtos.RegisterRequestDto;
+import com.matthew.recipe_backend.enums.CookbookPermission;
 import com.matthew.recipe_backend.enums.UserRole;
 import com.matthew.recipe_backend.exceptions.AccountDeactivatedException;
 import com.matthew.recipe_backend.exceptions.EmailAlreadyExistsException;
@@ -21,8 +23,11 @@ import com.matthew.recipe_backend.exceptions.InvalidTokenException;
 import com.matthew.recipe_backend.exceptions.UsernameAlreadyExistsException;
 import com.matthew.recipe_backend.models.AuthProvider;
 import com.matthew.recipe_backend.models.Cookbook;
+import com.matthew.recipe_backend.models.CookbookAccess;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.repositories.AuthProviderRepository;
+import com.matthew.recipe_backend.repositories.CookbookAccessRepository;
+import com.matthew.recipe_backend.repositories.CookbookRepository;
 import com.matthew.recipe_backend.repositories.UserRepository;
 
 @Service
@@ -33,14 +38,19 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final CookbookRepository cookbookRepository;
+    private final CookbookAccessRepository cookbookAccessRepository;
 
     public AuthService(UserRepository userRepository, AuthProviderRepository authProviderRepository,
-            PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager) {
+            PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager,
+            CookbookRepository cookbookRepository, CookbookAccessRepository cookbookAccessRepository) {
         this.userRepository = userRepository;
         this.authProviderRepository = authProviderRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.cookbookRepository = cookbookRepository;
+        this.cookbookAccessRepository = cookbookAccessRepository;
     }
 
     public AuthResponseDto register(RegisterRequestDto request) {
@@ -68,8 +78,12 @@ public class AuthService {
         // Create local auth provider
         createAuthProvider(saved, "local", null);
 
-        // Create default "Liked Recipes" cookbook
-        // createDefaultCookbook(saved); MW: TO BE ADDED IN
+        Cookbook likedRecipes = new Cookbook("Liked Recipes",
+                "A collection of recipes you''ve liked, making it easy to find your favorites again.", "liked-recipes",
+                saved);
+        cookbookRepository.save(likedRecipes);
+        CookbookAccess access = new CookbookAccess(likedRecipes, user, CookbookPermission.OWNER, Instant.now());
+        cookbookAccessRepository.save(access);
 
         // Generate tokens
         return buildAuthResponse(saved);
@@ -118,12 +132,6 @@ public class AuthService {
         return buildAuthResponse(user);
     }
 
-    public void logout(String token) {
-        // If you add a token blacklist later, invalidate it here
-        // For now JWT is stateless so logout is handled client-side
-        // by discarding the token
-    }
-
     // --- Private Helpers ---
 
     private void createAuthProvider(User user, String provider, String providerId) {
@@ -134,16 +142,6 @@ public class AuthService {
         authProvider.setCreatedAt(LocalDateTime.now());
         authProviderRepository.save(authProvider);
     }
-
-    // MW: TO BE ADDED
-    // private void createDefaultCookbook(User user) {
-    // Cookbook liked = new Cookbook();
-    // liked.setName("Liked Recipes");
-    // liked.setOwner(user);
-    // liked.setDeleted(false);
-    // liked.setCreatedAt(LocalDateTime.now());
-    // cookbookRepository.save(liked);
-    // }
 
     private AuthResponseDto buildAuthResponse(User user) {
         String accessToken = jwtService.generateToken(user);

@@ -55,7 +55,13 @@
           }
         </mat-menu>
       </div>
-      }
+      @if(this.authState.currentUser()) {
+      <div class="recipe__action__div">
+        <button mat-raised-button (click)="onAddToCookbook()">
+          Add to Cookbooks
+        </button>
+      </div>
+      } }
     </div>
   </mat-card>
   <div class="recipe-content">
@@ -71,8 +77,11 @@
           @for ( ingredient of r.recipeIngredients; track $index ) {
 
           <li>
-            {{ ingredient.quantity }} {{ ingredient.unit }} {{ ingredient.name}}
-            @if(ingredient.notes) {, {{ingredient.notes}} }
+            @if(getWholeNumber(ingredient.quantity) > 0) {{{
+            getWholeNumber(ingredient.quantity)}}}
+            @if(getFraction(ingredient.quantity)){{{getFraction(ingredient.quantity)}}}
+            {{ ingredient.unit }} {{ingredient.name }}{{ ingredient.notes ? ', '
+            + ingredient.notes : '' }}
           </li>
 
           } @empty {

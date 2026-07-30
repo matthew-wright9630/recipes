@@ -89,14 +89,16 @@ export class RecipeEditDialog {
     recipeIngredients: this.fb.array(
       [...this.data.recipeIngredients]
         .sort((a, b) => a.sortOrder - b.sortOrder)
-        .map((ingredient) =>
-          this.fb.group({
+        .map((ingredient) => {
+          const quantity = this.splitQuantity(ingredient.quantity);
+          return this.fb.group({
             name: [ingredient.name],
-            quantity: [ingredient.quantity],
+            quantityWhole: [quantity.whole],
+            quantityFraction: [quantity.fraction],
             unit: [ingredient.unit],
             notes: [ingredient.notes],
-          }),
-        ),
+          });
+        }),
     ),
     recipeDirections: this.fb.array(
       [...this.data.recipeDirections]
@@ -114,6 +116,39 @@ export class RecipeEditDialog {
     cookTime: Validators.min(0),
     prepTime: Validators.min(0),
   };
+
+  private splitQuantity(quantity: number): {
+    whole: number;
+    fraction: string;
+  } {
+    const whole = Math.floor(quantity);
+    const decimal = Number((quantity - whole).toFixed(3));
+
+    let fraction = '';
+
+    switch (decimal) {
+      case 0.125:
+        fraction = '0.125';
+        break;
+      case 0.25:
+        fraction = '0.25';
+        break;
+      case 0.333:
+        fraction = '0.333';
+        break;
+      case 0.5:
+        fraction = '0.5';
+        break;
+      case 0.667:
+        fraction = '0.667';
+        break;
+      case 0.75:
+        fraction = '0.75';
+        break;
+    }
+
+    return { whole, fraction };
+  }
 
   ngOnInit(): void {
     this.updateValidators(RecipeStatus.PUBLISHED);
@@ -137,7 +172,7 @@ export class RecipeEditDialog {
       .subscribe(() => {
         const draft = {
           savedAt: new Date().toISOString(),
-          values: this.form.getRawValue(),
+          values: this.buildDraftValues(),
         };
         localStorage.setItem(
           `recipe-draft-${this.data.id}`,
@@ -148,6 +183,22 @@ export class RecipeEditDialog {
       });
 
     this.getListOfImages();
+  }
+
+  private buildDraftValues() {
+    const raw = this.form.getRawValue();
+    return {
+      ...raw,
+      recipeIngredients: raw.recipeIngredients.map((ing: any) => ({
+        id: ing.id,
+        name: ing.name,
+        unit: ing.unit,
+        notes: ing.notes,
+        sortOrder: ing.sortOrder,
+        quantity:
+          Number(ing.quantityWhole ?? 0) + Number(ing.quantityFraction ?? 0),
+      })),
+    };
   }
 
   private updateValidators(status: RecipeStatus): void {
@@ -187,7 +238,7 @@ export class RecipeEditDialog {
   onClose(): void {
     const draft = {
       savedAt: new Date().toISOString(),
-      values: this.form.getRawValue(),
+      values: this.buildDraftValues(),
     };
     localStorage.setItem(`recipe-draft-${this.data.id}`, JSON.stringify(draft));
     this.dialogRef.close();
@@ -310,7 +361,8 @@ export class RecipeEditDialog {
     this.ingredients.push(
       this.fb.group({
         name: [''],
-        quantity: [0],
+        quantityWhole: [0],
+        quantityFraction: [''],
         unit: [''],
         notes: [''],
       }),
@@ -367,9 +419,19 @@ export class RecipeEditDialog {
   );
 
   onSave(): void {
+    const formValue = this.form.getRawValue();
+
     const updated: Recipe = {
       ...this.data,
-      ...this.form.getRawValue(),
+      ...formValue,
+      recipeIngredients: formValue.recipeIngredients.map((ingredient: any) => ({
+        name: ingredient.name,
+        unit: ingredient.unit,
+        notes: ingredient.notes,
+        quantity:
+          Number(ingredient.quantityWhole ?? 0) +
+          Number(ingredient.quantityFraction ?? 0),
+      })),
     } as Recipe;
 
     this.recipeService.updateDraftRecipe(updated).subscribe({
@@ -402,10 +464,21 @@ export class RecipeEditDialog {
     confirmRef.afterClosed().subscribe((confirmed) => {
       if (!confirmed) return;
 
-      const updated = {
+      const formValue = this.form.getRawValue();
+
+      const updated: Recipe = {
         ...this.data,
-        ...this.form.getRawValue(),
-        status: RecipeStatus.PUBLISHED,
+        ...formValue,
+        recipeIngredients: formValue.recipeIngredients.map(
+          (ingredient: any) => ({
+            name: ingredient.name,
+            unit: ingredient.unit,
+            notes: ingredient.notes,
+            quantity:
+              Number(ingredient.quantityWhole ?? 0) +
+              Number(ingredient.quantityFraction ?? 0),
+          }),
+        ),
       } as Recipe;
 
       this.recipeService.updateAndPublishRecipe(updated).subscribe({

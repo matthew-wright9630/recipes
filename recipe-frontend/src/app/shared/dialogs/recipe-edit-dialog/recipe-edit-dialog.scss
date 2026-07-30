@@ -96,11 +96,40 @@
 
 .ingredient-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 2fr 0.5fr;
+  grid-template-columns: 0.5fr 0.5fr 1fr 2fr;
+  grid-template-areas:
+    'quantity fraction unit name'
+    'notes notes notes notes'
+    'delete delete delete delete';
   align-items: center;
   gap: 1vw;
   margin-bottom: 5vh;
   background-color: rgba(255, 255, 242, 0.8);
+}
+
+.ingredient-row mat-form-field:nth-child(1) {
+  grid-area: quantity;
+}
+
+.ingredient-row mat-form-field:nth-child(2) {
+  grid-area: fraction;
+}
+
+.ingredient-row mat-form-field:nth-child(3) {
+  grid-area: unit;
+}
+
+.ingredient-row mat-form-field:nth-child(4) {
+  grid-area: name;
+}
+
+.ingredient__notes {
+  grid-area: notes;
+}
+
+.ingredient-row__delete {
+  grid-area: delete;
+  justify-self: start;
 }
 
 .direction-row {
@@ -132,16 +161,16 @@ mat-dialog-actions {
     max-height: 60vh;
   }
 
-  .ingredient-row {
-    grid-template-columns: 2fr 1fr 1fr;
-  }
-
-  .ingredient__notes {
-    grid-column: 1 / -2;
-  }
-
-  .ingredient-row__delete {
-    grid-column: -2 / -1;
+  @media (max-width: 768px) {
+    .ingredient-row {
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        'quantity fraction'
+        'unit unit'
+        'name name'
+        'notes notes'
+        'delete delete';
+    }
   }
 
   mat-dialog-actions {

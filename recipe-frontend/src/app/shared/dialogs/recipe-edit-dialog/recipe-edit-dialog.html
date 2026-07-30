@@ -131,22 +131,26 @@
       $index) {
       <div [formGroupName]="$index" class="ingredient-row">
         <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>Name</mat-label>
+          <mat-label></mat-label>
           <input
             matInput
-            formControlName="name"
+            type="number"
+            formControlName="quantityWhole"
             (keydown.enter)="onIngredientEnter($index)"
           />
         </mat-form-field>
 
         <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>Quantity</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="quantity"
-            (keydown.enter)="onIngredientEnter($index)"
-          />
+          <mat-label></mat-label>
+          <mat-select formControlName="quantityFraction">
+            <mat-option value=""></mat-option>
+            <mat-option value="0.125">⅛</mat-option>
+            <mat-option value="0.25">¼</mat-option>
+            <mat-option value="0.333">⅓</mat-option>
+            <mat-option value="0.5">½</mat-option>
+            <mat-option value="0.667">⅔</mat-option>
+            <mat-option value="0.75">¾</mat-option>
+          </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline" subscriptSizing="dynamic">
@@ -165,6 +169,15 @@
           </mat-autocomplete>
         </mat-form-field>
 
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Name</mat-label>
+          <input
+            matInput
+            formControlName="name"
+            (keydown.enter)="onIngredientEnter($index)"
+          />
+        </mat-form-field>
+
         <mat-form-field
           appearance="outline"
           class="ingredient__notes"
@@ -181,13 +194,13 @@
           ></textarea>
         </mat-form-field>
         <button
-          mat-icon-button
+          mat-flat-button
           type="button"
           class="ingredient-row__delete"
           aria-label="Remove ingredient"
           (click)="removeIngredient($index)"
         >
-          <mat-icon>close</mat-icon>
+          Remove Ingredient
         </button>
       </div>
       } @empty {

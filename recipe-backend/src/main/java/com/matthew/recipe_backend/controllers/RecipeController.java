@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.matthew.recipe_backend.dtos.CreateRecipeDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.StatusUpdateRequestDto;
+import com.matthew.recipe_backend.dtos.UpdateRecipeCookbooksDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
 import com.matthew.recipe_backend.dtos.UserDto;
 import com.matthew.recipe_backend.models.User;
@@ -168,5 +169,19 @@ public class RecipeController {
 						"inline; filename=\"recipe.pdf\"")
 				.contentType(MediaType.APPLICATION_PDF)
 				.body(pdf);
+	}
+
+	@PutMapping("/{recipeId}/cookbooks")
+	public ResponseEntity<Void> updateRecipeCookbooks(
+			@AuthenticationPrincipal User user,
+			@PathVariable Long recipeId,
+			@RequestBody UpdateRecipeCookbooksDto updateRecipeCookbooksDto) {
+
+		recipeService.updateRecipeCookbooks(
+				user,
+				recipeId,
+				updateRecipeCookbooksDto);
+
+		return ResponseEntity.ok().build();
 	}
 }

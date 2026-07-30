@@ -23,6 +23,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RecipeLikeService } from '../../../shared/services/recipe-like-service/recipe-like.service';
 import { RecipeStateService } from '../../../shared/services/recipe-state-service/recipe-state.service';
 import { AuthStateService } from '../../../shared/services/auth-state-service/auth-state.service';
+import { CookbookRecipeDialog } from '../../../shared/dialogs/cookbook-recipe-dialog/cookbook-recipe-dialog';
 
 @Component({
   selector: 'app-recipe-detail',
@@ -151,5 +152,39 @@ export class RecipeDetail {
         URL.revokeObjectURL(url);
       }, 1000);
     });
+  }
+
+  onAddToCookbook(): void {
+    this.dialog.open(CookbookRecipeDialog, {
+      width: '800px',
+      maxWidth: '95vw',
+      autoFocus: false,
+      data: this.recipe(),
+    });
+  }
+
+  getWholeNumber(quantity: number): number {
+    return Math.floor(quantity);
+  }
+
+  getFraction(quantity: number): string {
+    const decimal = quantity % 1;
+
+    switch (decimal) {
+      case 0.125:
+        return '⅛';
+      case 0.25:
+        return '¼';
+      case 0.333:
+        return '⅓';
+      case 0.5:
+        return '½';
+      case 0.667:
+        return '⅔';
+      case 0.75:
+        return '¾';
+      default:
+        return '';
+    }
   }
 }

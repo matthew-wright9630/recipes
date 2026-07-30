@@ -1,5 +1,9 @@
 package com.matthew.recipe_backend.services;
 
+import com.matthew.recipe_backend.repositories.CookbookRecipeRepository;
+import com.matthew.recipe_backend.repositories.CookbookRepository;
+
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -11,34 +15,33 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.matthew.recipe_backend.dtos.CookbookUpdateDto;
 import com.matthew.recipe_backend.dtos.CreateRecipeDto;
-import com.matthew.recipe_backend.dtos.RecipeDirectionsDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
-import com.matthew.recipe_backend.dtos.RecipeIngredientDto;
+import com.matthew.recipe_backend.dtos.UpdateRecipeCookbooksDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDirectionsDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeIngredientsDto;
-import com.matthew.recipe_backend.dtos.UserDto;
+import com.matthew.recipe_backend.enums.CookbookType;
 import com.matthew.recipe_backend.enums.RecipeStatus;
-import com.matthew.recipe_backend.exceptions.UserNotFoundException;
+import com.matthew.recipe_backend.keys.CookbookRecipeKey;
 import com.matthew.recipe_backend.mappers.RecipeMapper;
+import com.matthew.recipe_backend.models.Cookbook;
+import com.matthew.recipe_backend.models.CookbookRecipe;
 import com.matthew.recipe_backend.models.Ingredient;
 import com.matthew.recipe_backend.models.Recipe;
 import com.matthew.recipe_backend.models.RecipeDirection;
 import com.matthew.recipe_backend.models.RecipeIngredient;
 import com.matthew.recipe_backend.models.RecipeLike;
-import com.matthew.recipe_backend.models.RecipeView;
 import com.matthew.recipe_backend.models.User;
+import com.matthew.recipe_backend.repositories.CookbookAccessRepository;
 import com.matthew.recipe_backend.repositories.IngredientRepository;
-import com.matthew.recipe_backend.repositories.RecipeDirectionRepository;
 import com.matthew.recipe_backend.repositories.RecipeLikeRepository;
 import com.matthew.recipe_backend.repositories.RecipeRepository;
 import com.matthew.recipe_backend.repositories.RecipeViewRepository;
-import com.matthew.recipe_backend.repositories.UserRepository;
+import com.matthew.recipe_backend.validators.CookbookValidator;
 import com.matthew.recipe_backend.validators.RecipeValidator;
 
 import jakarta.persistence.EntityManager;
@@ -56,14 +59,15 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class RecipeService {
 
+	private final CookbookRecipeRepository cookbookRecipeRepository;
 	private final RecipeRepository recipeRepository;
-	private final UserRepository userRepository;
 	private final RecipeIngredientService recipeIngredientService;
 	private final RecipeViewService recipeViewService;
 	private final RecipeViewRepository recipeViewRepository;
-	private final RecipeDirectionRepository recipeDirectionRepository;
 	private final IngredientRepository ingredientRepository;
 	private final RecipeLikeRepository recipeLikeRepository;
+	private final CookbookRepository cookbookRepository;
+	private final CookbookAccessRepository cookbookAccessRepository;
 	private final EntityManager entityManager;
 
 	/**
@@ -71,20 +75,22 @@ public class RecipeService {
 	 *
 	 * @param recipeRepository the repository used for recipe persistence operations
 	 */
-	public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository,
+	public RecipeService(RecipeRepository recipeRepository,
 			RecipeIngredientService recipeIngredientService, RecipeViewService recipeViewService,
-			RecipeViewRepository recipeViewRepository, RecipeDirectionRepository recipeDirectionRepository,
+			RecipeViewRepository recipeViewRepository,
 			IngredientRepository ingredientRepository, RecipeLikeRepository recipeLikeRepository,
-			EntityManager entityManager) {
+			CookbookAccessRepository cookbookAccessRepository, EntityManager entityManager,
+			CookbookRecipeRepository cookbookRecipeRepository, CookbookRepository cookbookRepository) {
 		this.recipeRepository = recipeRepository;
-		this.userRepository = userRepository;
 		this.recipeIngredientService = recipeIngredientService;
 		this.recipeViewService = recipeViewService;
 		this.recipeViewRepository = recipeViewRepository;
-		this.recipeDirectionRepository = recipeDirectionRepository;
 		this.ingredientRepository = ingredientRepository;
 		this.recipeLikeRepository = recipeLikeRepository;
+		this.cookbookAccessRepository = cookbookAccessRepository;
 		this.entityManager = entityManager;
+		this.cookbookRecipeRepository = cookbookRecipeRepository;
+		this.cookbookRepository = cookbookRepository;
 	}
 
 	/**
@@ -369,6 +375,7 @@ public class RecipeService {
 					.ifPresent(previous -> {
 						recipeLikeRepository.moveLikes(previous.getId(), foundRecipe.getId());
 						recipeViewRepository.moveViews(previous.getId(), foundRecipe.getId());
+						cookbookRecipeRepository.moveRecipes(previous.getId(), foundRecipe.getId());
 						previous.setStatus(RecipeStatus.SUPERSEDED);
 						recipeRepository.save(previous);
 					});
@@ -379,6 +386,7 @@ public class RecipeService {
 					.ifPresent(previous -> {
 						recipeLikeRepository.moveLikes(previous.getId(), foundRecipe.getId());
 						recipeViewRepository.moveViews(previous.getId(), foundRecipe.getId());
+						cookbookRecipeRepository.moveRecipes(previous.getId(), foundRecipe.getId());
 						previous.setStatus(RecipeStatus.SUPERSEDED);
 						recipeRepository.save(previous);
 					});
@@ -477,6 +485,16 @@ public class RecipeService {
 
 		RecipeLike like = new RecipeLike(user, recipe, OffsetDateTime.now());
 		recipeLikeRepository.save(like);
+
+		Cookbook likedRecipes = cookbookRepository
+				.findByOwner_IdAndType(user.getId(), CookbookType.LIKED_RECIPES);
+
+		if (!cookbookRecipeRepository.existsByCookbookIdAndRecipeId(
+				likedRecipes.getId(), recipe.getId())) {
+
+			cookbookRecipeRepository.save(
+					new CookbookRecipe(likedRecipes, recipe, Instant.now()));
+		}
 	}
 
 	public void unlikeRecipe(Long recipeId, User user) {
@@ -492,6 +510,13 @@ public class RecipeService {
 		}
 
 		recipeLikeRepository.deleteByRecipeIdAndUserId(recipeId, user.getId());
+
+		Cookbook likedRecipes = cookbookRepository
+				.findByOwner_IdAndType(user.getId(), CookbookType.LIKED_RECIPES);
+
+		cookbookRecipeRepository.deleteByCookbookIdAndRecipeId(
+				likedRecipes.getId(),
+				recipe.getId());
 	}
 
 	private Map<Long, Integer> getLikeCountMap(List<Long> recipeIds) {
@@ -506,5 +531,50 @@ public class RecipeService {
 		if (userId == null)
 			return Set.of();
 		return new HashSet<>(recipeLikeRepository.findLikedRecipeIds(recipeIds, userId));
+	}
+
+	@Transactional
+	public void updateRecipeCookbooks(
+			User user,
+			Long recipeId,
+			UpdateRecipeCookbooksDto updateRecipeCookbook) {
+
+		Recipe recipe = recipeRepository.findById(recipeId)
+				.orElseThrow(() -> new RuntimeException("Recipe not found"));
+
+		for (CookbookUpdateDto cookbookUpdate : updateRecipeCookbook.cookbookUpdates()) {
+			CookbookValidator.assertUserHasAccessToCookbook(
+					cookbookAccessRepository,
+					cookbookUpdate.cookbookId(),
+					user.getId());
+		}
+
+		for (CookbookUpdateDto cookbookUpdate : updateRecipeCookbook.cookbookUpdates()) {
+			Long cookbookId = cookbookUpdate.cookbookId();
+
+			boolean exists = cookbookRecipeRepository
+					.existsByRecipeIdAndCookbookId(recipeId, cookbookId);
+
+			if (cookbookUpdate.shouldContainRecipe()) {
+				if (!exists) {
+					CookbookRecipe relationship = new CookbookRecipe();
+
+					CookbookRecipeKey id = new CookbookRecipeKey(cookbookId, recipeId);
+
+					relationship.setId(id);
+					relationship.setCookbook(
+							cookbookRepository.findById(cookbookUpdate.cookbookId())
+									.orElseThrow(() -> new RuntimeException("Cookbook not found")));
+					relationship.setRecipe(recipe);
+					relationship.setAddedAt(Instant.now());
+
+					cookbookRecipeRepository.save(relationship);
+				}
+			} else {
+				if (exists) {
+					cookbookRecipeRepository.deleteByRecipeIdAndCookbookId(recipeId, cookbookId);
+				}
+			}
+		}
 	}
 }

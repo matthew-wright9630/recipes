@@ -1,0 +1,95 @@
+<mat-dialog-content [formGroup]="form" class="dialog-content">
+  <h2 mat-dialog-title>Create Cookbook</h2>
+  <!-- =======================
+       BASIC INFO
+  ======================== -->
+  <section class="section">
+    <div class="create-cookbook__header">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" />
+        @if (form.get('name')?.hasError('required') &&
+        form.get('name')?.touched) {
+        <mat-error>Name is required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="cookbook-create__image-section">
+      <div class="cookbook-create__image-section__header">
+        <p>Display Image:</p>
+        <img
+          [src]="imageUrl + form.get('imageUrl')?.value + '-thumb.jpg'"
+          alt="preview"
+        />
+      </div>
+
+      <div class="cookbook-create__image-options">
+        <button
+          mat-icon-button
+          (click)="scrollImages(-1)"
+          [disabled]="this.currentOffset === 0"
+        >
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <div class="cookbook-create__image-track-container" #imageTrack>
+          <div class="cookbook-create__image-track">
+            @for(image of defaultImages; track image) {
+            <img
+              [src]="imageUrl + image + '-thumb.jpg'"
+              [class.selected]="form.get('imageUrl')?.value === image"
+              (click)="selectImage(image)"
+            />
+            } @for(image of userImages; track image) {
+            <img
+              [src]="imageUrl + image + '-thumb.jpg'"
+              [class.selected]="form.get('imageUrl')?.value === image"
+              (click)="selectImage(image)"
+            />
+            }
+            <button
+              type="button"
+              class="cookbook-create__upload-card"
+              (click)="fileInput.click()"
+              aria-label="Upload image"
+            >
+              <mat-icon>add</mat-icon>
+              <span>Upload</span>
+            </button>
+
+            <input
+              #fileInput
+              type="file"
+              accept="image/*"
+              hidden
+              (change)="onFileSelected($event)"
+            />
+          </div>
+        </div>
+        <button
+          mat-icon-button
+          (click)="scrollImages(1)"
+          [disabled]="this.currentOffset === this.maxOffset()"
+        >
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
+  </section>
+  <mat-dialog-actions class="create-cookbook__buttons" align="end">
+    <button mat-button color="primary" (click)="onCancel()">Cancel</button>
+    <button
+      mat-flat-button
+      color="primary"
+      [disabled]="this.form.invalid"
+      (click)="onSave()"
+    >
+      Save
+    </button>
+  </mat-dialog-actions>
+</mat-dialog-content>

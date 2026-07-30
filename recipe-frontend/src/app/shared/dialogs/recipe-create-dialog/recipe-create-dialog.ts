@@ -57,6 +57,10 @@ export class RecipeCreateDialog {
     imageUrl: ['food-PLACEHOLDER', [Validators.required]],
   });
 
+  ngOnInit() {
+    this.getListOfImages();
+  }
+
   selectImage(image: string): void {
     this.form.get('imageUrl')?.setValue(image);
   }
@@ -152,7 +156,6 @@ export class RecipeCreateDialog {
 
     this.recipeService.createDraftRecipe(draftRecipe).subscribe({
       next: (result) => {
-        console.log(result);
         this.dialogRef.close(result);
         this.dialog.open(RecipeEditDialog, {
           width: '800px',

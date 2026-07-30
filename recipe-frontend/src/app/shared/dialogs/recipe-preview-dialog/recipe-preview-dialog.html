@@ -89,7 +89,11 @@
       <ul>
         @for(ingredient of sortedIngredients(); track $index) {
         <li class="recipe-dialog__ingredient">
-          {{ingredient.quantity}} {{ingredient.unit}} of {{ingredient.name}}
+          @if(getWholeNumber(ingredient.quantity) > 0) {{{
+          getWholeNumber(ingredient.quantity)}}}
+          @if(getFraction(ingredient.quantity)){{{getFraction(ingredient.quantity)}}}
+          {{ ingredient.unit }} {{ingredient.name }}{{ ingredient.notes ? ', ' +
+          ingredient.notes : '' }}
         </li>
         }
       </ul>
@@ -123,7 +127,15 @@
       See full recipe
     </a>
   </div>
-  @if(this.recipe.status === "PUBLISHED") {
+  @if(this.recipe.status === "PUBLISHED") { @if(this.authState.currentUser()) {
+  <button
+    mat-raised-button
+    class="recipe-dialog__full-recipe"
+    (click)="onAddToCookbook()"
+  >
+    Add to Cookbooks
+  </button>
+  }
   <button mat-icon-button [matMenuTriggerFor]="actionMenu">
     <mat-icon>menu</mat-icon>
   </button>

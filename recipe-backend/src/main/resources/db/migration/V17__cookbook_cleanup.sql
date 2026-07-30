@@ -1,0 +1,1 @@
+ALTER TABLE cookbooks DROP COLUMN is_default;

@@ -6,6 +6,8 @@ import { authGuard } from './auth-guard';
 import { UserRecipe } from './features/recipe/user-recipe/user-recipe';
 import { LikedRecipes } from './features/liked-recipes/liked-recipes';
 import { ViewedRecipes } from './features/viewed-recipes/viewed-recipes';
+import { CookbookComponent } from './features/cookbook/cookbook-component/cookbook';
+import { CookbookDetail } from './features/cookbook/cookbook-detail/cookbook-detail';
 
 export const routes: Routes = [
   {
@@ -35,5 +37,14 @@ export const routes: Routes = [
     path: 'recipes/viewed',
     component: ViewedRecipes,
     canActivate: [authGuard],
+  },
+  {
+    path: 'cookbooks',
+    component: CookbookComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'cookbooks/:id',
+    component: CookbookDetail,
   },
 ];

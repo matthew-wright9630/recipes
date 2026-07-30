@@ -1,0 +1,35 @@
+<div class="cookbook-page">
+  @if (cookbook(); as cookbook) {
+  <mat-card class="cookbook-hero">
+    <img
+      class="cookbook-image"
+      [src]="imageUrl + cookbook.imageUrl + '-medium.jpg'"
+      [alt]="cookbook.name"
+    />
+    <div class="cookbook-hero__content">
+      <div class="cookbook-hero__info">
+        <div class="cookbook-hero__header">
+          <h1 class="cookbook-hero__title">{{ cookbook.name }}</h1>
+          @if(cookbook.owner) {
+          <button mat-raised-button (click)="onEditCookbook()">
+            Edit Cookbook
+          </button>
+          }
+        </div>
+        <p class="cookbook-description">{{ cookbook.description }}</p>
+        <div class="cookbook-meta"></div>
+      </div>
+    </div>
+  </mat-card>
+  <div class="cookbook-content"></div>
+  <div class="cookbook-recipe__grid">
+    @for (recipe of cookbook.recipes; track recipe.id) {
+    <app-recipe [recipe]="recipe"></app-recipe>
+    } @empty {
+    <p class="recipe-list__empty">No recipes to display</p>
+    }
+  </div>
+  } @else {
+  <div>cookbook does not exist or is not viewable.</div>
+  }
+</div>

@@ -1,0 +1,37 @@
+<div class="cookbook-recipe">
+  <div class="cookbook-recipe__header">
+    <h2 mat-dialog-title>Add to Cookbook</h2>
+    <button mat-icon-button (click)="onClose()" class="cookbook-recipe__close">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="cookbook-recipe__content">
+    @if (!creatingCookbook) {
+    <mat-selection-list (selectionChange)="onSelectionChange($event)">
+      @for(cookbook of listOfCookbooks; track $index) {
+      <mat-list-option [value]="cookbook" [selected]="cookbook.containsRecipe">
+        {{ cookbook.name }}
+      </mat-list-option>
+      }
+    </mat-selection-list>
+
+    <button mat-button (click)="creatingCookbook = true">
+      <mat-icon>add</mat-icon>
+      Create Cookbook
+    </button>
+    <button mat-raised-button (click)="save()">Save</button>
+    } @if (creatingCookbook) {
+    <mat-form-field class="cookbook-recipe__input">
+      <mat-label>Cookbook Name</mat-label>
+      <input matInput [formControl]="newCookbookName" />
+    </mat-form-field>
+
+    <div class="cookbook-recipe__actions">
+      <button mat-button (click)="creatingCookbook = false">Cancel</button>
+
+      <button mat-raised-button (click)="createCookbook()">Create</button>
+    </div>
+    }
+  </div>
+</div>

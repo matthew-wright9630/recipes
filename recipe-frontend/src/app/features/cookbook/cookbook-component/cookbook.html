@@ -1,0 +1,60 @@
+<article>
+  <div class="cookbook">
+    <div class="cookbook__header">
+      <h2 class="cookbook__header__title">Cookbooks</h2>
+
+      <button
+        mat-flat-button
+        color="primary"
+        class="cookbook__button"
+        (click)="openCreateCookbook()"
+      >
+        <mat-icon>add</mat-icon>
+        Create cookbook
+      </button>
+    </div>
+  </div>
+  <div class="cookbook-list">
+    <div class="cookbook-list__search">
+      <mat-form-field
+        class="cookbook-list__search-container"
+        appearance="outline"
+      >
+        <mat-label>Search cookbooks</mat-label>
+        <input
+          matInput
+          [formControl]="searchControl"
+          placeholder="Search by title..."
+          class="cookbook-list__search"
+        />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+    <div class="cookbook-list__grid">
+      @for (cookbook of cookbookData?.content; track cookbook.id) {
+      <app-cookbook-card [cookbook]="cookbook"></app-cookbook-card>
+      } @empty {
+      <p class="cookbook-list__empty">No cookbooks to display</p>
+      }
+    </div>
+    <div class="cookbook-list__pagination">
+      <button
+        mat-icon-button
+        class="cookbook-list__btn"
+        (click)="previousPage()"
+        [disabled]="cookbookData?.first"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <span>Page {{ currentPage + 1 }} of {{ cookbookData?.totalPages }}</span>
+      <button
+        mat-icon-button
+        class="cookbook-list__btn"
+        (click)="nextPage()"
+        [disabled]="cookbookData?.last"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+</article>
