@@ -24,6 +24,7 @@ import { AuthService } from '../../services/auth-service/auth.service';
 import { AuthStateService } from '../../services/auth-state-service/auth-state.service';
 import { User } from '../../models/user';
 import { RegistrationDialog } from '../registration-dialog/registration-dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-login-dialog',
@@ -38,6 +39,7 @@ import { RegistrationDialog } from '../registration-dialog/registration-dialog';
     MatFormField,
     ReactiveFormsModule,
     MatInput,
+    MatButtonModule,
   ],
   templateUrl: './login-dialog.html',
   styleUrls: ['./login-dialog.scss'],
