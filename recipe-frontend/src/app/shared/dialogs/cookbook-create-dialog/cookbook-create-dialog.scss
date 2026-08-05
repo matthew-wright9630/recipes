@@ -84,6 +84,13 @@ mat-form-field {
   }
 }
 
+.create-cookbook__error {
+  color: red;
+  font-size: 0.875rem;
+  margin: 0;
+  text-align: center;
+}
+
 .create-cookbook__buttons {
   display: flex;
   gap: 1vw;

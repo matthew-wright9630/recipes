@@ -47,6 +47,7 @@ export class CookbookCreateDialog {
   private imageService = inject(UserImageService);
   private cookbookStateService = inject(CookbookStateService);
 
+  errorMessage = '';
   userImages: string[] = [];
   defaultImages = DEFAULT_RECIPE_IMAGES;
   imageUrl: string = environment.imageBaseUrl + 'recipes/';
@@ -159,8 +160,8 @@ export class CookbookCreateDialog {
         this.dialogRef.close(result);
         this.cookbookStateService.notifycookbookUpdated(result as Cookbook);
       },
-      error: (err) => {
-        console.error(err);
+      error: (error) => {
+        this.errorMessage = error.error.message;
       },
     });
   }

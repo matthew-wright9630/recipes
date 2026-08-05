@@ -44,6 +44,15 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(CookbookExistsException.class)
+	public ResponseEntity<Object> handleCookbookExistsException(CookbookExistsException ex,
+			WebRequest request) {
+		Map<String, Object> body = new HashMap<>();
+		body.put("error", "Cookbook with this name already exists for this user");
+		body.put("message", ex.getMessage());
+		return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+	}
+
 	@ExceptionHandler(BadCredentialsException.class)
 	public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
 		Map<String, Object> body = new HashMap<>();

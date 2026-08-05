@@ -49,6 +49,7 @@ export class CookbookEditDialog {
   private imageService = inject(UserImageService);
   private cookbookStateService = inject(CookbookStateService);
 
+  errorMessage: string = '';
   data = inject<CookbookDetailInterface>(MAT_DIALOG_DATA);
   userImages: string[] = [];
   defaultImages = DEFAULT_RECIPE_IMAGES;
@@ -163,7 +164,7 @@ export class CookbookEditDialog {
         this.cookbookStateService.notifycookbookUpdated(result as Cookbook);
       },
       error: (err) => {
-        console.error(err);
+        this.errorMessage = err.error.message;
       },
     });
   }
