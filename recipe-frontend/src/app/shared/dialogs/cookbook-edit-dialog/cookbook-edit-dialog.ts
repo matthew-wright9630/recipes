@@ -25,6 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { CookbookDetailInterface } from '../../models/cookbook-detail-interface';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-cookbook-edit-dialog',
@@ -48,7 +49,9 @@ export class CookbookEditDialog {
   private dialog = inject(MatDialog);
   private imageService = inject(UserImageService);
   private cookbookStateService = inject(CookbookStateService);
+  private snackbar = inject(MatSnackBar);
 
+  errorMessage: string = '';
   data = inject<CookbookDetailInterface>(MAT_DIALOG_DATA);
   userImages: string[] = [];
   defaultImages = DEFAULT_RECIPE_IMAGES;
@@ -126,7 +129,13 @@ export class CookbookEditDialog {
         this.selectedImageFile = null;
         this.getListOfImages();
       },
-      error: (err) => console.error(err),
+      error: () => {
+        this.snackbar.open(
+          'Image upload failed. Please try again.',
+          'Dismiss',
+          { duration: 5000 },
+        );
+      },
     });
   }
 
@@ -163,7 +172,7 @@ export class CookbookEditDialog {
         this.cookbookStateService.notifycookbookUpdated(result as Cookbook);
       },
       error: (err) => {
-        console.error(err);
+        this.errorMessage = err.error.message;
       },
     });
   }

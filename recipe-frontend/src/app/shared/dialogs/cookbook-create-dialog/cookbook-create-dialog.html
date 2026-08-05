@@ -81,6 +81,9 @@
       </div>
     </div>
   </section>
+  @if (errorMessage) {
+  <p class="create-cookbook__error">{{ errorMessage }}</p>
+  }
   <mat-dialog-actions class="create-cookbook__buttons" align="end">
     <button mat-button color="primary" (click)="onCancel()">Cancel</button>
     <button

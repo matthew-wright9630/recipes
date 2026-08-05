@@ -54,7 +54,7 @@ public class ImageService {
         }
 
         if (file.getSize() > 10 * 1024 * 1024) { // 10MB
-            throw new IllegalArgumentException("File exceeds maximum size of 5MB");
+            throw new IllegalArgumentException("File exceeds maximum size of 10MB");
         }
 
         String baseKey = UUID.randomUUID().toString();

@@ -21,6 +21,7 @@ import com.matthew.recipe_backend.dtos.CreateCookbookDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.enums.CookbookPermission;
 import com.matthew.recipe_backend.enums.RecipeStatus;
+import com.matthew.recipe_backend.exceptions.CookbookExistsException;
 import com.matthew.recipe_backend.exceptions.UserNotFoundException;
 import com.matthew.recipe_backend.mappers.CookbookMapper;
 import com.matthew.recipe_backend.mappers.CookbookRecipeSelectionMapper;
@@ -118,7 +119,7 @@ public class CookbookService {
         }
 
         public Page<CookbookDto> findAllAccessibleCookbooks(Pageable pageable, String search, User user) {
-                return cookbookAccessRepository
+                Page<CookbookDto> cookbooks = search.isBlank() ? cookbookAccessRepository
                                 .findCookbooksByUserAndPermissions(
                                                 user,
                                                 List.of(
@@ -126,7 +127,18 @@ public class CookbookService {
                                                                 CookbookPermission.READ,
                                                                 CookbookPermission.READ_WRITE),
                                                 pageable)
-                                .map(CookbookMapper::toDto);
+                                .map(CookbookMapper::toDto)
+                                : cookbookAccessRepository
+                                                .findCookbooksByUserAndPermissionsAndNameContainingIgnoreCase(
+                                                                user.getId(),
+                                                                List.of(
+                                                                                CookbookPermission.OWNER,
+                                                                                CookbookPermission.READ,
+                                                                                CookbookPermission.READ_WRITE),
+                                                                pageable,
+                                                                search)
+                                                .map(CookbookMapper::toDto);
+                return cookbooks;
         }
 
         public List<CookbookRecipeSelectionDto> findAllEditableCookbooks(User user, Long recipeId) {
@@ -148,6 +160,10 @@ public class CookbookService {
                 User user = userRepository.findByEmail(username.toLowerCase())
                                 .orElseThrow(() -> new UserNotFoundException(username));
 
+                if (cookbookRepository.existsByOwner_IdAndName(user.getId(), cookbookCreationDto.name())) {
+                        throw new CookbookExistsException("A cookbook by that name already exists");
+                }
+
                 Cookbook cookbook = new Cookbook(cookbookCreationDto.name(), cookbookCreationDto.description(),
                                 cookbookCreationDto.imageUrl(), user);
                 cookbookRepository.save(cookbook);
@@ -155,24 +171,6 @@ public class CookbookService {
                 cookbookAccessRepository.save(access);
 
                 return CookbookMapper.toDto(cookbook);
-        }
-
-        @Transactional
-        public CookbookDto updateCookbook(Long id, String username, CookbookDetailsDto cookbookDetailsDto) {
-                User user = userRepository.findByEmail(username.toLowerCase())
-                                .orElseThrow(() -> new UserNotFoundException(username));
-
-                Cookbook foundCookbook = cookbookRepository.findById(id)
-                                .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
-
-                CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, id, user.getId());
-
-                foundCookbook.setName(cookbookDetailsDto.name());
-                foundCookbook.setDescription(cookbookDetailsDto.description());
-                foundCookbook.setImageUrl(cookbookDetailsDto.imageUrl());
-
-                Cookbook savedCookbook = cookbookRepository.save(foundCookbook);
-                return CookbookMapper.toDto(savedCookbook);
         }
 
         @Transactional
@@ -207,6 +205,11 @@ public class CookbookService {
                 Cookbook foundCookbook = cookbookRepository.findById(cookbookId)
                                 .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
                 CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, cookbookId, user.getId());
+
+                if (cookbookRepository.existsByOwner_IdAndNameAndIdNot(user.getId(), cookbookEditDto.name(),
+                                foundCookbook.getId())) {
+                        throw new CookbookExistsException("A cookbook by that name already exists");
+                }
 
                 foundCookbook.setImageUrl(cookbookEditDto.imageUrl());
                 foundCookbook.setDescription(cookbookEditDto.description());

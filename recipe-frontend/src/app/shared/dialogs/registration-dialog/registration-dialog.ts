@@ -16,6 +16,7 @@ import { AuthStateService } from '../../services/auth-state-service/auth-state.s
 import { debounceTime } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { User } from '../../models/user';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-registration-dialog',
@@ -30,6 +31,7 @@ import { User } from '../../models/user';
     MatFormField,
     ReactiveFormsModule,
     MatInput,
+    MatButtonModule,
   ],
   templateUrl: './registration-dialog.html',
   styleUrl: './registration-dialog.scss',
@@ -111,7 +113,7 @@ export class RegistrationDialog {
               this.dialogRef.close(true);
             },
             error: (error) => {
-              this.errorMessage = error.message;
+              this.errorMessage = error.error.message;
             },
           });
   }

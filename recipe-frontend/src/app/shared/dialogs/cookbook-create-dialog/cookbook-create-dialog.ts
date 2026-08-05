@@ -23,6 +23,7 @@ import { environment } from '../../../../environments/environment';
 import { Cookbook } from '../../models/cookbook';
 import { CookbookRequest } from '../../models/cookbook-request';
 import { CookbookStateService } from '../../services/cookbook-state/cookbook-state.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-cookbook-create-dialog',
@@ -46,7 +47,9 @@ export class CookbookCreateDialog {
   private dialog = inject(MatDialog);
   private imageService = inject(UserImageService);
   private cookbookStateService = inject(CookbookStateService);
+  private snackbar = inject(MatSnackBar);
 
+  errorMessage = '';
   userImages: string[] = [];
   defaultImages = DEFAULT_RECIPE_IMAGES;
   imageUrl: string = environment.imageBaseUrl + 'recipes/';
@@ -123,7 +126,13 @@ export class CookbookCreateDialog {
         this.selectedImageFile = null;
         this.getListOfImages();
       },
-      error: (err) => console.error(err),
+      error: () => {
+        this.snackbar.open(
+          'Image upload failed. Please try again.',
+          'Dismiss',
+          { duration: 5000 },
+        );
+      },
     });
   }
 
@@ -159,8 +168,8 @@ export class CookbookCreateDialog {
         this.dialogRef.close(result);
         this.cookbookStateService.notifycookbookUpdated(result as Cookbook);
       },
-      error: (err) => {
-        console.error(err);
+      error: (error) => {
+        this.errorMessage = error.error.message;
       },
     });
   }

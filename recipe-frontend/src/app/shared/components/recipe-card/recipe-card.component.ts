@@ -9,6 +9,7 @@ import { RecipeStateService } from '../../services/recipe-state-service/recipe-s
 import { RecipeLikeService } from '../../services/recipe-like-service/recipe-like.service';
 import { MatIcon } from '@angular/material/icon';
 import { environment } from '../../../../environments/environment';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-recipe',
@@ -20,6 +21,7 @@ import { environment } from '../../../../environments/environment';
 export class RecipeComponent {
   @Input() recipe!: Recipe;
   private dialog = inject(MatDialog);
+  private snackbar = inject(MatSnackBar);
   authState = inject(AuthStateService);
   recipeStateService = inject(RecipeStateService);
   recipeLikeService = inject(RecipeLikeService);
@@ -43,7 +45,13 @@ export class RecipeComponent {
           this.recipeStateService.notifyRecipeUpdated(recipe);
           this.recipe.likedByCurrentUser = true;
         },
-        error: (err) => console.error(err),
+        error: () => {
+          this.snackbar.open(
+            'We could not save your like. Please try again.',
+            'Dismiss',
+            { duration: 5000 },
+          );
+        },
       });
     } else {
       this.recipeLikeService.unlikeRecipe(this.recipe.id).subscribe({
@@ -51,7 +59,13 @@ export class RecipeComponent {
           this.recipeStateService.notifyRecipeUpdated(recipe);
           this.recipe.likedByCurrentUser = false;
         },
-        error: (err) => console.error(err),
+        error: () => {
+          this.snackbar.open(
+            'We could not remove your like. Please try again.',
+            'Dismiss',
+            { duration: 5000 },
+          );
+        },
       });
     }
   }
