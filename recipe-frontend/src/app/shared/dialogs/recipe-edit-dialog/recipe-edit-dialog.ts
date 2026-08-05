@@ -40,6 +40,7 @@ import { UserImageService } from '../../services/user-image-service/user-image.s
 import { environment } from '../../../../environments/environment';
 import { UNIT_SUGGESTIONS } from '../../constants/unit-suggestions';
 import { AsyncPipe } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-recipe-edit-dialog',
@@ -66,6 +67,7 @@ export class RecipeEditDialog {
   private recipeStateService = inject(RecipeStateService);
   private imageService = inject(UserImageService);
   private destroyRef = inject(DestroyRef);
+  private snackbar = inject(MatSnackBar);
 
   private imageBaseUrl: string = 'uploads';
 
@@ -323,7 +325,13 @@ export class RecipeEditDialog {
         this.selectedImageFile = null;
         this.getListOfImages();
       },
-      error: (err) => console.error(err),
+      error: () => {
+        this.snackbar.open(
+          'Image upload failed. Please try again.',
+          'Dismiss',
+          { duration: 5000 },
+        );
+      },
     });
   }
 

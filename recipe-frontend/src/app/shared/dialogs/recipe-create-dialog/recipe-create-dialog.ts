@@ -23,6 +23,7 @@ import { MatIcon } from '@angular/material/icon';
 import { UserImageService } from '../../services/user-image-service/user-image.service';
 import { environment } from '../../../../environments/environment';
 import { DEFAULT_RECIPE_IMAGES } from '../../constants/default-images';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-recipe-create-dialog',
@@ -46,6 +47,7 @@ export class RecipeCreateDialog {
   private recipeStateService = inject(RecipeStateService);
   private dialog = inject(MatDialog);
   private imageService = inject(UserImageService);
+  private snackbar = inject(MatSnackBar);
 
   userImages: string[] = [];
   defaultImages = DEFAULT_RECIPE_IMAGES;
@@ -123,7 +125,13 @@ export class RecipeCreateDialog {
         this.selectedImageFile = null;
         this.getListOfImages();
       },
-      error: (err) => console.error(err),
+      error: () => {
+        this.snackbar.open(
+          'Image upload failed. Please try again.',
+          'Dismiss',
+          { duration: 5000 },
+        );
+      },
     });
   }
 
