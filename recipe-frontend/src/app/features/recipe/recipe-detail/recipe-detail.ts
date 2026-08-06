@@ -82,24 +82,32 @@ export class RecipeDetail {
       return;
     }
 
-    if (!recipe.likedByCurrentUser) {
+    if (recipe.likedByCurrentUser) {
       this.recipeLikeService.likeRecipe(recipe.id).subscribe({
         next: () => {
           this.recipeStateService.notifyRecipeUpdated(recipe);
-          this.recipe.update((r) => ({
-            ...r!,
-            likedByCurrentUser: true,
-          }));
+          recipe.likedByCurrentUser = true;
+        },
+        error: (err) => {
+          this.snackbar.open(
+            'We could not save your like. Please try again.',
+            'Dismiss',
+            { duration: 5000 },
+          );
         },
       });
     } else {
       this.recipeLikeService.unlikeRecipe(recipe.id).subscribe({
         next: () => {
           this.recipeStateService.notifyRecipeUpdated(recipe);
-          this.recipe.update((r) => ({
-            ...r!,
-            likedByCurrentUser: false,
-          }));
+          recipe.likedByCurrentUser = false;
+        },
+        error: (err) => {
+          this.snackbar.open(
+            'We could not remove your like. Please try again.',
+            'Dismiss',
+            { duration: 5000 },
+          );
         },
       });
     }

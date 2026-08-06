@@ -11,6 +11,7 @@ import { UserService } from '../user-service/user.service';
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +23,7 @@ export class AuthStateService {
   private userService = inject(UserService);
   private http = inject(HttpClient);
   private router = inject(Router);
+  private snackbar = inject(MatSnackBar);
 
   private isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
@@ -54,6 +56,9 @@ export class AuthStateService {
       localStorage.removeItem('accessToken');
     }
     this.router.navigate(['/']);
+    this.snackbar.open('You have been logged out', 'Dismiss', {
+      duration: 5000,
+    });
   }
 
   initialize(): Observable<void> {
