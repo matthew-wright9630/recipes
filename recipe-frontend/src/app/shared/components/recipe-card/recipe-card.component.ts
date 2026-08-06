@@ -45,7 +45,7 @@ export class RecipeComponent {
           this.recipeStateService.notifyRecipeUpdated(recipe);
           this.recipe.likedByCurrentUser = true;
         },
-        error: () => {
+        error: (err) => {
           this.snackbar.open(
             'We could not save your like. Please try again.',
             'Dismiss',
@@ -59,7 +59,7 @@ export class RecipeComponent {
           this.recipeStateService.notifyRecipeUpdated(recipe);
           this.recipe.likedByCurrentUser = false;
         },
-        error: () => {
+        error: (err) => {
           this.snackbar.open(
             'We could not remove your like. Please try again.',
             'Dismiss',

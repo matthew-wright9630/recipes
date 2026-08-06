@@ -1,7 +1,8 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { SKIP_GLOBAL_ERROR } from '../../http-context-tokens';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,7 @@ export class RecipeLikeService {
     return this.http.post<void>(`${this.baseURL}/${id}/like`, null, {
       withCredentials: true,
       observe: 'response',
+      context: new HttpContext().set(SKIP_GLOBAL_ERROR, true),
     });
   }
 
@@ -22,6 +24,7 @@ export class RecipeLikeService {
     return this.http.delete<void>(`${this.baseURL}/${id}/like`, {
       withCredentials: true,
       observe: 'response',
+      context: new HttpContext().set(SKIP_GLOBAL_ERROR, true),
     });
   }
 }

@@ -14,6 +14,8 @@
       </button>
     </div>
   </div>
+  @if (this.errorMessage === '') {
+
   <div class="cookbook-list">
     <div class="cookbook-list__search">
       <mat-form-field
@@ -34,7 +36,7 @@
       @for (cookbook of cookbookData?.content; track cookbook.id) {
       <app-cookbook-card [cookbook]="cookbook"></app-cookbook-card>
       } @empty {
-      <p class="cookbook-list__empty">No cookbooks to display</p>
+      <p class="cookbook-list__empty">We could not load your cookbooks.</p>
       }
     </div>
     <div class="cookbook-list__pagination">
@@ -57,4 +59,10 @@
       </button>
     </div>
   </div>
+  } @else {
+  <div class="cookbook-list__error">
+    <p class="cookbook-list__empty">{{ errorMessage }}</p>
+    <button mat-raised-button (click)="loadCookbooks()">Try Again</button>
+  </div>
+  }
 </article>

@@ -24,6 +24,19 @@
   margin-bottom: 2vh;
 }
 
+.recipe-list__empty {
+  font-size: 1.5rem;
+}
+
+.recipe-list__error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3vh;
+  align-items: center;
+  margin: 0 auto;
+}
+
 .recipe-list__pagination {
   display: flex;
   justify-content: end;

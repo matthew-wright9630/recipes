@@ -40,6 +40,7 @@ export class CookbookComponent {
   currentPage: number = 0;
   searchTerm: string = '';
   cookbookData: Page<Cookbook> | null = null;
+  errorMessage: string = '';
 
   searchControl = new FormControl('', { nonNullable: true });
 
@@ -65,6 +66,10 @@ export class CookbookComponent {
       .subscribe({
         next: (data) => {
           this.cookbookData = data;
+          this.errorMessage = '';
+        },
+        error: () => {
+          this.errorMessage = 'We could not load your cookbooks';
         },
       });
   }
