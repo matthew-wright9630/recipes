@@ -40,7 +40,7 @@ export class RecipeListComponent {
   currentPage: number = 0;
   searchTerm: string = '';
   recipeData: Page<Recipe> | null = null;
-  errorMessage: string = 'We could not load your recipes';
+  errorMessage: string = 'We could not load the recipes.';
 
   searchControl = new FormControl('');
 
@@ -70,7 +70,7 @@ export class RecipeListComponent {
         if (value) {
           this.errorMessage = 'No recipes match ' + value;
         } else {
-          this.errorMessage = 'We could not load published recipes';
+          this.errorMessage = 'We could not load the recipes.';
         }
         this.searchTerm = value || '';
         this.currentPage = 0;

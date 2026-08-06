@@ -21,7 +21,9 @@
       } @empty {
         <div class="recipe-list__error">
           <p class="recipe-list__empty">{{ errorMessage }}</p>
-          <button mat-raised-button (click)="loadRecipes()">Try Again</button>
+          @if (errorMessage === 'We could not load the recipes.') {
+            <button mat-raised-button (click)="loadRecipes()">Try Again</button>
+          }
         </div>
       }
     </div>

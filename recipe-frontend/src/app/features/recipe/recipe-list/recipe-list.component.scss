@@ -24,6 +24,10 @@
   margin-bottom: 2vh;
 }
 
+.recipe-list__empty {
+  font-size: 1.5rem;
+}
+
 .recipe-list__error {
   display: flex;
   flex-direction: column;

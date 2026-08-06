@@ -69,7 +69,11 @@
   gap: 1.5rem;
 }
 
-.provile__recipes__error {
+.profile__recipes__empty {
+  font-size: 1.5rem;
+}
+
+.profile__recipes__error {
   display: flex;
   flex-direction: column;
   justify-content: center;
