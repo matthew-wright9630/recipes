@@ -69,6 +69,15 @@
   gap: 1.5rem;
 }
 
+.provile__recipes__error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3vh;
+  align-items: center;
+  margin: 0 auto;
+}
+
 .card-header {
   background: #1976d2;
   color: white;

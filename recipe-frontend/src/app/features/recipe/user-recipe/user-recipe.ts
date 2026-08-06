@@ -25,9 +25,12 @@ import { MatButtonModule } from '@angular/material/button';
 export class UserRecipe {
   recipeList = signal<Recipe[]>([]);
 
+  private recipeService = inject(RecipeService);
   private dialog = inject(MatDialog);
   private recipeStateService = inject(RecipeStateService);
   private destroyRef = inject(DestroyRef);
+
+  errorMessage: string = '';
 
   draftRecipes = computed(() =>
     this.recipeList()
@@ -76,16 +79,23 @@ export class UserRecipe {
       });
   }
 
-  constructor(private recipeService: RecipeService) {
-    effect(() => {
-      this.recipeService.getRecipesByUser().subscribe((recipes) => {
+  constructor() {
+    this.loadRecipes();
+  }
+
+  loadRecipes(): void {
+    this.recipeService.getRecipesByUser().subscribe({
+      next: (recipes) => {
         const sortedRecipes = [...recipes].sort(
           (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         );
-
         this.recipeList.set(sortedRecipes);
-      });
+        this.errorMessage = '';
+      },
+      error: () => {
+        this.errorMessage = 'We could not load your recipes';
+      },
     });
   }
 

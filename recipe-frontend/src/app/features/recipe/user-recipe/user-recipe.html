@@ -13,6 +13,8 @@
         Create Recipe
       </button>
     </div>
+    @if (this.errorMessage === '') {
+
     <div class="user-recipe__section">
       <h3 class="user-recipe__title">On the back burner</h3>
       <div class="user-recipe__grid">
@@ -43,5 +45,11 @@
         }
       </div>
     </div>
+    } @else {
+    <div class="user-recipe__errors">
+      <p>{{errorMessage}}</p>
+      <button mat-raised-button (click)="loadRecipes()">Try Again</button>
+    </div>
+    }
   </div>
 </article>

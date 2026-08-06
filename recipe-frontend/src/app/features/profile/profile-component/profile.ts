@@ -5,7 +5,7 @@ import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-c
 import { AuthStateService } from '../../../shared/services/auth-state-service/auth-state.service';
 import { MatCard, MatCardTitle } from '@angular/material/card';
 import { MatDivider } from '@angular/material/divider';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatButtonModule } from '@angular/material/button';
 import { RecipeService } from '../../../shared/services/recipe-service/recipe.service';
 import { RecipeStateService } from '../../../shared/services/recipe-state-service/recipe-state.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -22,6 +22,7 @@ import { environment } from '../../../../environments/environment';
     MatDivider,
     MatButton,
     RouterLink,
+    MatButtonModule,
   ],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
@@ -36,16 +37,14 @@ export class Profile {
   private recipeStateService = inject(RecipeStateService);
   private destroyRef = inject(DestroyRef);
 
+  likedRecipeError: string = '';
+  RecipeHistoryError: string = '';
+
   imageBaseUrl = environment.imageBaseUrl;
 
   ngOnInit(): void {
-    this.recipeService.getLikedRecipePreview().subscribe((recipes) => {
-      if (recipes) this.likedRecipeList.set(recipes);
-    });
-
-    this.recipeService.getRecipeViewHistoryPreview().subscribe((recipes) => {
-      if (recipes) this.recipeHistory.set(recipes);
-    });
+    this.getLikedRecipes();
+    this.getRecipeHistory();
 
     this.recipeStateService.recipeUpdated$
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -62,6 +61,30 @@ export class Profile {
           recipes.filter((r) => r.id !== deletedId),
         );
       });
+  }
+
+  getLikedRecipes(): void {
+    this.recipeService.getLikedRecipePreview().subscribe({
+      next: (recipes) => {
+        if (recipes) this.likedRecipeList.set(recipes);
+        this.likedRecipeError = '';
+      },
+      error: () => {
+        this.likedRecipeError = 'We could not load your liked recipes';
+      },
+    });
+  }
+
+  getRecipeHistory(): void {
+    this.recipeService.getRecipeViewHistoryPreview().subscribe({
+      next: (recipes) => {
+        if (recipes) this.recipeHistory.set(recipes);
+        this.RecipeHistoryError = '';
+      },
+      error: () => {
+        this.RecipeHistoryError = 'We could not load your recipe history';
+      },
+    });
   }
 
   logout() {

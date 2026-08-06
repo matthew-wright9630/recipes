@@ -11,7 +11,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((err) => {
       if (!req.context.get(SKIP_GLOBAL_ERROR)) {
         snackbar.open(
-          'An unexpected error occurred. Please check your connection and try again.',
+          'Something went wrong. Please check your connection and try again.',
           'Dismiss',
           { duration: 5000 },
         );

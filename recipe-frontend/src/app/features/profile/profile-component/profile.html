@@ -47,7 +47,8 @@
         >
       </div>
       <div class="profile__recipes__grid">
-        @for(recipe of likedRecipeList(); track recipe.id) {
+        @if (this.likedRecipeError === '') { @for(recipe of likedRecipeList();
+        track recipe.id) {
         <app-recipe [recipe]="recipe"></app-recipe>
         } @if(likedRecipeList().length >= 3) {
         <mat-card class="profile__card">
@@ -55,6 +56,13 @@
             See all liked recipes
           </a>
         </mat-card>
+        } } @else {
+        <div class="provile__recipes__error">
+          <p class="provile__recipes__empty">{{ likedRecipeError }}</p>
+          <button mat-raised-button (click)="getLikedRecipes()">
+            Try Again
+          </button>
+        </div>
         }
       </div>
     </mat-card>
@@ -66,7 +74,8 @@
         >
       </div>
       <div class="profile__recipes__grid">
-        @for(recipe of recipeHistory(); track recipe.id) {
+        @if (this.RecipeHistoryError === '') { @for(recipe of recipeHistory();
+        track recipe.id) {
         <app-recipe [recipe]="recipe"></app-recipe>
         } @if(recipeHistory().length >= 3) {
         <mat-card class="profile__card">
@@ -74,6 +83,13 @@
             See all view history
           </a>
         </mat-card>
+        } } @else {
+        <div class="provile__recipes__error">
+          <p class="provile__recipes__empty">{{ RecipeHistoryError }}</p>
+          <button mat-raised-button (click)="getRecipeHistory()">
+            Try Again
+          </button>
+        </div>
         }
       </div>
     </mat-card>

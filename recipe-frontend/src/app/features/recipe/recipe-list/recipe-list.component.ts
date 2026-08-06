@@ -13,6 +13,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-recipe-list',
@@ -26,6 +27,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
     MatFormField,
     MatLabel,
     MatInput,
+    MatButtonModule,
   ],
   templateUrl: './recipe-list.component.html',
   styleUrl: './recipe-list.component.scss',
@@ -38,6 +40,7 @@ export class RecipeListComponent {
   currentPage: number = 0;
   searchTerm: string = '';
   recipeData: Page<Recipe> | null = null;
+  errorMessage: string = 'We could not load your recipes';
 
   searchControl = new FormControl('');
 
@@ -64,6 +67,11 @@ export class RecipeListComponent {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((value) => {
+        if (value) {
+          this.errorMessage = 'No recipes match ' + value;
+        } else {
+          this.errorMessage = 'We could not load published recipes';
+        }
         this.searchTerm = value || '';
         this.currentPage = 0;
         this.loadRecipes();
