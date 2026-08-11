@@ -11,16 +11,24 @@
       />
     </mat-card-content>
     <mat-card-actions align="end">
-      @if (recipe.status === 'PUBLISHED' && this.authState.currentUser()) {
-        <button
-          class="recipe-card__like-btn"
-          mat-icon-button
-          (click)="toggleFavorite(recipe)"
-        >
-          <mat-icon [class.liked]="recipe.likedByCurrentUser">
-            {{ recipe.likedByCurrentUser ? 'favorite' : 'favorite_border' }}
-          </mat-icon>
-        </button>
+      @if (recipe.status === 'PUBLISHED') {
+        <div class="recipe-card__metrics">
+          <p class="recipe-card__metrics__p">Likes: {{ recipe.likeCount }}</p>
+          <p class="recipe-card__metrics__p">
+            Viewed {{ recipe.viewCount }} times
+          </p>
+        </div>
+        @if (this.authState.currentUser()) {
+          <button
+            class="recipe-card__like-btn"
+            mat-icon-button
+            (click)="toggleFavorite(recipe)"
+          >
+            <mat-icon [class.liked]="recipe.likedByCurrentUser">
+              {{ recipe.likedByCurrentUser ? 'favorite' : 'favorite_border' }}
+            </mat-icon>
+          </button>
+        }
       }
     </mat-card-actions>
   </mat-card>

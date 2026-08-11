@@ -37,6 +37,7 @@ import com.matthew.recipe_backend.repositories.CookbookRecipeRepository;
 import com.matthew.recipe_backend.repositories.CookbookRepository;
 import com.matthew.recipe_backend.repositories.RecipeLikeRepository;
 import com.matthew.recipe_backend.repositories.RecipeRepository;
+import com.matthew.recipe_backend.repositories.RecipeViewRepository;
 import com.matthew.recipe_backend.repositories.UserRepository;
 import com.matthew.recipe_backend.validators.CookbookValidator;
 
@@ -53,17 +54,20 @@ public class CookbookService {
         private final CookbookRecipeRepository cookbookRecipeRepository;
         private final RecipeRepository recipeRepository;
         private final RecipeLikeRepository recipeLikeRepository;
+        private final RecipeViewRepository recipeViewRepository;
 
         public CookbookService(CookbookRepository cookbookRepository, UserRepository userRepository,
                         CookbookAccessRepository cookbookAccessRepository,
                         CookbookRecipeRepository cookbookRecipeRepository,
-                        RecipeRepository recipeRepository, RecipeLikeRepository recipeLikeRepository) {
+                        RecipeRepository recipeRepository, RecipeLikeRepository recipeLikeRepository,
+                        RecipeViewRepository recipeViewRepository) {
                 this.cookbookRepository = cookbookRepository;
                 this.userRepository = userRepository;
                 this.cookbookAccessRepository = cookbookAccessRepository;
                 this.cookbookRecipeRepository = cookbookRecipeRepository;
                 this.recipeRepository = recipeRepository;
                 this.recipeLikeRepository = recipeLikeRepository;
+                this.recipeViewRepository = recipeViewRepository;
         }
 
         // public List<CookbookDto> findMyCookbooks(String username) {
@@ -110,9 +114,12 @@ public class CookbookService {
                 Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
                 Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
 
+                Map<Long, Integer> viewCountMap = getViewCountMap(recipeIds);
+
                 List<RecipeDto> recipeDtos = recipes.stream().map(recipe -> RecipeMapper.toDto(
                                 recipe,
                                 likeCountMap.getOrDefault(recipe.getId(), 0),
+                                viewCountMap.getOrDefault(recipe.getId(), 0),
                                 likedIds.contains(recipe.getId()))).toList();
 
                 return CookbookWithRecipesMapper.toDto(foundCookbook, recipeDtos, user.getId());
@@ -194,6 +201,14 @@ public class CookbookService {
 
         private Map<Long, Integer> getLikeCountMap(List<Long> recipeIds) {
                 return recipeLikeRepository.countLikesByRecipeIds(recipeIds)
+                                .stream()
+                                .collect(Collectors.toMap(
+                                                row -> (Long) row[0],
+                                                row -> ((Long) row[1]).intValue()));
+        }
+
+        private Map<Long, Integer> getViewCountMap(List<Long> recipeIds) {
+                return recipeViewRepository.countViewsByRecipeIds(recipeIds)
                                 .stream()
                                 .collect(Collectors.toMap(
                                                 row -> (Long) row[0],

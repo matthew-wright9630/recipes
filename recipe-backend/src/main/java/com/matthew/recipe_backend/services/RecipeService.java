@@ -105,9 +105,12 @@ public class RecipeService {
 		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
 		Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
 
+		Map<Long, Integer> viewCountMap = getViewCountMap(recipeIds);
+
 		return recipes.stream().map(recipe -> RecipeMapper.toDto(
 				recipe,
 				likeCountMap.getOrDefault(recipe.getId(), 0),
+				viewCountMap.getOrDefault(recipe.getId(), 0),
 				likedIds.contains(recipe.getId()))).toList();
 	}
 
@@ -138,8 +141,11 @@ public class RecipeService {
 				recipeIds,
 				user != null ? user.getId() : null);
 
+		Map<Long, Integer> viewCountMap = getViewCountMap(recipeIds);
+
 		RecipeDto recipeDto = RecipeMapper.toDto(recipe,
 				likeCountMap.getOrDefault(recipe.getId(), 0),
+				viewCountMap.getOrDefault(recipe.getId(), 0),
 				likedIds.contains(recipe.getId()));
 		recipeViewService.addView(recipe);
 		return recipeDto;
@@ -153,9 +159,12 @@ public class RecipeService {
 		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
 		Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
 
+		Map<Long, Integer> viewCountMap = getViewCountMap(recipeIds);
+
 		return recipes.stream().map(recipe -> RecipeMapper.toDto(
 				recipe,
 				likeCountMap.getOrDefault(recipe.getId(), 0),
+				viewCountMap.getOrDefault(recipe.getId(), 0),
 				likedIds.contains(recipe.getId()))).toList();
 	}
 
@@ -169,9 +178,12 @@ public class RecipeService {
 		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
 		Set<Long> likedIds = getLikedRecipeIds(recipeIds, userId);
 
+		Map<Long, Integer> viewCountMap = getViewCountMap(recipeIds);
+
 		return recipes.map(recipe -> RecipeMapper.toDto(
 				recipe,
 				likeCountMap.getOrDefault(recipe.getId(), 0),
+				viewCountMap.getOrDefault(recipe.getId(), 0),
 				likedIds.contains(recipe.getId())));
 	}
 
@@ -183,9 +195,12 @@ public class RecipeService {
 		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
 		Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
 
+		Map<Long, Integer> viewCountMap = getViewCountMap(recipeIds);
+
 		return recipes.stream().map(recipe -> RecipeMapper.toDto(
 				recipe,
 				likeCountMap.getOrDefault(recipe.getId(), 0),
+				viewCountMap.getOrDefault(recipe.getId(), 0),
 				likedIds.contains(recipe.getId()))).toList();
 	}
 
@@ -193,9 +208,12 @@ public class RecipeService {
 		Page<Recipe> recipes = recipeRepository.findRecipeHistoryByUserId(user.getId(), pageable);
 		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
 		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
+		Map<Long, Integer> viewCountMap = getViewCountMap(recipeIds);
+
 		return recipes
 				.map(recipe -> RecipeMapper.toDto(recipe,
 						likeCountMap.getOrDefault(recipe.getId(), 0),
+						viewCountMap.getOrDefault(recipe.getId(), 0),
 						true));
 	}
 
@@ -205,9 +223,12 @@ public class RecipeService {
 		Page<Recipe> recipes = recipeRepository.findLikedRecipesByUserId(user.getId(), pageable);
 		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
 		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
+		Map<Long, Integer> viewCountMap = getViewCountMap(recipeIds);
+
 		return recipes.stream()
 				.map(recipe -> RecipeMapper.toDto(recipe,
 						likeCountMap.getOrDefault(recipe.getId(), 0),
+						viewCountMap.getOrDefault(recipe.getId(), 0),
 						true))
 				.toList();
 	}
@@ -216,9 +237,12 @@ public class RecipeService {
 		Page<Recipe> recipes = recipeRepository.findLikedRecipesByUserId(user.getId(), pageable);
 		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
 		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
+		Map<Long, Integer> viewCountMap = getViewCountMap(recipeIds);
+
 		return recipes
 				.map(recipe -> RecipeMapper.toDto(recipe,
 						likeCountMap.getOrDefault(recipe.getId(), 0),
+						viewCountMap.getOrDefault(recipe.getId(), 0),
 						true));
 	}
 
@@ -232,7 +256,7 @@ public class RecipeService {
 	public RecipeDto createDraftRecipe(CreateRecipeDto draftRecipe, User user) {
 		Recipe recipe = new Recipe(user, draftRecipe.name(), draftRecipe.description(), draftRecipe.imageUrl());
 		recipeRepository.save(recipe);
-		return RecipeMapper.toDto(recipe, 0, false);
+		return RecipeMapper.toDto(recipe, 0, 0, false);
 	}
 
 	/**
@@ -275,7 +299,7 @@ public class RecipeService {
 		recipeIngredientService.computeAndSaveSortOrder(foundRecipe);
 
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
-		return RecipeMapper.toDto(savedRecipe, 0, false);
+		return RecipeMapper.toDto(savedRecipe, 0, 0, false);
 	}
 
 	@Transactional
@@ -398,7 +422,7 @@ public class RecipeService {
 		recipeIngredientService.computeAndSaveSortOrder(foundRecipe);
 
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
-		return RecipeMapper.toDto(savedRecipe, 0, false);
+		return RecipeMapper.toDto(savedRecipe, 0, 0, false);
 	}
 
 	public RecipeDto archiveRecipe(Long id, User user) {
@@ -411,7 +435,7 @@ public class RecipeService {
 		foundRecipe.setUpdatedAt(OffsetDateTime.now());
 		foundRecipe.setStatus(RecipeStatus.ARCHIVED);
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
-		return RecipeMapper.toDto(savedRecipe, 0, false);
+		return RecipeMapper.toDto(savedRecipe, 0, 0, false);
 	}
 
 	/**
@@ -469,7 +493,7 @@ public class RecipeService {
 
 		recipeRepository.save(newDraftRecipe);
 
-		return RecipeMapper.toDto(newDraftRecipe, 0, false);
+		return RecipeMapper.toDto(newDraftRecipe, 0, 0, false);
 	}
 
 	public void likeRecipe(Long recipeId, User user) {
@@ -531,6 +555,14 @@ public class RecipeService {
 		if (userId == null)
 			return Set.of();
 		return new HashSet<>(recipeLikeRepository.findLikedRecipeIds(recipeIds, userId));
+	}
+
+	private Map<Long, Integer> getViewCountMap(List<Long> recipeIds) {
+		return recipeViewRepository.countViewsByRecipeIds(recipeIds)
+				.stream()
+				.collect(Collectors.toMap(
+						row -> (Long) row[0],
+						row -> ((Long) row[1]).intValue()));
 	}
 
 	@Transactional

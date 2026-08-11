@@ -28,6 +28,14 @@ public interface RecipeViewRepository extends JpaRepository<RecipeView, Long> {
                         Instant createdAt);
 
         @Query("""
+                        SELECT rv.recipe.id, COUNT(rv)
+                        FROM RecipeView rv
+                        WHERE rv.recipe.id IN :recipeIds
+                        GROUP BY rv.recipe.id
+                        """)
+        List<Object[]> countViewsByRecipeIds(@Param("recipeIds") List<Long> recipeIds);
+
+        @Query("""
                             SELECT rv
                             FROM RecipeView rv
                             WHERE rv.user = :user
@@ -58,4 +66,5 @@ public interface RecipeViewRepository extends JpaRepository<RecipeView, Long> {
                         WHERE recipe_id = :oldRecipeId
                         """, nativeQuery = true)
         void moveViews(Long oldRecipeId, Long newRecipeId);
+
 }

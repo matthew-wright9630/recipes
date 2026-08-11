@@ -18,5 +18,6 @@ export interface Recipe {
   createdAt: string;
   createdById: number;
   likeCount: number;
+  viewCount: number;
   likedByCurrentUser: boolean;
 }
