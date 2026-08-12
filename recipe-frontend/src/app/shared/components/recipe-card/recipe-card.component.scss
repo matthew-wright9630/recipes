@@ -47,6 +47,11 @@ mat-card-actions {
   justify-content: space-between;
 }
 
+.recipe-card__metrics__div {
+  display: flex;
+  align-items: center;
+}
+
 .recipe-card__metrics__p {
   text-align: start;
 }

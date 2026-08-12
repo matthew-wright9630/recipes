@@ -10,6 +10,7 @@ import { RecipeLikeService } from '../../services/recipe-like-service/recipe-lik
 import { MatIcon } from '@angular/material/icon';
 import { environment } from '../../../../environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthPromptService } from '../../services/auth-prompt-service/auth-prompt.service';
 
 @Component({
   selector: 'app-recipe',
@@ -25,6 +26,7 @@ export class RecipeComponent {
   authState = inject(AuthStateService);
   recipeStateService = inject(RecipeStateService);
   recipeLikeService = inject(RecipeLikeService);
+  authPrompt = inject(AuthPromptService);
   backendUrl: string = environment.apiUrl + '/uploads/';
   imageUrl: string = environment.imageBaseUrl + 'recipes/';
 
@@ -39,34 +41,38 @@ export class RecipeComponent {
   }
 
   toggleFavorite(recipe: Recipe): void {
-    if (!this.recipe.likedByCurrentUser) {
-      this.recipeLikeService.likeRecipe(this.recipe.id).subscribe({
-        next: () => {
-          this.recipeStateService.notifyRecipeUpdated(recipe);
-          this.recipe.likedByCurrentUser = true;
-        },
-        error: (err) => {
-          this.snackbar.open(
-            'We could not save your like. Please try again.',
-            'Dismiss',
-            { duration: 5000 },
-          );
-        },
-      });
+    if (this.authState.currentUser()) {
+      if (!this.recipe.likedByCurrentUser) {
+        this.recipeLikeService.likeRecipe(this.recipe.id).subscribe({
+          next: () => {
+            this.recipeStateService.notifyRecipeUpdated(recipe);
+            this.recipe.likedByCurrentUser = true;
+          },
+          error: (err) => {
+            this.snackbar.open(
+              'We could not save your like. Please try again.',
+              'Dismiss',
+              { duration: 5000 },
+            );
+          },
+        });
+      } else {
+        this.recipeLikeService.unlikeRecipe(this.recipe.id).subscribe({
+          next: () => {
+            this.recipeStateService.notifyRecipeUpdated(recipe);
+            this.recipe.likedByCurrentUser = false;
+          },
+          error: (err) => {
+            this.snackbar.open(
+              'We could not remove your like. Please try again.',
+              'Dismiss',
+              { duration: 5000 },
+            );
+          },
+        });
+      }
     } else {
-      this.recipeLikeService.unlikeRecipe(this.recipe.id).subscribe({
-        next: () => {
-          this.recipeStateService.notifyRecipeUpdated(recipe);
-          this.recipe.likedByCurrentUser = false;
-        },
-        error: (err) => {
-          this.snackbar.open(
-            'We could not remove your like. Please try again.',
-            'Dismiss',
-            { duration: 5000 },
-          );
-        },
-      });
+      this.authPrompt.promptLogin('Login to like this recipe!');
     }
   }
 }
