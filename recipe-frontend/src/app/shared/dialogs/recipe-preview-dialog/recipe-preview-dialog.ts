@@ -30,6 +30,7 @@ import { Recipe } from '../../models/recipe';
 import { CookbookRecipeDialog } from '../cookbook-recipe-dialog/cookbook-recipe-dialog';
 import { CookbookStateService } from '../../services/cookbook-state/cookbook-state.service';
 import { Cookbook } from '../../models/cookbook';
+import { AuthPromptService } from '../../services/auth-prompt-service/auth-prompt.service';
 
 @Component({
   selector: 'app-recipe-preview-dialog',
@@ -57,6 +58,7 @@ export class RecipePreviewDialog {
   cookbookStateService = inject(CookbookStateService);
   recipeLikeService = inject(RecipeLikeService);
   authState = inject(AuthStateService);
+  authPrompt = inject(AuthPromptService);
   imageUrl: string = environment.imageBaseUrl + 'recipes/';
   frontendUrl: string = environment.baseFrontendUrl;
   backendUrl: string = environment.apiUrl;
@@ -264,19 +266,23 @@ export class RecipePreviewDialog {
   }
 
   onAddToCookbook(): void {
-    const dialogRef = this.dialog.open(CookbookRecipeDialog, {
-      width: '800px',
-      maxWidth: '95vw',
-      autoFocus: false,
-      data: this.recipe,
-    });
+    if (this.authState.currentUser()) {
+      const dialogRef = this.dialog.open(CookbookRecipeDialog, {
+        width: '800px',
+        maxWidth: '95vw',
+        autoFocus: false,
+        data: this.recipe,
+      });
 
-    dialogRef.afterClosed().subscribe((updatedCookbooks) => {
-      if (updatedCookbooks) {
-        updatedCookbooks.forEach((cookbook: Cookbook) => {
-          this.cookbookStateService.notifycookbookUpdated(cookbook);
-        });
-      }
-    });
+      dialogRef.afterClosed().subscribe((updatedCookbooks) => {
+        if (updatedCookbooks) {
+          updatedCookbooks.forEach((cookbook: Cookbook) => {
+            this.cookbookStateService.notifycookbookUpdated(cookbook);
+          });
+        }
+      });
+    } else {
+      this.authPrompt.promptLogin('Login to save this recipe to a cookbook!');
+    }
   }
 }
