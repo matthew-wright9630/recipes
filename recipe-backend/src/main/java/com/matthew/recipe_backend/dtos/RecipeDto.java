@@ -10,7 +10,7 @@ public record RecipeDto(Long id, String name, String description, String imageUr
 		Integer cookTime, Integer version, RecipeStatus status,
 		List<RecipeDirectionsDto> recipeDirections,
 		List<RecipeIngredientDto> recipeIngredients, OffsetDateTime createdAt, Long createdById, int likeCount,
-		int viewCount,
+		int savedCount,
 		boolean likedByCurrentUser) {
 
 	public String getThumbUrl() {
