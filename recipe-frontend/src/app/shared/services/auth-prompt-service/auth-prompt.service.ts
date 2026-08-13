@@ -10,14 +10,20 @@ export class AuthPromptService {
   private snackbar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
 
-  promptLogin(message: string): void {
+  promptLogin(message: string, action?: () => void): void {
     const snackBarRef = this.snackbar.open(message, 'Login');
 
     snackBarRef.onAction().subscribe(() => {
-      this.dialog.open(LoginDialogComponent, {
+      const dialogRef = this.dialog.open(LoginDialogComponent, {
         width: '800px',
         maxWidth: '95vw',
         autoFocus: false,
+      });
+
+      dialogRef.afterClosed().subscribe((loggedIn) => {
+        if (loggedIn && action) {
+          action();
+        }
       });
     });
   }

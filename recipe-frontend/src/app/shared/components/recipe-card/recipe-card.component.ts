@@ -74,7 +74,20 @@ export class RecipeComponent {
         });
       }
     } else {
-      this.authPrompt.promptLogin('Login to like this recipe!');
+      this.authPrompt.promptLogin('Login to like this recipe!', () => {
+        this.recipeService.getRecipeById(this.recipe.id).subscribe({
+          next: (updatedRecipe) => {
+            if (updatedRecipe) {
+              this.recipe.likedByCurrentUser = updatedRecipe.likedByCurrentUser;
+              this.recipe.bookmarkedByCurrentUser =
+                updatedRecipe.bookmarkedByCurrentUser;
+              if (!updatedRecipe.likedByCurrentUser) {
+                this.toggleFavorite(this.recipe);
+              }
+            }
+          },
+        });
+      });
     }
   }
 
@@ -110,7 +123,20 @@ export class RecipeComponent {
         });
       }
     } else {
-      this.authPrompt.promptLogin('Login to bookmark this recipe!');
+      this.authPrompt.promptLogin('Login to bookmark this recipe!', () => {
+        this.recipeService.getRecipeById(this.recipe.id).subscribe({
+          next: (updatedRecipe) => {
+            if (updatedRecipe) {
+              this.recipe.likedByCurrentUser = updatedRecipe.likedByCurrentUser;
+              this.recipe.bookmarkedByCurrentUser =
+                updatedRecipe.bookmarkedByCurrentUser;
+              if (!updatedRecipe.bookmarkedByCurrentUser) {
+                this.toggleFavorite(this.recipe);
+              }
+            }
+          },
+        });
+      });
     }
   }
 }

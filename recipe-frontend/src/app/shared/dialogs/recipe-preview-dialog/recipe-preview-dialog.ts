@@ -197,21 +197,50 @@ export class RecipePreviewDialog {
   }
 
   toggleFavorite(): void {
-    if (!this.recipe.likedByCurrentUser) {
-      this.recipeLikeService.likeRecipe(this.recipe.id).subscribe({
-        next: () => {
-          this.recipe.likedByCurrentUser = true;
-          this.recipeStateService.notifyRecipeUpdated(this.recipe);
-        },
-        error: (err) => console.error(err),
-      });
+    if (this.authState.currentUser()) {
+      if (!this.recipe.likedByCurrentUser) {
+        this.recipeLikeService.likeRecipe(this.recipe.id).subscribe({
+          next: () => {
+            this.recipe.likedByCurrentUser = true;
+            this.recipeStateService.notifyRecipeUpdated(this.recipe);
+          },
+          error: (err) => {
+            this.snackbar.open(
+              'We could not save your like. Please try again.',
+              'Dismiss',
+              { duration: 5000 },
+            );
+          },
+        });
+      } else {
+        this.recipeLikeService.unlikeRecipe(this.recipe.id).subscribe({
+          next: () => {
+            this.recipe.likedByCurrentUser = false;
+            this.recipeStateService.notifyRecipeUpdated(this.recipe);
+          },
+          error: (err) => {
+            this.snackbar.open(
+              'We could not remove your like. Please try again.',
+              'Dismiss',
+              { duration: 5000 },
+            );
+          },
+        });
+      }
     } else {
-      this.recipeLikeService.unlikeRecipe(this.recipe.id).subscribe({
-        next: () => {
-          this.recipe.likedByCurrentUser = false;
-          this.recipeStateService.notifyRecipeUpdated(this.recipe);
-        },
-        error: (err) => console.error(err),
+      this.authPrompt.promptLogin('Login to like this recipe!', () => {
+        this.recipeService.getRecipeById(this.recipe.id).subscribe({
+          next: (updatedRecipe) => {
+            if (updatedRecipe) {
+              this.recipe.likedByCurrentUser = updatedRecipe.likedByCurrentUser;
+              this.recipe.bookmarkedByCurrentUser =
+                updatedRecipe.bookmarkedByCurrentUser;
+              if (!updatedRecipe.likedByCurrentUser) {
+                this.toggleFavorite();
+              }
+            }
+          },
+        });
       });
     }
   }
@@ -248,7 +277,20 @@ export class RecipePreviewDialog {
         });
       }
     } else {
-      this.authPrompt.promptLogin('Login to bookmark this recipe!');
+      this.authPrompt.promptLogin('Login to bookmark this recipe!', () => {
+        this.recipeService.getRecipeById(this.recipe.id).subscribe({
+          next: (updatedRecipe) => {
+            if (updatedRecipe) {
+              this.recipe.likedByCurrentUser = updatedRecipe.likedByCurrentUser;
+              this.recipe.bookmarkedByCurrentUser =
+                updatedRecipe.bookmarkedByCurrentUser;
+              if (!updatedRecipe.bookmarkedByCurrentUser) {
+                this.toggleFavorite();
+              }
+            }
+          },
+        });
+      });
     }
   }
 
@@ -318,7 +360,20 @@ export class RecipePreviewDialog {
         }
       });
     } else {
-      this.authPrompt.promptLogin('Login to save this recipe to a cookbook!');
+      this.authPrompt.promptLogin('Login to bookmark this recipe!', () => {
+        this.recipeService.getRecipeById(this.recipe.id).subscribe({
+          next: (updatedRecipe) => {
+            if (updatedRecipe) {
+              this.recipe.likedByCurrentUser = updatedRecipe.likedByCurrentUser;
+              this.recipe.bookmarkedByCurrentUser =
+                updatedRecipe.bookmarkedByCurrentUser;
+              if (!updatedRecipe.bookmarkedByCurrentUser) {
+                this.toggleFavorite();
+              }
+            }
+          },
+        });
+      });
     }
   }
 }

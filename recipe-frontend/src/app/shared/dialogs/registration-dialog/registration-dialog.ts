@@ -17,6 +17,7 @@ import { debounceTime } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { User } from '../../models/user';
 import { MatButtonModule } from '@angular/material/button';
+import { LoginDialogComponent } from '../login-dialog/login-dialog';
 
 @Component({
   selector: 'app-registration-dialog',
@@ -116,5 +117,14 @@ export class RegistrationDialog {
               this.errorMessage = error.error.message;
             },
           });
+  }
+
+  onLogin(): void {
+    this.dialogRef.close();
+    this.dialog.open(LoginDialogComponent, {
+      width: '800px',
+      maxWidth: '95vw',
+      autoFocus: false,
+    });
   }
 }
