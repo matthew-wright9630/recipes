@@ -20,6 +20,7 @@ import com.matthew.recipe_backend.dtos.CookbookWithRecipesDto;
 import com.matthew.recipe_backend.dtos.CreateCookbookDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.enums.CookbookPermission;
+import com.matthew.recipe_backend.enums.CookbookType;
 import com.matthew.recipe_backend.enums.RecipeStatus;
 import com.matthew.recipe_backend.exceptions.CookbookExistsException;
 import com.matthew.recipe_backend.exceptions.UserNotFoundException;
@@ -37,6 +38,7 @@ import com.matthew.recipe_backend.repositories.CookbookRecipeRepository;
 import com.matthew.recipe_backend.repositories.CookbookRepository;
 import com.matthew.recipe_backend.repositories.RecipeLikeRepository;
 import com.matthew.recipe_backend.repositories.RecipeRepository;
+import com.matthew.recipe_backend.repositories.RecipeViewRepository;
 import com.matthew.recipe_backend.repositories.UserRepository;
 import com.matthew.recipe_backend.validators.CookbookValidator;
 
@@ -53,17 +55,20 @@ public class CookbookService {
         private final CookbookRecipeRepository cookbookRecipeRepository;
         private final RecipeRepository recipeRepository;
         private final RecipeLikeRepository recipeLikeRepository;
+        private final RecipeViewRepository recipeViewRepository;
 
         public CookbookService(CookbookRepository cookbookRepository, UserRepository userRepository,
                         CookbookAccessRepository cookbookAccessRepository,
                         CookbookRecipeRepository cookbookRecipeRepository,
-                        RecipeRepository recipeRepository, RecipeLikeRepository recipeLikeRepository) {
+                        RecipeRepository recipeRepository, RecipeLikeRepository recipeLikeRepository,
+                        RecipeViewRepository recipeViewRepository) {
                 this.cookbookRepository = cookbookRepository;
                 this.userRepository = userRepository;
                 this.cookbookAccessRepository = cookbookAccessRepository;
                 this.cookbookRecipeRepository = cookbookRecipeRepository;
                 this.recipeRepository = recipeRepository;
                 this.recipeLikeRepository = recipeLikeRepository;
+                this.recipeViewRepository = recipeViewRepository;
         }
 
         // public List<CookbookDto> findMyCookbooks(String username) {
@@ -110,10 +115,15 @@ public class CookbookService {
                 Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
                 Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
 
+                Map<Long, Integer> savedCountMap = getSavedCountMap(recipeIds);
+                Set<Long> bookmarkedIds = getBookmarkedRecipeIds(recipeIds, user.getId());
+
                 List<RecipeDto> recipeDtos = recipes.stream().map(recipe -> RecipeMapper.toDto(
                                 recipe,
                                 likeCountMap.getOrDefault(recipe.getId(), 0),
-                                likedIds.contains(recipe.getId()))).toList();
+                                savedCountMap.getOrDefault(recipe.getId(), 0),
+                                likedIds.contains(recipe.getId()),
+                                bookmarkedIds.contains(recipe.getId()))).toList();
 
                 return CookbookWithRecipesMapper.toDto(foundCookbook, recipeDtos, user.getId());
         }
@@ -198,6 +208,22 @@ public class CookbookService {
                                 .collect(Collectors.toMap(
                                                 row -> (Long) row[0],
                                                 row -> ((Long) row[1]).intValue()));
+        }
+
+        private Map<Long, Integer> getSavedCountMap(List<Long> recipeIds) {
+                return cookbookRecipeRepository.countBookmarksByRecipeIds(recipeIds)
+                                .stream()
+                                .collect(Collectors.toMap(
+                                                row -> (Long) row[0],
+                                                row -> ((Long) row[1]).intValue()));
+        }
+
+        private Set<Long> getBookmarkedRecipeIds(List<Long> recipeIds, Long userId) {
+                if (userId == null)
+                        return Set.of();
+                return new HashSet<>(
+                                cookbookRecipeRepository.findRecipeIdsByUserIdAndCookbookType(userId,
+                                                CookbookType.BOOKMARK));
         }
 
         @Transactional

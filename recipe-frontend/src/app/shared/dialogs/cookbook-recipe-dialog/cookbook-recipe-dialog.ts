@@ -44,7 +44,12 @@ export class CookbookRecipeDialog {
   ngOnInit() {
     this.cookbookService.getAllEditableCookbooks(this.recipe.id).subscribe({
       next: (data) => {
-        this.listOfCookbooks = data;
+        this.listOfCookbooks = [];
+        data.forEach((cookbook) => {
+          if (cookbook.type === 'NORMAL') {
+            this.listOfCookbooks.push(cookbook);
+          }
+        });
       },
     });
   }
@@ -74,6 +79,7 @@ export class CookbookRecipeDialog {
           id: cookbook.id,
           name: cookbook.name,
           containsRecipe: true,
+          type: 'BOOKMARK',
         });
       }
 

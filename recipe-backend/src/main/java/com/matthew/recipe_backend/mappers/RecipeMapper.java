@@ -12,7 +12,8 @@ import com.matthew.recipe_backend.dtos.RecipeIngredientDto;
 
 public class RecipeMapper {
 
-	public static RecipeDto toDto(Recipe recipe, int likeCount, boolean likedByCurrentUser) {
+	public static RecipeDto toDto(Recipe recipe, int likeCount, int viewCount, boolean likedByCurrentUser,
+			boolean bookmarkedByCurrentUser) {
 		List<RecipeIngredientDto> ingredientDtos = recipe.getRecipeIngredients() == null ? Collections.emptyList()
 				: recipe.getRecipeIngredients()
 						.stream()
@@ -35,8 +36,8 @@ public class RecipeMapper {
 				recipe.getServings(),
 				recipe.getPrepTime(), recipe.getCookTime(), recipe.getVersion(),
 				recipe.getStatus(), directionsDtos, ingredientDtos, recipe.getCreatedAt(),
-				recipe.getCreatedBy().getId(), likeCount,
-				likedByCurrentUser);
+				recipe.getCreatedBy().getId(), likeCount, viewCount,
+				likedByCurrentUser, bookmarkedByCurrentUser);
 	}
 
 	private static RecipeIngredientDto toIngredientDto(RecipeIngredient ri) {

@@ -29,7 +29,7 @@ public class RecipeViewService {
     }
 
     public void addView(User user, Recipe recipe) {
-        Instant timeDelay = Instant.now().minus(60, ChronoUnit.MINUTES);
+        Instant timeDelay = Instant.now().minus(1, ChronoUnit.DAYS);
 
         boolean viewedRecently = recipeViewRepository.existsByUserAndRecipeAndCreatedAtAfter(user, recipe, timeDelay);
 
@@ -45,7 +45,7 @@ public class RecipeViewService {
     }
 
     public void addView(Recipe recipe) {
-        Instant timeDelay = Instant.now().minus(60, ChronoUnit.MINUTES);
+        Instant timeDelay = Instant.now().minus(1, ChronoUnit.DAYS);
 
         User user = authService.getOptionalCurrentUser();
         String visitorId = visitorService.getOrCreateVisitorId();

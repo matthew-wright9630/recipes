@@ -30,6 +30,7 @@ import { Recipe } from '../../models/recipe';
 import { CookbookRecipeDialog } from '../cookbook-recipe-dialog/cookbook-recipe-dialog';
 import { CookbookStateService } from '../../services/cookbook-state/cookbook-state.service';
 import { Cookbook } from '../../models/cookbook';
+import { AuthPromptService } from '../../services/auth-prompt-service/auth-prompt.service';
 
 @Component({
   selector: 'app-recipe-preview-dialog',
@@ -57,6 +58,7 @@ export class RecipePreviewDialog {
   cookbookStateService = inject(CookbookStateService);
   recipeLikeService = inject(RecipeLikeService);
   authState = inject(AuthStateService);
+  authPrompt = inject(AuthPromptService);
   imageUrl: string = environment.imageBaseUrl + 'recipes/';
   frontendUrl: string = environment.baseFrontendUrl;
   backendUrl: string = environment.apiUrl;
@@ -195,21 +197,99 @@ export class RecipePreviewDialog {
   }
 
   toggleFavorite(): void {
-    if (!this.recipe.likedByCurrentUser) {
-      this.recipeLikeService.likeRecipe(this.recipe.id).subscribe({
-        next: () => {
-          this.recipeStateService.notifyRecipeUpdated(this.recipe.id);
-          this.recipe.likedByCurrentUser = true;
-        },
-        error: (err) => console.error(err),
-      });
+    if (this.authState.currentUser()) {
+      if (!this.recipe.likedByCurrentUser) {
+        this.recipeLikeService.likeRecipe(this.recipe.id).subscribe({
+          next: () => {
+            this.recipe.likedByCurrentUser = true;
+            this.recipeStateService.notifyRecipeUpdated(this.recipe);
+          },
+          error: (err) => {
+            this.snackbar.open(
+              'We could not save your like. Please try again.',
+              'Dismiss',
+              { duration: 5000 },
+            );
+          },
+        });
+      } else {
+        this.recipeLikeService.unlikeRecipe(this.recipe.id).subscribe({
+          next: () => {
+            this.recipe.likedByCurrentUser = false;
+            this.recipeStateService.notifyRecipeUpdated(this.recipe);
+          },
+          error: (err) => {
+            this.snackbar.open(
+              'We could not remove your like. Please try again.',
+              'Dismiss',
+              { duration: 5000 },
+            );
+          },
+        });
+      }
     } else {
-      this.recipeLikeService.unlikeRecipe(this.recipe.id).subscribe({
-        next: () => {
-          this.recipeStateService.notifyRecipeUpdated(this.recipe.id);
-          this.recipe.likedByCurrentUser = false;
-        },
-        error: (err) => console.error(err),
+      this.authPrompt.promptLogin('Login to like this recipe!', () => {
+        this.recipeService.getRecipeById(this.recipe.id).subscribe({
+          next: (updatedRecipe) => {
+            if (updatedRecipe) {
+              this.recipe.likedByCurrentUser = updatedRecipe.likedByCurrentUser;
+              this.recipe.bookmarkedByCurrentUser =
+                updatedRecipe.bookmarkedByCurrentUser;
+              if (!updatedRecipe.likedByCurrentUser) {
+                this.toggleFavorite();
+              }
+            }
+          },
+        });
+      });
+    }
+  }
+
+  toggleBookmark(recipe: Recipe): void {
+    if (this.authState.currentUser()) {
+      if (!this.recipe.bookmarkedByCurrentUser) {
+        this.recipeService.bookmarkRecipe(this.recipe.id).subscribe({
+          next: () => {
+            this.recipe.bookmarkedByCurrentUser = true;
+            this.recipeStateService.notifyRecipeUpdated(recipe);
+          },
+          error: (err) => {
+            this.snackbar.open(
+              'We could not save your bookmark. Please try again.',
+              'Dismiss',
+              { duration: 5000 },
+            );
+          },
+        });
+      } else {
+        this.recipeService.unBookmarkRecipe(this.recipe.id).subscribe({
+          next: () => {
+            this.recipe.bookmarkedByCurrentUser = false;
+            this.recipeStateService.notifyRecipeUpdated(recipe);
+          },
+          error: (err) => {
+            this.snackbar.open(
+              'We could not remove your bookmark. Please try again.',
+              'Dismiss',
+              { duration: 5000 },
+            );
+          },
+        });
+      }
+    } else {
+      this.authPrompt.promptLogin('Login to bookmark this recipe!', () => {
+        this.recipeService.getRecipeById(this.recipe.id).subscribe({
+          next: (updatedRecipe) => {
+            if (updatedRecipe) {
+              this.recipe.likedByCurrentUser = updatedRecipe.likedByCurrentUser;
+              this.recipe.bookmarkedByCurrentUser =
+                updatedRecipe.bookmarkedByCurrentUser;
+              if (!updatedRecipe.bookmarkedByCurrentUser) {
+                this.toggleFavorite();
+              }
+            }
+          },
+        });
       });
     }
   }
@@ -264,19 +344,36 @@ export class RecipePreviewDialog {
   }
 
   onAddToCookbook(): void {
-    const dialogRef = this.dialog.open(CookbookRecipeDialog, {
-      width: '800px',
-      maxWidth: '95vw',
-      autoFocus: false,
-      data: this.recipe,
-    });
+    if (this.authState.currentUser()) {
+      const dialogRef = this.dialog.open(CookbookRecipeDialog, {
+        width: '800px',
+        maxWidth: '95vw',
+        autoFocus: false,
+        data: this.recipe,
+      });
 
-    dialogRef.afterClosed().subscribe((updatedCookbooks) => {
-      if (updatedCookbooks) {
-        updatedCookbooks.forEach((cookbook: Cookbook) => {
-          this.cookbookStateService.notifycookbookUpdated(cookbook);
+      dialogRef.afterClosed().subscribe((updatedCookbooks) => {
+        if (updatedCookbooks) {
+          updatedCookbooks.forEach((cookbook: Cookbook) => {
+            this.cookbookStateService.notifycookbookUpdated(cookbook);
+          });
+        }
+      });
+    } else {
+      this.authPrompt.promptLogin('Login to bookmark this recipe!', () => {
+        this.recipeService.getRecipeById(this.recipe.id).subscribe({
+          next: (updatedRecipe) => {
+            if (updatedRecipe) {
+              this.recipe.likedByCurrentUser = updatedRecipe.likedByCurrentUser;
+              this.recipe.bookmarkedByCurrentUser =
+                updatedRecipe.bookmarkedByCurrentUser;
+              if (!updatedRecipe.bookmarkedByCurrentUser) {
+                this.toggleFavorite();
+              }
+            }
+          },
         });
-      }
-    });
+      });
+    }
   }
 }

@@ -8,4 +8,5 @@ export interface CookbookDetailInterface {
   description: string;
   owner: boolean;
   recipes: Recipe[];
+  type: string;
 }

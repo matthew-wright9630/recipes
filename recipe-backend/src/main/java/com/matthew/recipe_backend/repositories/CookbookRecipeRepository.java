@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.matthew.recipe_backend.enums.CookbookType;
 import com.matthew.recipe_backend.enums.RecipeStatus;
 import com.matthew.recipe_backend.keys.CookbookRecipeKey;
 import com.matthew.recipe_backend.models.CookbookRecipe;
@@ -16,37 +17,56 @@ import com.matthew.recipe_backend.models.CookbookRecipe;
 @Repository
 public interface CookbookRecipeRepository extends JpaRepository<CookbookRecipe, CookbookRecipeKey> {
 
-        boolean existsByRecipeIdAndCookbookId(Long recipeId, Long cookbookId);
+  boolean existsByRecipeIdAndCookbookId(Long recipeId, Long cookbookId);
 
-        void deleteByRecipeIdAndCookbookId(Long recipeId, Long cookbookId);
+  void deleteByRecipeIdAndCookbookId(Long recipeId, Long cookbookId);
 
-        @Query("""
-                            SELECT cr.id.cookbookId
-                            FROM CookbookRecipe cr
-                            WHERE cr.id.recipeId = :recipeId
-                        """)
-        Set<Long> findCookbookIdsByRecipeId(Long recipeId);
+  @Query("""
+          SELECT cr.id.cookbookId
+          FROM CookbookRecipe cr
+          WHERE cr.id.recipeId = :recipeId
+      """)
+  Set<Long> findCookbookIdsByRecipeId(Long recipeId);
 
-        @Query("""
-                        SELECT cr
-                        FROM CookbookRecipe cr
-                        JOIN FETCH cr.recipe r
-                        WHERE cr.cookbook.id = :cookbookId
-                          AND r.status = :status
-                        """)
-        List<CookbookRecipe> findByCookbookIdAndStatus(
-                        @Param("cookbookId") Long cookbookId,
-                        @Param("status") RecipeStatus status);
+  @Query("""
+      SELECT cr
+      FROM CookbookRecipe cr
+      JOIN FETCH cr.recipe r
+      WHERE cr.cookbook.id = :cookbookId
+        AND r.status = :status
+      """)
+  List<CookbookRecipe> findByCookbookIdAndStatus(
+      @Param("cookbookId") Long cookbookId,
+      @Param("status") RecipeStatus status);
 
-        @Modifying
-        @Query(value = """
-                        UPDATE cookbook_recipes
-                        SET recipe_id = :newRecipeId
-                        WHERE recipe_id = :oldRecipeId
-                        """, nativeQuery = true)
-        void moveRecipes(Long oldRecipeId, Long newRecipeId);
+  @Modifying
+  @Query(value = """
+      UPDATE cookbook_recipes
+      SET recipe_id = :newRecipeId
+      WHERE recipe_id = :oldRecipeId
+      """, nativeQuery = true)
+  void moveRecipes(Long oldRecipeId, Long newRecipeId);
 
-        boolean existsByCookbookIdAndRecipeId(Long cookbookId, Long recipeId);
+  @Query("""
+      SELECT cookbookRecipe.recipe.id, COUNT(DISTINCT cookbookRecipe.cookbook.owner.id)
+      FROM CookbookRecipe cookbookRecipe
+      WHERE cookbookRecipe.recipe.id IN :recipeIds
+      AND cookbookRecipe.cookbook.type = 'NORMAL' OR cookbookRecipe.cookbook.type = 'BOOKMARK'
+      GROUP BY cookbookRecipe.recipe.id
+      """)
+  List<Object[]> countBookmarksByRecipeIds(@Param("recipeIds") List<Long> recipeIds);
 
-        void deleteByCookbookIdAndRecipeId(Long cookbookId, Long recipeId);
+  @Query("""
+          SELECT cr.recipe.id
+          FROM CookbookRecipe cr
+          WHERE cr.cookbook.owner.id = :userId
+            AND cr.cookbook.type = :type
+      """)
+  List<Long> findRecipeIdsByUserIdAndCookbookType(
+      @Param("userId") Long userId,
+      @Param("type") CookbookType type);
+
+  boolean existsByCookbookIdAndRecipeId(Long cookbookId, Long recipeId);
+
+  void deleteByCookbookIdAndRecipeId(Long cookbookId, Long recipeId);
 }

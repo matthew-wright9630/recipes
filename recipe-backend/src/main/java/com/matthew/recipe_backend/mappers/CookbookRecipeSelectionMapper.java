@@ -8,6 +8,6 @@ public class CookbookRecipeSelectionMapper {
 
     public static CookbookRecipeSelectionDto toDto(Cookbook cookbook, boolean containsRecipe) {
         return new CookbookRecipeSelectionDto(
-                cookbook.getId(), cookbook.getName(), containsRecipe);
+                cookbook.getId(), cookbook.getName(), containsRecipe, cookbook.getType());
     }
 }

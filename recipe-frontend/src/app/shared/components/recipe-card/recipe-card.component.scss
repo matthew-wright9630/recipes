@@ -42,6 +42,20 @@ mat-card-title {
   border-radius: 16px;
 }
 
+mat-card-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.recipe-card__metrics__div {
+  display: flex;
+  align-items: center;
+}
+
+.recipe-card__metrics__p {
+  text-align: start;
+}
+
 .recipe-card__like-btn {
   width: 40px;
   height: 40px;
