@@ -200,16 +200,16 @@ export class RecipePreviewDialog {
     if (!this.recipe.likedByCurrentUser) {
       this.recipeLikeService.likeRecipe(this.recipe.id).subscribe({
         next: () => {
-          this.recipeStateService.notifyRecipeUpdated(this.recipe.id);
           this.recipe.likedByCurrentUser = true;
+          this.recipeStateService.notifyRecipeUpdated(this.recipe.id);
         },
         error: (err) => console.error(err),
       });
     } else {
       this.recipeLikeService.unlikeRecipe(this.recipe.id).subscribe({
         next: () => {
-          this.recipeStateService.notifyRecipeUpdated(this.recipe.id);
           this.recipe.likedByCurrentUser = false;
+          this.recipeStateService.notifyRecipeUpdated(this.recipe.id);
         },
         error: (err) => console.error(err),
       });

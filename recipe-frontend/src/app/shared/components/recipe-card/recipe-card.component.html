@@ -30,15 +30,17 @@
             <button
               class="recipe-card__like-btn"
               mat-icon-button
-              (click)="toggleFavorite(recipe)"
+              (click)="toggleBookmark(recipe)"
             >
-              <mat-icon [class.liked]="recipe.likedByCurrentUser">
-                {{ recipe.likedByCurrentUser ? 'bookmark' : 'bookmark_border' }}
+              <mat-icon [class.liked]="recipe.bookmarkedByCurrentUser">
+                {{
+                  recipe.bookmarkedByCurrentUser
+                    ? 'bookmark'
+                    : 'bookmark_border'
+                }}
               </mat-icon>
             </button>
-            <p class="recipe-card__metrics__p">
-              {{ recipe.viewCount }} bookmarks
-            </p>
+            <p class="recipe-card__metrics__p">{{ recipe.savedCount }} saves</p>
           </div>
         </div>
       }

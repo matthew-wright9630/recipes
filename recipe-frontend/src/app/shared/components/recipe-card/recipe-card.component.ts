@@ -11,6 +11,7 @@ import { MatIcon } from '@angular/material/icon';
 import { environment } from '../../../../environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthPromptService } from '../../services/auth-prompt-service/auth-prompt.service';
+import { RecipeService } from '../../services/recipe-service/recipe.service';
 
 @Component({
   selector: 'app-recipe',
@@ -26,6 +27,7 @@ export class RecipeComponent {
   authState = inject(AuthStateService);
   recipeStateService = inject(RecipeStateService);
   recipeLikeService = inject(RecipeLikeService);
+  recipeService = inject(RecipeService);
   authPrompt = inject(AuthPromptService);
   backendUrl: string = environment.apiUrl + '/uploads/';
   imageUrl: string = environment.imageBaseUrl + 'recipes/';
@@ -45,8 +47,8 @@ export class RecipeComponent {
       if (!this.recipe.likedByCurrentUser) {
         this.recipeLikeService.likeRecipe(this.recipe.id).subscribe({
           next: () => {
-            this.recipeStateService.notifyRecipeUpdated(recipe);
             this.recipe.likedByCurrentUser = true;
+            this.recipeStateService.notifyRecipeUpdated(recipe);
           },
           error: (err) => {
             this.snackbar.open(
@@ -59,8 +61,8 @@ export class RecipeComponent {
       } else {
         this.recipeLikeService.unlikeRecipe(this.recipe.id).subscribe({
           next: () => {
-            this.recipeStateService.notifyRecipeUpdated(recipe);
             this.recipe.likedByCurrentUser = false;
+            this.recipeStateService.notifyRecipeUpdated(recipe);
           },
           error: (err) => {
             this.snackbar.open(
@@ -73,6 +75,42 @@ export class RecipeComponent {
       }
     } else {
       this.authPrompt.promptLogin('Login to like this recipe!');
+    }
+  }
+
+  toggleBookmark(recipe: Recipe): void {
+    if (this.authState.currentUser()) {
+      if (!this.recipe.bookmarkedByCurrentUser) {
+        this.recipeService.bookmarkRecipe(this.recipe.id).subscribe({
+          next: () => {
+            this.recipe.bookmarkedByCurrentUser = true;
+            this.recipeStateService.notifyRecipeUpdated(recipe);
+          },
+          error: (err) => {
+            this.snackbar.open(
+              'We could not save your bookmark. Please try again.',
+              'Dismiss',
+              { duration: 5000 },
+            );
+          },
+        });
+      } else {
+        this.recipeService.unBookmarkRecipe(this.recipe.id).subscribe({
+          next: () => {
+            this.recipe.bookmarkedByCurrentUser = false;
+            this.recipeStateService.notifyRecipeUpdated(recipe);
+          },
+          error: (err) => {
+            this.snackbar.open(
+              'We could not remove your bookmark. Please try again.',
+              'Dismiss',
+              { duration: 5000 },
+            );
+          },
+        });
+      }
+    } else {
+      this.authPrompt.promptLogin('Login to bookmark this recipe!');
     }
   }
 }

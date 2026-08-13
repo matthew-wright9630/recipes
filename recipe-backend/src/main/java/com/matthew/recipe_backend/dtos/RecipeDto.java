@@ -11,7 +11,7 @@ public record RecipeDto(Long id, String name, String description, String imageUr
 		List<RecipeDirectionsDto> recipeDirections,
 		List<RecipeIngredientDto> recipeIngredients, OffsetDateTime createdAt, Long createdById, int likeCount,
 		int savedCount,
-		boolean likedByCurrentUser) {
+		boolean likedByCurrentUser, boolean bookmarkedByCurrentUser) {
 
 	public String getThumbUrl() {
 		return imageUrl + "/thumb.jpg";

@@ -1,4 +1,9 @@
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpContext,
+  HttpParams,
+  HttpResponse,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Recipe } from '../../models/recipe';
 import { map, Observable } from 'rxjs';
@@ -6,6 +11,7 @@ import { Page } from '../../models/page';
 import { environment } from '../../../../environments/environment';
 import { response } from 'express';
 import { UpdateRecipeCookbookRequest } from '../../models/update-recipe-cookbook-request';
+import { SKIP_GLOBAL_ERROR } from '../../http-context-tokens';
 
 @Injectable({
   providedIn: 'root',
@@ -72,6 +78,22 @@ export class RecipeService {
     return this.http.get<Page<Recipe>>(
       this.baseURL + `/me/liked?page=${page}&size=${size}`,
     );
+  }
+
+  bookmarkRecipe(id: number): Observable<HttpResponse<void>> {
+    return this.http.post<void>(`${this.baseURL}/${id}/bookmark`, null, {
+      withCredentials: true,
+      observe: 'response',
+      context: new HttpContext().set(SKIP_GLOBAL_ERROR, true),
+    });
+  }
+
+  unBookmarkRecipe(id: number): Observable<HttpResponse<void>> {
+    return this.http.delete<void>(`${this.baseURL}/${id}/bookmark`, {
+      withCredentials: true,
+      observe: 'response',
+      context: new HttpContext().set(SKIP_GLOBAL_ERROR, true),
+    });
   }
 
   createDraftRecipe(recipe: Recipe) {

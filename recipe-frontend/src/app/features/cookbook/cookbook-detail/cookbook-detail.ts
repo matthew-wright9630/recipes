@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -15,6 +15,10 @@ import { CookbookDetailInterface } from '../../../shared/models/cookbook-detail-
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
 import { CookbookStateService } from '../../../shared/services/cookbook-state/cookbook-state.service';
 import { CookbookEditDialog } from '../../../shared/dialogs/cookbook-edit-dialog/cookbook-edit-dialog';
+import { RecipeStateService } from '../../../shared/services/recipe-state-service/recipe-state.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { RecipeService } from '../../../shared/services/recipe-service/recipe.service';
 
 @Component({
   selector: 'app-cookbook-detail',
@@ -33,8 +37,12 @@ import { CookbookEditDialog } from '../../../shared/dialogs/cookbook-edit-dialog
 export class CookbookDetail {
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
+  private destroyRef = inject(DestroyRef);
   private cookbookService = inject(CookbookService);
+  private recipeService = inject(RecipeService);
   private cookbookStateService = inject(CookbookStateService);
+  private recipeStateService = inject(RecipeStateService);
+  private snackbar = inject(MatSnackBar);
 
   authState = inject(AuthStateService);
   cookbook = signal<CookbookDetailInterface | null>(null);
@@ -52,6 +60,45 @@ export class CookbookDetail {
     this.cookbookStateService.cookbookUpdated$.subscribe(() => {
       this.loadCookbook();
     });
+
+    this.recipeStateService.recipeUpdated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((updatedRecipe) => {
+        if (updatedRecipe) {
+          this.loadCookbook();
+        }
+        if (
+          this.cookbook()?.type === 'BOOKMARK' &&
+          !updatedRecipe.bookmarkedByCurrentUser
+        ) {
+          const snackBarRef = this.snackbar.open(
+            updatedRecipe.name + ' removed from bookmarks.',
+            'Undo',
+            { duration: 5000 },
+          );
+
+          snackBarRef.onAction().subscribe(() => {
+            this.recipeService.bookmarkRecipe(updatedRecipe.id).subscribe({
+              next: () => {
+                updatedRecipe.bookmarkedByCurrentUser = true;
+                this.recipeStateService.notifyRecipeUpdated(updatedRecipe);
+              },
+              error: (err) => {
+                this.snackbar.open(
+                  'We could not save your bookmark. Please try again.',
+                  'Dismiss',
+                  { duration: 5000 },
+                );
+              },
+            });
+          });
+        }
+      });
+
+    this.recipeStateService.recipeDeleted$;
+    this.recipeStateService.recipeDeleted$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.loadCookbook());
   }
 
   private loadCookbook(): void {

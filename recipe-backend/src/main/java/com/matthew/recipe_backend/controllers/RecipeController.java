@@ -112,6 +112,18 @@ public class RecipeController {
 		return ResponseEntity.ok(recipes);
 	}
 
+	@PostMapping("/{id}/bookmark")
+	public ResponseEntity<Void> bookmarkRecipe(@PathVariable Long id, @AuthenticationPrincipal User user) {
+		recipeService.bookmarkRecipe(id, user);
+		return ResponseEntity.ok().build();
+	}
+
+	@DeleteMapping("/{id}/bookmark")
+	public ResponseEntity<Void> deleteBookmarkRecipe(@PathVariable Long id, @AuthenticationPrincipal User user) {
+		recipeService.unbookmarkRecipe(id, user);
+		return ResponseEntity.ok().build();
+	}
+
 	@PostMapping
 	public ResponseEntity<RecipeDto> createDraftRecipe(
 			@RequestBody CreateRecipeDto newRecipe,

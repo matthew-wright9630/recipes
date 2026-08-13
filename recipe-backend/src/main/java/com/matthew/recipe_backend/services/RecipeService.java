@@ -106,12 +106,14 @@ public class RecipeService {
 		Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
 
 		Map<Long, Integer> savedCountMap = getSavedCountMap(recipeIds);
+		Set<Long> bookmarkedIds = getBookmarkedRecipeIds(recipeIds, user.getId());
 
 		return recipes.stream().map(recipe -> RecipeMapper.toDto(
 				recipe,
 				likeCountMap.getOrDefault(recipe.getId(), 0),
 				savedCountMap.getOrDefault(recipe.getId(), 0),
-				likedIds.contains(recipe.getId()))).toList();
+				likedIds.contains(recipe.getId()),
+				bookmarkedIds.contains(recipe.getId()))).toList();
 	}
 
 	/**
@@ -142,11 +144,13 @@ public class RecipeService {
 				user != null ? user.getId() : null);
 
 		Map<Long, Integer> savedCountMap = getSavedCountMap(recipeIds);
+		Set<Long> bookmarkedIds = getBookmarkedRecipeIds(recipeIds, user.getId());
 
 		RecipeDto recipeDto = RecipeMapper.toDto(recipe,
 				likeCountMap.getOrDefault(recipe.getId(), 0),
 				savedCountMap.getOrDefault(recipe.getId(), 0),
-				likedIds.contains(recipe.getId()));
+				likedIds.contains(recipe.getId()),
+				bookmarkedIds.contains(recipe.getId()));
 		recipeViewService.addView(recipe);
 		return recipeDto;
 	}
@@ -160,12 +164,14 @@ public class RecipeService {
 		Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
 
 		Map<Long, Integer> savedCountMap = getSavedCountMap(recipeIds);
+		Set<Long> bookmarkedIds = getBookmarkedRecipeIds(recipeIds, user.getId());
 
 		return recipes.stream().map(recipe -> RecipeMapper.toDto(
 				recipe,
 				likeCountMap.getOrDefault(recipe.getId(), 0),
 				savedCountMap.getOrDefault(recipe.getId(), 0),
-				likedIds.contains(recipe.getId()))).toList();
+				likedIds.contains(recipe.getId()),
+				bookmarkedIds.contains(recipe.getId()))).toList();
 	}
 
 	public Page<RecipeDto> findAllPublishedRecipes(Pageable pageable, String search, User currentUser) {
@@ -179,12 +185,14 @@ public class RecipeService {
 		Set<Long> likedIds = getLikedRecipeIds(recipeIds, userId);
 
 		Map<Long, Integer> savedCountMap = getSavedCountMap(recipeIds);
+		Set<Long> bookmarkedIds = getBookmarkedRecipeIds(recipeIds, currentUser.getId());
 
 		return recipes.map(recipe -> RecipeMapper.toDto(
 				recipe,
 				likeCountMap.getOrDefault(recipe.getId(), 0),
 				savedCountMap.getOrDefault(recipe.getId(), 0),
-				likedIds.contains(recipe.getId())));
+				likedIds.contains(recipe.getId()),
+				bookmarkedIds.contains(recipe.getId())));
 	}
 
 	public List<RecipeDto> findRecentlyViewedRecipesPreview(User user) {
@@ -196,25 +204,30 @@ public class RecipeService {
 		Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
 
 		Map<Long, Integer> savedCountMap = getSavedCountMap(recipeIds);
+		Set<Long> bookmarkedIds = getBookmarkedRecipeIds(recipeIds, user.getId());
 
 		return recipes.stream().map(recipe -> RecipeMapper.toDto(
 				recipe,
 				likeCountMap.getOrDefault(recipe.getId(), 0),
 				savedCountMap.getOrDefault(recipe.getId(), 0),
-				likedIds.contains(recipe.getId()))).toList();
+				likedIds.contains(recipe.getId()),
+				bookmarkedIds.contains(recipe.getId()))).toList();
 	}
 
 	public Page<RecipeDto> findRecentlyViewedRecipes(User user, Pageable pageable) {
 		Page<Recipe> recipes = recipeRepository.findRecipeHistoryByUserId(user.getId(), pageable);
 		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
 		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
+		Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
 		Map<Long, Integer> savedCountMap = getSavedCountMap(recipeIds);
+		Set<Long> bookmarkedIds = getBookmarkedRecipeIds(recipeIds, user.getId());
 
 		return recipes
 				.map(recipe -> RecipeMapper.toDto(recipe,
 						likeCountMap.getOrDefault(recipe.getId(), 0),
 						savedCountMap.getOrDefault(recipe.getId(), 0),
-						true));
+						likedIds.contains(recipe.getId()),
+						bookmarkedIds.contains(recipe.getId())));
 	}
 
 	public List<RecipeDto> findLikedRecipePreview(User user) {
@@ -223,27 +236,32 @@ public class RecipeService {
 		Page<Recipe> recipes = recipeRepository.findLikedRecipesByUserId(user.getId(), pageable);
 		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
 		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
+		Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
 		Map<Long, Integer> savedCountMap = getSavedCountMap(recipeIds);
+		Set<Long> bookmarkedIds = getBookmarkedRecipeIds(recipeIds, user.getId());
 
-		return recipes.stream()
-				.map(recipe -> RecipeMapper.toDto(recipe,
-						likeCountMap.getOrDefault(recipe.getId(), 0),
-						savedCountMap.getOrDefault(recipe.getId(), 0),
-						true))
-				.toList();
+		return recipes.stream().map(recipe -> RecipeMapper.toDto(
+				recipe,
+				likeCountMap.getOrDefault(recipe.getId(), 0),
+				savedCountMap.getOrDefault(recipe.getId(), 0),
+				likedIds.contains(recipe.getId()),
+				bookmarkedIds.contains(recipe.getId()))).toList();
 	}
 
 	public Page<RecipeDto> findAllLikedRecipesByUser(Pageable pageable, User user) {
 		Page<Recipe> recipes = recipeRepository.findLikedRecipesByUserId(user.getId(), pageable);
 		List<Long> recipeIds = recipes.stream().map(Recipe::getId).toList();
 		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
+		Set<Long> likedIds = getLikedRecipeIds(recipeIds, user.getId());
 		Map<Long, Integer> savedCountMap = getSavedCountMap(recipeIds);
+		Set<Long> bookmarkedIds = getBookmarkedRecipeIds(recipeIds, user.getId());
 
 		return recipes
 				.map(recipe -> RecipeMapper.toDto(recipe,
 						likeCountMap.getOrDefault(recipe.getId(), 0),
 						savedCountMap.getOrDefault(recipe.getId(), 0),
-						true));
+						likedIds.contains(recipe.getId()),
+						bookmarkedIds.contains(recipe.getId())));
 	}
 
 	/**
@@ -256,7 +274,7 @@ public class RecipeService {
 	public RecipeDto createDraftRecipe(CreateRecipeDto draftRecipe, User user) {
 		Recipe recipe = new Recipe(user, draftRecipe.name(), draftRecipe.description(), draftRecipe.imageUrl());
 		recipeRepository.save(recipe);
-		return RecipeMapper.toDto(recipe, 0, 0, false);
+		return RecipeMapper.toDto(recipe, 0, 0, false, false);
 	}
 
 	/**
@@ -299,7 +317,7 @@ public class RecipeService {
 		recipeIngredientService.computeAndSaveSortOrder(foundRecipe);
 
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
-		return RecipeMapper.toDto(savedRecipe, 0, 0, false);
+		return RecipeMapper.toDto(savedRecipe, 0, 0, false, false);
 	}
 
 	@Transactional
@@ -422,7 +440,7 @@ public class RecipeService {
 		recipeIngredientService.computeAndSaveSortOrder(foundRecipe);
 
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
-		return RecipeMapper.toDto(savedRecipe, 0, 0, false);
+		return RecipeMapper.toDto(savedRecipe, 0, 0, false, false);
 	}
 
 	public RecipeDto archiveRecipe(Long id, User user) {
@@ -435,7 +453,7 @@ public class RecipeService {
 		foundRecipe.setUpdatedAt(OffsetDateTime.now());
 		foundRecipe.setStatus(RecipeStatus.ARCHIVED);
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
-		return RecipeMapper.toDto(savedRecipe, 0, 0, false);
+		return RecipeMapper.toDto(savedRecipe, 0, 0, false, false);
 	}
 
 	/**
@@ -493,7 +511,7 @@ public class RecipeService {
 
 		recipeRepository.save(newDraftRecipe);
 
-		return RecipeMapper.toDto(newDraftRecipe, 0, 0, false);
+		return RecipeMapper.toDto(newDraftRecipe, 0, 0, false, false);
 	}
 
 	public void likeRecipe(Long recipeId, User user) {
@@ -526,6 +544,40 @@ public class RecipeService {
 		recipeLikeRepository.deleteByRecipeIdAndUserId(recipeId, user.getId());
 	}
 
+	public void bookmarkRecipe(Long recipeId, User user) {
+		Recipe recipe = recipeRepository.findById(recipeId)
+				.orElseThrow(() -> new EntityNotFoundException("Recipe not found"));
+
+		Cookbook cookbook = cookbookRepository
+				.findByOwner_IdAndType(user.getId(), CookbookType.BOOKMARK);
+		if (cookbook == null) {
+			throw new EntityNotFoundException("Bookmark cookbook not found");
+		}
+
+		if (cookbookRecipeRepository.existsByCookbookIdAndRecipeId(cookbook.getId(), recipe.getId())) {
+			return;
+		}
+
+		CookbookRecipe cookbookRecipe = new CookbookRecipe(cookbook, recipe, Instant.now());
+
+		cookbookRecipeRepository.save(cookbookRecipe);
+	}
+
+	public void unbookmarkRecipe(Long recipeId, User user) {
+		Cookbook cookbook = cookbookRepository
+				.findByOwner_IdAndType(user.getId(), CookbookType.BOOKMARK);
+		if (cookbook == null) {
+			throw new EntityNotFoundException("Bookmark cookbook not found");
+		}
+
+		if (cookbookRecipeRepository
+				.existsByCookbookIdAndRecipeId(cookbook.getId(), recipeId)) {
+			cookbookRecipeRepository.deleteByRecipeIdAndCookbookId(recipeId, cookbook.getId());
+		} else {
+			throw new EntityNotFoundException("Recipe is not bookmarked");
+		}
+	}
+
 	private Map<Long, Integer> getLikeCountMap(List<Long> recipeIds) {
 		return recipeLikeRepository.countLikesByRecipeIds(recipeIds)
 				.stream()
@@ -546,6 +598,13 @@ public class RecipeService {
 				.collect(Collectors.toMap(
 						row -> (Long) row[0],
 						row -> ((Long) row[1]).intValue()));
+	}
+
+	private Set<Long> getBookmarkedRecipeIds(List<Long> recipeIds, Long userId) {
+		if (userId == null)
+			return Set.of();
+		return new HashSet<>(
+				cookbookRecipeRepository.findRecipeIdsByUserIdAndCookbookType(userId, CookbookType.BOOKMARK));
 	}
 
 	@Transactional

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.matthew.recipe_backend.enums.CookbookType;
 import com.matthew.recipe_backend.enums.RecipeStatus;
 import com.matthew.recipe_backend.keys.CookbookRecipeKey;
 import com.matthew.recipe_backend.models.CookbookRecipe;
@@ -54,6 +55,16 @@ public interface CookbookRecipeRepository extends JpaRepository<CookbookRecipe, 
       GROUP BY cookbookRecipe.recipe.id
       """)
   List<Object[]> countBookmarksByRecipeIds(@Param("recipeIds") List<Long> recipeIds);
+
+  @Query("""
+          SELECT cr.recipe.id
+          FROM CookbookRecipe cr
+          WHERE cr.cookbook.owner.id = :userId
+            AND cr.cookbook.type = :type
+      """)
+  List<Long> findRecipeIdsByUserIdAndCookbookType(
+      @Param("userId") Long userId,
+      @Param("type") CookbookType type);
 
   boolean existsByCookbookIdAndRecipeId(Long cookbookId, Long recipeId);
 

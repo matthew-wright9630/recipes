@@ -85,8 +85,8 @@ export class RecipeDetail {
     if (recipe.likedByCurrentUser) {
       this.recipeLikeService.likeRecipe(recipe.id).subscribe({
         next: () => {
-          this.recipeStateService.notifyRecipeUpdated(recipe);
           recipe.likedByCurrentUser = true;
+          this.recipeStateService.notifyRecipeUpdated(recipe);
         },
         error: (err) => {
           this.snackbar.open(
@@ -99,8 +99,8 @@ export class RecipeDetail {
     } else {
       this.recipeLikeService.unlikeRecipe(recipe.id).subscribe({
         next: () => {
-          this.recipeStateService.notifyRecipeUpdated(recipe);
           recipe.likedByCurrentUser = false;
+          this.recipeStateService.notifyRecipeUpdated(recipe);
         },
         error: (err) => {
           this.snackbar.open(
