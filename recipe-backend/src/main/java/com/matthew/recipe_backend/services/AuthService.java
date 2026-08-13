@@ -15,6 +15,7 @@ import com.matthew.recipe_backend.dtos.AuthResponseDto;
 import com.matthew.recipe_backend.dtos.LoginRequestDto;
 import com.matthew.recipe_backend.dtos.RegisterRequestDto;
 import com.matthew.recipe_backend.enums.CookbookPermission;
+import com.matthew.recipe_backend.enums.CookbookType;
 import com.matthew.recipe_backend.enums.UserRole;
 import com.matthew.recipe_backend.exceptions.AccountDeactivatedException;
 import com.matthew.recipe_backend.exceptions.EmailAlreadyExistsException;
@@ -78,11 +79,12 @@ public class AuthService {
         // Create local auth provider
         createAuthProvider(saved, "local", null);
 
-        Cookbook likedRecipes = new Cookbook("Liked Recipes",
-                "A collection of recipes you''ve liked, making it easy to find your favorites again.", "liked-recipes",
+        Cookbook bookmarkedRecipes = new Cookbook("Bookmarked Recipes",
+                "A collection of recipes you've bookmarked to easily find them again.", "bookmarked-recipes",
                 saved);
-        cookbookRepository.save(likedRecipes);
-        CookbookAccess access = new CookbookAccess(likedRecipes, user, CookbookPermission.OWNER, Instant.now());
+        bookmarkedRecipes.setType(CookbookType.BOOKMARK);
+        cookbookRepository.save(bookmarkedRecipes);
+        CookbookAccess access = new CookbookAccess(bookmarkedRecipes, user, CookbookPermission.OWNER, Instant.now());
         cookbookAccessRepository.save(access);
 
         // Generate tokens
