@@ -129,6 +129,7 @@ public class RecipeService {
 	 * @throws EntityNotFoundException if no recipe exists with the given ID
 	 */
 	public RecipeDto findRecipeById(Long id, User user) {
+		Long userId = user != null ? user.getId() : null;
 		// Fetch the recipe with its directions first, throwing if not found
 		Recipe recipe = recipeRepository.findByIdWithDirections(id)
 				.orElseThrow(() -> new EntityNotFoundException("Recipe not found with the provided id"));
@@ -141,10 +142,10 @@ public class RecipeService {
 		Map<Long, Integer> likeCountMap = getLikeCountMap(recipeIds);
 		Set<Long> likedIds = getLikedRecipeIds(
 				recipeIds,
-				user != null ? user.getId() : null);
+				userId);
 
 		Map<Long, Integer> savedCountMap = getSavedCountMap(recipeIds);
-		Set<Long> bookmarkedIds = getBookmarkedRecipeIds(recipeIds, user.getId());
+		Set<Long> bookmarkedIds = getBookmarkedRecipeIds(recipeIds, userId);
 
 		RecipeDto recipeDto = RecipeMapper.toDto(recipe,
 				likeCountMap.getOrDefault(recipe.getId(), 0),
@@ -185,7 +186,7 @@ public class RecipeService {
 		Set<Long> likedIds = getLikedRecipeIds(recipeIds, userId);
 
 		Map<Long, Integer> savedCountMap = getSavedCountMap(recipeIds);
-		Set<Long> bookmarkedIds = getBookmarkedRecipeIds(recipeIds, currentUser.getId());
+		Set<Long> bookmarkedIds = getBookmarkedRecipeIds(recipeIds, userId);
 
 		return recipes.map(recipe -> RecipeMapper.toDto(
 				recipe,

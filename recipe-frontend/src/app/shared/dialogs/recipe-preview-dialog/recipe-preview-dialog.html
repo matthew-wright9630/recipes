@@ -2,7 +2,7 @@
   <h2 mat-dialog-title class="recipe-dialog__title">{{ recipe.name }}</h2>
   <div class="recipe-dialog__header-actions">
     <div class="recipe-dialog__action-btns">
-      @if(recipe.status === 'PUBLISHED' && this.authState.currentUser()) {
+      @if(recipe.status === 'PUBLISHED') {
 
       <button
         class="recipe-dialog__like-btn"
@@ -11,6 +11,15 @@
       >
         <mat-icon [class.liked]="recipe.likedByCurrentUser">
           {{ recipe.likedByCurrentUser ? 'favorite' : 'favorite_border' }}
+        </mat-icon>
+      </button>
+      <button
+        class="recipe-card__like-btn"
+        mat-icon-button
+        (click)="toggleBookmark(recipe)"
+      >
+        <mat-icon [class.liked]="recipe.bookmarkedByCurrentUser">
+          {{ recipe.bookmarkedByCurrentUser ? 'bookmark' : 'bookmark_border' }}
         </mat-icon>
       </button>
       }

@@ -24,6 +24,7 @@ import { RecipeLikeService } from '../../../shared/services/recipe-like-service/
 import { RecipeStateService } from '../../../shared/services/recipe-state-service/recipe-state.service';
 import { AuthStateService } from '../../../shared/services/auth-state-service/auth-state.service';
 import { CookbookRecipeDialog } from '../../../shared/dialogs/cookbook-recipe-dialog/cookbook-recipe-dialog';
+import { AuthPromptService } from '../../../shared/services/auth-prompt-service/auth-prompt.service';
 
 @Component({
   selector: 'app-recipe-detail',
@@ -48,6 +49,7 @@ export class RecipeDetail {
   private snackbar = inject(MatSnackBar);
   private recipeLikeService = inject(RecipeLikeService);
   private recipeStateService = inject(RecipeStateService);
+  private authPrompt = inject(AuthPromptService);
 
   authState = inject(AuthStateService);
 
@@ -82,34 +84,79 @@ export class RecipeDetail {
       return;
     }
 
-    if (recipe.likedByCurrentUser) {
-      this.recipeLikeService.likeRecipe(recipe.id).subscribe({
-        next: () => {
-          recipe.likedByCurrentUser = true;
-          this.recipeStateService.notifyRecipeUpdated(recipe);
-        },
-        error: (err) => {
-          this.snackbar.open(
-            'We could not save your like. Please try again.',
-            'Dismiss',
-            { duration: 5000 },
-          );
-        },
-      });
+    if (this.authState.currentUser()) {
+      if (recipe.likedByCurrentUser) {
+        this.recipeLikeService.likeRecipe(recipe.id).subscribe({
+          next: () => {
+            recipe.likedByCurrentUser = true;
+            this.recipeStateService.notifyRecipeUpdated(recipe);
+          },
+          error: (err) => {
+            this.snackbar.open(
+              'We could not save your like. Please try again.',
+              'Dismiss',
+              { duration: 5000 },
+            );
+          },
+        });
+      } else {
+        this.recipeLikeService.unlikeRecipe(recipe.id).subscribe({
+          next: () => {
+            recipe.likedByCurrentUser = false;
+            this.recipeStateService.notifyRecipeUpdated(recipe);
+          },
+          error: (err) => {
+            this.snackbar.open(
+              'We could not remove your like. Please try again.',
+              'Dismiss',
+              { duration: 5000 },
+            );
+          },
+        });
+      }
     } else {
-      this.recipeLikeService.unlikeRecipe(recipe.id).subscribe({
-        next: () => {
-          recipe.likedByCurrentUser = false;
-          this.recipeStateService.notifyRecipeUpdated(recipe);
-        },
-        error: (err) => {
-          this.snackbar.open(
-            'We could not remove your like. Please try again.',
-            'Dismiss',
-            { duration: 5000 },
-          );
-        },
-      });
+      this.authPrompt.promptLogin('Login to like this recipe!');
+    }
+  }
+
+  toggleBookmark(): void {
+    const recipe = this.recipe();
+
+    if (!recipe) {
+      return;
+    }
+    if (this.authState.currentUser()) {
+      if (recipe.bookmarkedByCurrentUser) {
+        this.recipeService.bookmarkRecipe(recipe.id).subscribe({
+          next: () => {
+            recipe.bookmarkedByCurrentUser = true;
+            this.recipeStateService.notifyRecipeUpdated(recipe);
+          },
+          error: (err) => {
+            this.snackbar.open(
+              'We could not save your bookmark. Please try again.',
+              'Dismiss',
+              { duration: 5000 },
+            );
+          },
+        });
+      } else {
+        this.recipeService.unBookmarkRecipe(recipe.id).subscribe({
+          next: () => {
+            recipe.bookmarkedByCurrentUser = false;
+            this.recipeStateService.notifyRecipeUpdated(recipe);
+          },
+          error: (err) => {
+            this.snackbar.open(
+              'We could not remove your bookmark. Please try again.',
+              'Dismiss',
+              { duration: 5000 },
+            );
+          },
+        });
+      }
+    } else {
+      this.authPrompt.promptLogin('Login to bookmark this recipe!');
     }
   }
 

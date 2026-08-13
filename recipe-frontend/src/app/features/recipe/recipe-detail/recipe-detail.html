@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="recipe-hero__user-actions">
-      @if(r.status === "PUBLISHED") { @if (this.authState.currentUser()) {
+      @if(r.status === "PUBLISHED") {
       <div class="recipe__action__div">
         Like:
         <button
@@ -40,8 +40,17 @@
             {{ r.likedByCurrentUser ? 'favorite' : 'favorite_border' }}
           </mat-icon>
         </button>
+        Bookmark:
+        <button
+          class="recipe-card__like-btn"
+          mat-icon-button
+          (click)="toggleBookmark()"
+        >
+          <mat-icon [class.liked]="r.bookmarkedByCurrentUser">
+            {{ r.bookmarkedByCurrentUser ? 'bookmark' : 'bookmark_border' }}
+          </mat-icon>
+        </button>
       </div>
-      }
       <div class="recipe__action__div">
         Share:
         <button mat-icon-button [matMenuTriggerFor]="actionMenu">
