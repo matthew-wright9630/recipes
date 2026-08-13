@@ -201,7 +201,7 @@ export class RecipePreviewDialog {
       this.recipeLikeService.likeRecipe(this.recipe.id).subscribe({
         next: () => {
           this.recipe.likedByCurrentUser = true;
-          this.recipeStateService.notifyRecipeUpdated(this.recipe.id);
+          this.recipeStateService.notifyRecipeUpdated(this.recipe);
         },
         error: (err) => console.error(err),
       });
@@ -209,10 +209,46 @@ export class RecipePreviewDialog {
       this.recipeLikeService.unlikeRecipe(this.recipe.id).subscribe({
         next: () => {
           this.recipe.likedByCurrentUser = false;
-          this.recipeStateService.notifyRecipeUpdated(this.recipe.id);
+          this.recipeStateService.notifyRecipeUpdated(this.recipe);
         },
         error: (err) => console.error(err),
       });
+    }
+  }
+
+  toggleBookmark(recipe: Recipe): void {
+    if (this.authState.currentUser()) {
+      if (!this.recipe.bookmarkedByCurrentUser) {
+        this.recipeService.bookmarkRecipe(this.recipe.id).subscribe({
+          next: () => {
+            this.recipe.bookmarkedByCurrentUser = true;
+            this.recipeStateService.notifyRecipeUpdated(recipe);
+          },
+          error: (err) => {
+            this.snackbar.open(
+              'We could not save your bookmark. Please try again.',
+              'Dismiss',
+              { duration: 5000 },
+            );
+          },
+        });
+      } else {
+        this.recipeService.unBookmarkRecipe(this.recipe.id).subscribe({
+          next: () => {
+            this.recipe.bookmarkedByCurrentUser = false;
+            this.recipeStateService.notifyRecipeUpdated(recipe);
+          },
+          error: (err) => {
+            this.snackbar.open(
+              'We could not remove your bookmark. Please try again.',
+              'Dismiss',
+              { duration: 5000 },
+            );
+          },
+        });
+      }
+    } else {
+      this.authPrompt.promptLogin('Login to bookmark this recipe!');
     }
   }
 

@@ -67,6 +67,7 @@ export class CookbookDetail {
         if (updatedRecipe) {
           this.loadCookbook();
         }
+        console.log(this.cookbook()?.type === 'BOOKMARK', updatedRecipe);
         if (
           this.cookbook()?.type === 'BOOKMARK' &&
           !updatedRecipe.bookmarkedByCurrentUser
