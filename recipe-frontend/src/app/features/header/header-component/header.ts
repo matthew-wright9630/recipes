@@ -11,6 +11,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { LoginDialogComponent } from '../../../shared/dialogs/login-dialog/login-dialog';
 import { AuthStateService } from '../../../shared/services/auth-state-service/auth-state.service';
 import { RegistrationDialog } from '../../../shared/dialogs/registration-dialog/registration-dialog';
+import { AuthPromptService } from '../../../shared/services/auth-prompt-service/auth-prompt.service';
 
 @Component({
   selector: 'app-header-component',
@@ -27,11 +28,10 @@ import { RegistrationDialog } from '../../../shared/dialogs/registration-dialog/
   styleUrl: './header.scss',
 })
 export class HeaderComponent {
-  constructor(
-    private headerService: HeaderService,
-    private dialog: MatDialog,
-    private router: Router,
-  ) {}
+  private authPrompt = inject(AuthPromptService);
+  private headerService = inject(HeaderService);
+  private dialog = inject(MatDialog);
+  private router = inject(Router);
 
   authState = inject(AuthStateService);
 
@@ -51,17 +51,25 @@ export class HeaderComponent {
     });
   }
 
-  // employeeUser = signal(false);
+  onMyRecipesClick(): void {
+    console.log('Clicked');
+    if (this.authState.currentUser()) {
+      this.router.navigate(['/recipes']);
+    } else {
+      this.authPrompt.promptLogin('Login to view your recipes.', () => {
+        this.router.navigate(['/recipes']);
+      });
+    }
+  }
 
-  checkRoleType() {
-    //   if (
-    //     this.dataPassService.loggedInUser()?.role === 'manager' ||
-    //     this.dataPassService.loggedInUser()?.role === 'admin'
-    //   ) {
-    //     this.employeeUser.set(true);
-    //   } else {
-    //     this.employeeUser.set(false);
-    //   }
+  onCookbooksClick(): void {
+    if (this.authState.currentUser()) {
+      this.router.navigate(['/cookbooks']);
+    } else {
+      this.authPrompt.promptLogin('Login to view your cookbooks.', () => {
+        this.router.navigate(['/cookbooks']);
+      });
+    }
   }
 
   profileClick() {
