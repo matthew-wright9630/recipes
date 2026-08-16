@@ -6,7 +6,7 @@ A full-stack recipe management platform built with Angular and Spring Boot.
 
 I started this project out of frustration with my own recipe collection. Between a few different apps and websites, I had over 100 recipes saved — and no good way to actually find anything. Everything lived in one long, undifferentiated list, so "what should I make tonight" always turned into scrolling through recipes I'd forgotten I even saved. The Wright Kitchen is my attempt to fix that: a place to organize recipes into real collections — Tex-Mex, Family Dinners, Weeknight Meals — so finding the right recipe is actually fast, not a chore.
 
-What started as "I just want to group my recipes" grew into a full-stack app, since I also wanted proper editing, versioning (so I can tweak a recipe without breaking the version I've already cooked from), image handling, and search that doesn't feel like an afterthought.
+What started as "I just want to group my recipes" grew into a full-stack app. I wanted to include editing and versioning recipes, adding images, searching, and sharing.
 
 ---
 
@@ -27,7 +27,7 @@ Find what you're looking for fast, without digging through a single long list.
 - Upload a custom image or choose from a curated library of default images
 - Recipe versioning that allows editing published recipes without affecting the live version
 
-![Edit Recipe](edit-recipes.png)
+![Ingredients includes whole and fractional numbers, with unit, and name](edit-recipes.png)
 
 ### Cookbook Management
 
@@ -43,14 +43,16 @@ Find what you're looking for fast, without digging through a single long list.
 
 ![User Recipes](user-recipes.png)
 
+- Profile page includes all liked recipes and all recently viewed recipes.
+
+![Profile Page](personal-dashboard.png)
+
 ### Social
 
 - Like recipes created by other users
-- View recently liked and recently viewed recipes
+- Bookmark recipes you want to try later, or ones you really enjoy!
 
-![Profile Page](profile-page.png)
-
----
+## ![Like and bookmark recipes](like-and-bookmark-recipes.png)
 
 ## Planned Features
 
@@ -75,20 +77,20 @@ When a published recipe is edited:
 _Clicking "Revise Recipe" starts a new draft._
 
 ![Published recipe now also has a draft recipe](recipe-being-revised.png)
+
 _The recipe now exists as both a live published version and an editable draft._
 
 This avoids the common problem where users must unpublish content just to make edits.
 
 ---
 
-## Automatic Liked Recipes Management
+## Bookmarking Recipes
 
-When a user is created, a Liked Recipes cookbook is automatically created. This cookbook contains recipes the user has liked, making it easy to find favorite recipes again.
-When a recipe is liked, it is automatically added to this cookbook. When a recipe is unliked, it is automatically removed.
+When a user is created, a Bookmarked Recipes cookbook is automatically created. This cookbook is tied to the "bookmark" action on recipes, making it easier to find recipes you want to come back to.
 
-![Cookbook created automatically](liked-recipe-cookbook-created.png)
+![Bookmarked Cookbooks Automatically Created](bookmark-cookbook.png)
 
-![Liked recipe added to cookbook](liked-recipe-adding.png)
+![Bookmark Content Page](bookmark-cookbook-contents.png)
 
 ## Image Processing
 
