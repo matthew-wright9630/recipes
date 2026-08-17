@@ -39,21 +39,33 @@
   font-size: clamp(1rem, 2vw + 1rem, 2rem);
 }
 
-.cookbook-description {
-  margin: 0.5vh 0;
-  font-weight: 300;
-  text-wrap: balance;
-  font-size: clamp(1rem, 2vw + 1rem, 2rem);
-}
-
 .cookbook-meta {
   margin-top: 0;
 }
 
-.cookbook__action__div {
+.cookbook__owner-actions {
   display: flex;
-  gap: 0;
+  flex-direction: column;
+  gap: 2vh;
   align-items: center;
+  justify-content: space-around;
+}
+
+.cookbook__delete {
+  color: var(--mat-sys-error);
+  border-color: var(--mat-sys-error);
+}
+
+.cookbook__delete:hover {
+  background: color-mix(in srgb, var(--mat-sys-error) 8%, transparent);
+}
+
+.cookbook-description {
+  margin: 0.5vh 0;
+  text-align: center;
+  font-weight: 300;
+  text-wrap: balance;
+  font-size: clamp(1rem, 2vw + 1rem, 2rem);
 }
 
 .cookbook-content {

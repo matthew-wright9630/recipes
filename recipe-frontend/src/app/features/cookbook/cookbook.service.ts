@@ -54,4 +54,10 @@ export class CookbookService {
   getAllRecipesInCookbook(recipeId: number): Observable<CookbookSelection[]> {
     return this.http.get<CookbookSelection[]>(this.baseURL + `/list`, {});
   }
+
+  deleteDraftRecipe(id: number) {
+    return this.http.delete<Cookbook>(this.baseURL + '/' + id, {
+      observe: 'response',
+    });
+  }
 }

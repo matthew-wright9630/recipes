@@ -24,6 +24,7 @@ import { Cookbook } from '../../models/cookbook';
 import { CookbookRequest } from '../../models/cookbook-request';
 import { CookbookStateService } from '../../services/cookbook-state/cookbook-state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cookbook-create-dialog',
@@ -48,6 +49,7 @@ export class CookbookCreateDialog {
   private imageService = inject(UserImageService);
   private cookbookStateService = inject(CookbookStateService);
   private snackbar = inject(MatSnackBar);
+  private router = inject(Router);
 
   errorMessage = '';
   userImages: string[] = [];
@@ -166,7 +168,7 @@ export class CookbookCreateDialog {
     this.cookbookService.createCookbook(draftCookbook).subscribe({
       next: (result) => {
         this.dialogRef.close(result);
-        this.cookbookStateService.notifycookbookUpdated(result as Cookbook);
+        this.cookbookStateService.notifyCookbookUpdated(result as Cookbook);
       },
       error: (error) => {
         this.errorMessage = error.error.message;

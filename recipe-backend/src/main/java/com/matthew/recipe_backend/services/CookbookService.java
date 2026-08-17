@@ -1,6 +1,7 @@
 package com.matthew.recipe_backend.services;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -242,6 +243,17 @@ public class CookbookService {
                 foundCookbook.setName(cookbookEditDto.name());
 
                 return CookbookMapper.toDto(foundCookbook);
+        }
+
+        @Transactional
+        public void removeCookbook(User user, Long cookbookId) {
+                Cookbook foundCookbook = cookbookRepository.findById(cookbookId)
+                                .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
+                CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, cookbookId, user.getId());
+
+                foundCookbook.setDeleted(true);
+                foundCookbook.setUpdatedAt(OffsetDateTime.now());
+                cookbookRepository.save(foundCookbook);
         }
 
         private Set<Long> getLikedRecipeIds(List<Long> recipeIds, Long userId) {

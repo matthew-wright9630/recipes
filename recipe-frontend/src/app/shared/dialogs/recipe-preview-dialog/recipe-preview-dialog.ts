@@ -355,7 +355,7 @@ export class RecipePreviewDialog {
       dialogRef.afterClosed().subscribe((updatedCookbooks) => {
         if (updatedCookbooks) {
           updatedCookbooks.forEach((cookbook: Cookbook) => {
-            this.cookbookStateService.notifycookbookUpdated(cookbook);
+            this.cookbookStateService.notifyCookbookUpdated(cookbook);
           });
         }
       });

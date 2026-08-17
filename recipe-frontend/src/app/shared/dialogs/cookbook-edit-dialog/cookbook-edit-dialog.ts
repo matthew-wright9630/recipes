@@ -169,7 +169,7 @@ export class CookbookEditDialog {
     this.cookbookService.editCookbook(editedCookbook, this.data.id).subscribe({
       next: (result) => {
         this.dialogRef.close(result);
-        this.cookbookStateService.notifycookbookUpdated(result as Cookbook);
+        this.cookbookStateService.notifyCookbookUpdated(result as Cookbook);
       },
       error: (err) => {
         this.errorMessage = err.error.message;
