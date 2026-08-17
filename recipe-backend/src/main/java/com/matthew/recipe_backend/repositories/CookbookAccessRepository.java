@@ -54,4 +54,14 @@ public interface CookbookAccessRepository extends JpaRepository<CookbookAccess, 
             Long cookbookId,
             Long userId,
             Collection<CookbookPermission> permissions);
+
+    @Query("""
+                SELECT ca.permission
+                FROM CookbookAccess ca
+                WHERE ca.cookbook.id = :cookbookId
+                  AND ca.user.id = :userId
+            """)
+    CookbookPermission findPermissionByCookbookIdAndUserId(
+            @Param("cookbookId") Long cookbookId,
+            @Param("userId") Long userId);
 }

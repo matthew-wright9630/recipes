@@ -126,7 +126,10 @@ public class CookbookService {
                                 likedIds.contains(recipe.getId()),
                                 bookmarkedIds.contains(recipe.getId()))).toList();
 
-                return CookbookWithRecipesMapper.toDto(foundCookbook, recipeDtos, user.getId());
+                CookbookPermission permission = cookbookAccessRepository.findPermissionByCookbookIdAndUserId(cookbookId,
+                                user.getId());
+
+                return CookbookWithRecipesMapper.toDto(foundCookbook, recipeDtos, user.getId(), permission);
         }
 
         public Page<CookbookDto> findAllAccessibleCookbooks(Pageable pageable, String search, User user) {
