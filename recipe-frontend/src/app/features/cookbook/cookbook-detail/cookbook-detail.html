@@ -13,7 +13,10 @@
           @if(cookbook.permission === 'OWNER') {
           <div class="cookbook__owner-actions">
             <button mat-raised-button (click)="onEditCookbook()">
-              Edit Cookbook
+              Edit Details
+            </button>
+            <button mat-raised-button (click)="onCookbookShare()">
+              Manage Access
             </button>
             @if(cookbook.type === "NORMAL") {
             <button

@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject } from '@angular/core';
-import { CookbookService } from '../cookbook.service';
+import { CookbookService } from '../../../shared/services/cookbook-service/cookbook.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Page } from '../../../shared/models/page';
 import { Cookbook } from '../../../shared/models/cookbook';

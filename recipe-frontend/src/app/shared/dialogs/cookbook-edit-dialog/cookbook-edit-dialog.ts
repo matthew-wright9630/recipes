@@ -15,7 +15,7 @@ import {
   MatDialogContent,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { CookbookService } from '../../../features/cookbook/cookbook.service';
+import { CookbookService } from '../../services/cookbook-service/cookbook.service';
 import { UserImageService } from '../../services/user-image-service/user-image.service';
 import { CookbookStateService } from '../../services/cookbook-state/cookbook-state.service';
 import { DEFAULT_RECIPE_IMAGES } from '../../constants/default-images';

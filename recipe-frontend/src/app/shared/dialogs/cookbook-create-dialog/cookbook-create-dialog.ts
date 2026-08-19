@@ -16,7 +16,7 @@ import {
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { CookbookService } from '../../../features/cookbook/cookbook.service';
+import { CookbookService } from '../../services/cookbook-service/cookbook.service';
 import { UserImageService } from '../../services/user-image-service/user-image.service';
 import { DEFAULT_RECIPE_IMAGES } from '../../constants/default-images';
 import { environment } from '../../../../environments/environment';

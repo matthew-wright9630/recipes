@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RecipeService } from '../../services/recipe-service/recipe.service';
-import { CookbookService } from '../../../features/cookbook/cookbook.service';
+import { CookbookService } from '../../services/cookbook-service/cookbook.service';
 import { CookbookSelection } from '../../models/cookbook-selection';
 import { MatListModule, MatSelectionListChange } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';

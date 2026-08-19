@@ -1,12 +1,13 @@
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { Cookbook } from '../../shared/models/cookbook';
-import { Page } from '../../shared/models/page';
-import { CookbookRequest } from '../../shared/models/cookbook-request';
-import { CookbookSelection } from '../../shared/models/cookbook-selection';
-import { CookbookDetailInterface } from '../../shared/models/cookbook-detail-interface';
+import { Cookbook } from '../../models/cookbook';
+import { Page } from '../../models/page';
+import { CookbookRequest } from '../../models/cookbook-request';
+import { CookbookSelection } from '../../models/cookbook-selection';
+import { CookbookDetailInterface } from '../../models/cookbook-detail-interface';
+import { SharedUser } from '../../models/shared-user';
 
 @Injectable({
   providedIn: 'root',
@@ -59,5 +60,19 @@ export class CookbookService {
     return this.http.delete<Cookbook>(this.baseURL + '/' + id, {
       observe: 'response',
     });
+  }
+
+  getSharedUsers(id: number) {
+    return this.http.get<SharedUser[]>(this.baseURL + '/' + id + '/shared');
+  }
+
+  updateAccess(id: number, sharedUsers: SharedUser[]) {
+    return this.http.put<SharedUser[]>(
+      this.baseURL + '/' + id + '/shared',
+      sharedUsers,
+      {
+        observe: 'response',
+      },
+    );
   }
 }

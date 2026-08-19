@@ -9,7 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { AuthStateService } from '../../../shared/services/auth-state-service/auth-state.service';
 import { Cookbook } from '../../../shared/models/cookbook';
 import { environment } from '../../../../environments/environment';
-import { CookbookService } from '../cookbook.service';
+import { CookbookService } from '../../../shared/services/cookbook-service/cookbook.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CookbookDetailInterface } from '../../../shared/models/cookbook-detail-interface';
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
@@ -20,6 +20,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RecipeService } from '../../../shared/services/recipe-service/recipe.service';
 import { ConfirmationDialog } from '../../../shared/dialogs/confirmation-dialog/confirmation-dialog';
+import { CookbookShareDialog } from '../../../shared/dialogs/cookbook-share-dialog/cookbook-share-dialog';
 
 @Component({
   selector: 'app-cookbook-detail',
@@ -114,6 +115,15 @@ export class CookbookDetail {
 
   onEditCookbook(): void {
     this.dialog.open(CookbookEditDialog, {
+      width: '800px',
+      maxWidth: '95vw',
+      autoFocus: false,
+      data: this.cookbook(),
+    });
+  }
+
+  onCookbookShare(): void {
+    this.dialog.open(CookbookShareDialog, {
       width: '800px',
       maxWidth: '95vw',
       autoFocus: false,
