@@ -8,8 +8,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.matthew.recipe_backend.dtos.SharedUserDto;
 import com.matthew.recipe_backend.dtos.UserDto;
 import com.matthew.recipe_backend.dtos.UserUpdateDto;
 import com.matthew.recipe_backend.models.User;
@@ -49,6 +51,11 @@ public class UserController {
     public ResponseEntity<UserDto> putCurrentUser(@AuthenticationPrincipal User user,
             @RequestBody UserUpdateDto request) {
         return ResponseEntity.ok(userService.updateUser(user, request));
+    }
+
+    @GetMapping("/shared")
+    public ResponseEntity<UserDto> getSharedUserInformation(@RequestParam String email) {
+        return ResponseEntity.ok(userService.findByEmail(email));
     }
 
     // @PutMapping("/me/password")

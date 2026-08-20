@@ -10,6 +10,7 @@ import com.matthew.recipe_backend.dtos.CookbookWithRecipesDto;
 import com.matthew.recipe_backend.dtos.CookbookRecipeDto;
 import com.matthew.recipe_backend.dtos.CreateCookbookDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
+import com.matthew.recipe_backend.dtos.SharedUserDto;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.services.CookbookService;
 
@@ -108,4 +109,9 @@ public class CookbookController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{id}/shared")
+    public ResponseEntity<List<SharedUserDto>> getAllSharedUsers(@PathVariable Long id,
+            @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(cookbookService.findAllSharedUsers(user, id));
+    }
 }

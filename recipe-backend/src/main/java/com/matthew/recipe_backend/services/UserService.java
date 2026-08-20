@@ -1,6 +1,7 @@
 package com.matthew.recipe_backend.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.matthew.recipe_backend.dtos.ChangePasswordDto;
+import com.matthew.recipe_backend.dtos.SharedUserDto;
 import com.matthew.recipe_backend.dtos.UserDto;
 import com.matthew.recipe_backend.dtos.UserUpdateDto;
 import com.matthew.recipe_backend.exceptions.InvalidCredentialsException;
@@ -43,6 +45,12 @@ public class UserService {
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+
+    public UserDto findByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> (new EntityNotFoundException("User not found")));
+        return UserMapper.toDto(user);
     }
 
     public UserDetails loadUserByUsername(String username) {

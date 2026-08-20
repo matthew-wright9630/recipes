@@ -68,7 +68,7 @@ export class CookbookService {
 
   updateAccess(id: number, sharedUsers: SharedUser[]) {
     return this.http.put<SharedUser[]>(
-      this.baseURL + '/' + id + '/shared',
+      this.baseURL + '/' + id + '/share',
       sharedUsers,
       {
         observe: 'response',

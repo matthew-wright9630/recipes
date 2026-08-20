@@ -20,6 +20,7 @@ import com.matthew.recipe_backend.dtos.CookbookRecipeSelectionDto;
 import com.matthew.recipe_backend.dtos.CookbookWithRecipesDto;
 import com.matthew.recipe_backend.dtos.CreateCookbookDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
+import com.matthew.recipe_backend.dtos.SharedUserDto;
 import com.matthew.recipe_backend.enums.CookbookPermission;
 import com.matthew.recipe_backend.enums.CookbookType;
 import com.matthew.recipe_backend.enums.RecipeStatus;
@@ -169,7 +170,6 @@ public class CookbookService {
                                 .toList();
         }
 
-        @Transactional
         public CookbookDto createCookbook(String username, CreateCookbookDto cookbookCreationDto) {
                 User user = userRepository.findByEmail(username.toLowerCase())
                                 .orElseThrow(() -> new UserNotFoundException(username));
@@ -187,7 +187,6 @@ public class CookbookService {
                 return CookbookMapper.toDto(cookbook);
         }
 
-        @Transactional
         public CookbookDto addRecipeToCookbook(String username, Long cookbookId, AddRecipeDto addRecipeDto) {
                 User user = userRepository.findByEmail(username.toLowerCase())
                                 .orElseThrow(() -> new UserNotFoundException(username));
@@ -230,7 +229,6 @@ public class CookbookService {
                                                 CookbookType.BOOKMARK));
         }
 
-        @Transactional
         public CookbookDto editCookbook(User user, Long cookbookId, CreateCookbookDto cookbookEditDto) {
                 Cookbook foundCookbook = cookbookRepository.findById(cookbookId)
                                 .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
@@ -248,7 +246,6 @@ public class CookbookService {
                 return CookbookMapper.toDto(foundCookbook);
         }
 
-        @Transactional
         public void removeCookbook(User user, Long cookbookId) {
                 Cookbook foundCookbook = cookbookRepository.findById(cookbookId)
                                 .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
@@ -257,6 +254,19 @@ public class CookbookService {
                 foundCookbook.setDeleted(true);
                 foundCookbook.setUpdatedAt(OffsetDateTime.now());
                 cookbookRepository.save(foundCookbook);
+        }
+
+        public List<SharedUserDto> findAllSharedUsers(User user, Long cookbookId) {
+                Cookbook foundCookbook = cookbookRepository.findById(cookbookId)
+                                .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
+                CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, cookbookId, user.getId());
+
+                List<SharedUserDto> sharedUsers = cookbookAccessRepository.findAllByCookbookId(cookbookId).stream()
+                                .map(cookbookAccess -> new SharedUserDto(cookbookAccess.getUser().getId(),
+                                                cookbookAccess.getUser().getDisplayUsername(),
+                                                cookbookAccess.getPermission()))
+                                .toList();
+                return sharedUsers;
         }
 
         private Set<Long> getLikedRecipeIds(List<Long> recipeIds, Long userId) {
