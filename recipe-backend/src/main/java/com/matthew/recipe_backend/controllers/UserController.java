@@ -1,6 +1,9 @@
 package com.matthew.recipe_backend.controllers;
 
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matthew.recipe_backend.dtos.SharedUserDto;
+import com.matthew.recipe_backend.dtos.UserSummaryDto;
 import com.matthew.recipe_backend.dtos.UserDto;
 import com.matthew.recipe_backend.dtos.UserUpdateDto;
 import com.matthew.recipe_backend.models.User;
@@ -56,6 +60,12 @@ public class UserController {
     @GetMapping("/shared")
     public ResponseEntity<UserDto> getSharedUserInformation(@RequestParam String email) {
         return ResponseEntity.ok(userService.findByEmail(email));
+    }
+
+    @GetMapping("/share/search")
+    public ResponseEntity<List<UserSummaryDto>> searchUsers(
+            @RequestParam String username) {
+        return ResponseEntity.ok(userService.searchUsers(username));
     }
 
     // @PutMapping("/me/password")

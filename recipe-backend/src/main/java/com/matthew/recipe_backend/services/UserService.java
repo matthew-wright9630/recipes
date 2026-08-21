@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.matthew.recipe_backend.dtos.ChangePasswordDto;
 import com.matthew.recipe_backend.dtos.SharedUserDto;
 import com.matthew.recipe_backend.dtos.UserDto;
+import com.matthew.recipe_backend.dtos.UserSummaryDto;
 import com.matthew.recipe_backend.dtos.UserUpdateDto;
 import com.matthew.recipe_backend.exceptions.InvalidCredentialsException;
 import com.matthew.recipe_backend.exceptions.InvalidRequestException;
@@ -90,5 +91,16 @@ public class UserService {
         UserDto response = UserMapper.toDto(saved);
 
         return response;
+    }
+
+    public List<UserSummaryDto> searchUsers(String username) {
+        List<User> foundUsers = userRepository.findByUsernameContainingIgnoreCase(username);
+
+        return foundUsers.stream()
+                .map(user -> new UserSummaryDto(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getAvatarUrl()))
+                .toList();
     }
 }

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { User } from '../../models/user';
 import { environment } from '../../../../environments/environment';
 import { SharedUser } from '../../models/shared-user';
+import { UserSummary } from '../../models/user-summary';
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +23,12 @@ export class UserService {
       params: {
         email: email,
       },
+    });
+  }
+
+  searchUsers(username: string): Observable<UserSummary[]> {
+    return this.http.get<UserSummary[]>(`${this.baseURL}/share/search`, {
+      params: { username },
     });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -15,6 +15,14 @@ import { MatTableModule } from '@angular/material/table';
 import { SharedUser } from '../../models/shared-user';
 import { CookbookDetailInterface } from '../../models/cookbook-detail-interface';
 import { UserService } from '../../services/user-service/user.service';
+import { UserSummary } from '../../models/user-summary';
+import { ShareRecipient } from '../../models/share-recipient';
+import {
+  MatAutocomplete,
+  MatAutocompleteModule,
+} from '@angular/material/autocomplete';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-cookbook-share-dialog',
@@ -26,9 +34,9 @@ import { UserService } from '../../services/user-service/user.service';
     ReactiveFormsModule,
     MatButtonModule,
     MatInput,
-    MatSelect,
     MatOption,
     MatTableModule,
+    MatAutocompleteModule,
   ],
   templateUrl: './cookbook-share-dialog.html',
   styleUrl: './cookbook-share-dialog.scss',
@@ -41,12 +49,14 @@ export class CookbookShareDialog {
   private userService = inject(UserService);
 
   private dialogRef = inject(MatDialogRef);
+  private destroyRef = inject(DestroyRef);
   private snackbar = inject(MatSnackBar);
   data = inject<CookbookDetailInterface>(MAT_DIALOG_DATA);
 
-  displayedColumns = ['user', 'access', 'remove'];
-  sharedUsers: SharedUser[] = [];
+  displayedColumns = ['user', 'remove'];
+  shareRecipients: ShareRecipient[] = [];
   searchControl = new FormControl('');
+  searchResults: UserSummary[] = [];
 
   form = this.fb.group({
     username: [''],
@@ -57,69 +67,82 @@ export class CookbookShareDialog {
     this.dialogRef.close();
   }
 
-  ngOnInit(): void {
-    this.loadSharedUsers();
-  }
-
-  loadSharedUsers(): void {
-    this.cookbookService.getSharedUsers(this.data.id).subscribe({
-      next: (users: SharedUser[]) => {
-        this.sharedUsers = users.map((user) => ({
-          ...user,
-          permission: user.permission,
-        }));
+  addUserId(user: UserSummary): void {
+    this.shareRecipients = [
+      ...this.shareRecipients,
+      {
+        userId: user.id,
+        username: user.username,
       },
-    });
-    this.sharedUsers = [...this.sharedUsers].sort((a, b) => {
-      if (a.permission === 'OWNER') return -1;
-      if (b.permission === 'OWNER') return 1;
-      return 0;
-    });
+    ];
+
+    this.searchControl.setValue('');
   }
 
-  addUser(): void {
-    const email = this.form.value.email?.trim().toLowerCase();
+  addEmail(): void {
+    const email = this.form.controls.email.value;
 
     if (!email) {
       return;
     }
 
-    this.userService.getSharedUserDetails(email).subscribe({
-      next: (user: SharedUser) => {
-        this.sharedUsers = [
-          ...this.sharedUsers,
-          {
-            userId: user.userId,
-            username: user.username,
-            permission: 'READ',
-          },
-        ];
-      },
-      error: () => {
-        // If someone inputs incorrect information, the value is still set. This is to prevent account-enumeration
-        this.sharedUsers = [
-          ...this.sharedUsers,
-          {
-            userId: 0,
-            username: email,
-            permission: 'READ',
-          },
-        ];
-      },
-    });
+    this.shareRecipients = [...this.shareRecipients, { email }];
+    this.form.controls.email.reset();
   }
 
-  removeUser(user: SharedUser): void {
-    this.sharedUsers = this.sharedUsers.filter((u) => u.userId !== user.userId);
+  removeRecipient(recipient: ShareRecipient): void {
+    this.shareRecipients = this.shareRecipients.filter((r) => r !== recipient);
   }
 
-  saveChanges(): void {
-    this.cookbookService
-      .updateAccess(this.data.id, this.sharedUsers)
-      .subscribe({
-        next: () => {
-          this.dialogRef.close(true);
-        },
+  ngOnInit(): void {
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((value) => {
+        // const username = value?.trim() ?? '';
+
+        if (!value) {
+          this.searchResults = [];
+          return;
+        }
+
+        this.userService.searchUsers(value).subscribe({
+          next: (users) => {
+            this.searchResults = users;
+          },
+          error: () => {
+            this.searchResults = [];
+          },
+        });
       });
   }
+
+  // loadSharedUsers(): void {
+  //   this.cookbookService.getSharedUsers(this.data.id).subscribe({
+  //     next: (users: SharedUser[]) => {
+  //       this.sharedUsers = users.map((user) => ({
+  //         ...user,
+  //         permission: user.permission,
+  //       }));
+  //     },
+  //   });
+  //   this.sharedUsers = [...this.sharedUsers].sort((a, b) => {
+  //     if (a.permission === 'OWNER') return -1;
+  //     if (b.permission === 'OWNER') return 1;
+  //     return 0;
+  //   });
+  // }
+
+  // saveChanges(): void {
+  //   this.cookbookService
+  //     .updateAccess(this.data.id, this.sharedUsers)
+  //     .subscribe({
+  //       next: () => {
+  //         this.dialogRef.close(true);
+  //       },
+  //     });
+  // }
 }
