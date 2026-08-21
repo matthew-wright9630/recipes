@@ -118,7 +118,7 @@ public class CookbookController {
 
     @PostMapping("/{id}/share")
     public ResponseEntity<Void> updateSharedUserList(@PathVariable Long id, @AuthenticationPrincipal User user,
-            @RequestParam ShareCookbookDto request) {
+            @RequestBody ShareCookbookDto request) {
         cookbookService.shareCookbook(id, user, request);
         return ResponseEntity.noContent().build();
     }

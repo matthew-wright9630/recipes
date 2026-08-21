@@ -120,21 +120,27 @@ export class CookbookShareDialog {
       });
   }
 
-  // loadSharedUsers(): void {
-  //   this.cookbookService.getSharedUsers(this.data.id).subscribe({
-  //     next: (users: SharedUser[]) => {
-  //       this.sharedUsers = users.map((user) => ({
-  //         ...user,
-  //         permission: user.permission,
-  //       }));
-  //     },
-  //   });
-  //   this.sharedUsers = [...this.sharedUsers].sort((a, b) => {
-  //     if (a.permission === 'OWNER') return -1;
-  //     if (b.permission === 'OWNER') return 1;
-  //     return 0;
-  //   });
-  // }
+  shareCookbook(): void {
+    const userIds = this.shareRecipients
+      .filter((recipient) => recipient.userId !== undefined)
+      .map((recipient) => recipient.userId!);
+
+    const emails = this.shareRecipients
+      .filter((recipient) => recipient.email !== undefined)
+      .map((recipient) => recipient.email!);
+
+    const request = {
+      userIds,
+      emails,
+    };
+
+    this.cookbookService.updateAccess(this.data.id, request).subscribe({
+      next: () => {
+        this.dialogRef.close();
+        this.snackbar.open('Your request(s) have been sent!', 'Dismiss');
+      },
+    });
+  }
 
   // saveChanges(): void {
   //   this.cookbookService

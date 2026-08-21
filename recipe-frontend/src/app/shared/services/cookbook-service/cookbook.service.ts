@@ -8,6 +8,7 @@ import { CookbookRequest } from '../../models/cookbook-request';
 import { CookbookSelection } from '../../models/cookbook-selection';
 import { CookbookDetailInterface } from '../../models/cookbook-detail-interface';
 import { SharedUser } from '../../models/shared-user';
+import { ShareRecipient } from '../../models/share-recipient';
 
 @Injectable({
   providedIn: 'root',
@@ -66,10 +67,10 @@ export class CookbookService {
     return this.http.get<SharedUser[]>(this.baseURL + '/' + id + '/shared');
   }
 
-  updateAccess(id: number, sharedUsers: SharedUser[]) {
-    return this.http.put<SharedUser[]>(
+  updateAccess(id: number, request: { userIds: number[]; emails: string[] }) {
+    return this.http.post<ShareRecipient[]>(
       this.baseURL + '/' + id + '/share',
-      sharedUsers,
+      request,
       {
         observe: 'response',
       },
