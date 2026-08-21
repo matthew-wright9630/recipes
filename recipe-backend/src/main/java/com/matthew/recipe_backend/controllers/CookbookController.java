@@ -10,6 +10,7 @@ import com.matthew.recipe_backend.dtos.CookbookWithRecipesDto;
 import com.matthew.recipe_backend.dtos.CookbookRecipeDto;
 import com.matthew.recipe_backend.dtos.CreateCookbookDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
+import com.matthew.recipe_backend.dtos.ShareCookbookDto;
 import com.matthew.recipe_backend.dtos.SharedUserDto;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.services.CookbookService;
@@ -113,5 +114,12 @@ public class CookbookController {
     public ResponseEntity<List<SharedUserDto>> getAllSharedUsers(@PathVariable Long id,
             @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(cookbookService.findAllSharedUsers(user, id));
+    }
+
+    @PostMapping("/{id}/share")
+    public ResponseEntity<Void> updateSharedUserList(@PathVariable Long id, @AuthenticationPrincipal User user,
+            @RequestParam ShareCookbookDto request) {
+        cookbookService.shareCookbook(id, user, request);
+        return ResponseEntity.noContent().build();
     }
 }

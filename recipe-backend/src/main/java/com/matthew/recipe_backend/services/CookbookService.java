@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,7 @@ import com.matthew.recipe_backend.dtos.CookbookRecipeSelectionDto;
 import com.matthew.recipe_backend.dtos.CookbookWithRecipesDto;
 import com.matthew.recipe_backend.dtos.CreateCookbookDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
+import com.matthew.recipe_backend.dtos.ShareCookbookDto;
 import com.matthew.recipe_backend.dtos.SharedUserDto;
 import com.matthew.recipe_backend.enums.CookbookPermission;
 import com.matthew.recipe_backend.enums.CookbookType;
@@ -267,6 +269,28 @@ public class CookbookService {
                                                 cookbookAccess.getPermission()))
                                 .toList();
                 return sharedUsers;
+        }
+
+        public void shareCookbook(Long cookbookId, User user, ShareCookbookDto request) {
+                Cookbook foundCookbook = cookbookRepository.findById(cookbookId)
+                                .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
+                CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, cookbookId, user.getId());
+
+                for (Long userId : request.userIds()) {
+                        User userToShare = userRepository.findById(userId)
+                                        .orElseThrow(() -> new UserNotFoundException("User does not exist"));
+                        cookbookAccessRepository.save(new CookbookAccess(foundCookbook, userToShare,
+                                        CookbookPermission.READ, Instant.now()));
+                }
+
+                for (String email : request.emails()) {
+                        userRepository.findByEmail(email)
+                                        .ifPresent(userToShare -> cookbookAccessRepository.save(new CookbookAccess(
+                                                        foundCookbook,
+                                                        userToShare,
+                                                        CookbookPermission.READ,
+                                                        Instant.now())));
+                }
         }
 
         private Set<Long> getLikedRecipeIds(List<Long> recipeIds, Long userId) {
