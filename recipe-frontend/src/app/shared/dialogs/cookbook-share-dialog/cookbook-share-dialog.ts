@@ -8,7 +8,12 @@ import { MatListModule } from '@angular/material/list';
 import { RecipeService } from '../../services/recipe-service/recipe.service';
 import { CookbookService } from '../../services/cookbook-service/cookbook.service';
 import { CookbookStateService } from '../../services/cookbook-state/cookbook-state.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogActions,
+  MatDialogContent,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
@@ -37,6 +42,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatOption,
     MatTableModule,
     MatAutocompleteModule,
+    MatDialogActions,
+    MatDialogContent,
   ],
   templateUrl: './cookbook-share-dialog.html',
   styleUrl: './cookbook-share-dialog.scss',
