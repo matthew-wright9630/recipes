@@ -99,7 +99,7 @@ public class UserService {
         return foundUsers.stream()
                 .map(user -> new UserSummaryDto(
                         user.getId(),
-                        user.getUsername(),
+                        user.getDisplayUsername(),
                         user.getAvatarUrl()))
                 .toList();
     }
