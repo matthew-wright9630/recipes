@@ -1,0 +1,25 @@
+.cookbook-manage-access {
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 2vw;
+  }
+
+  &__recipients {
+    width: 100%;
+  }
+
+  &__table {
+    width: 100%;
+  }
+
+  &__access-select {
+    width: 140px;
+  }
+
+  &__empty {
+    padding: 24px 0;
+    text-align: center;
+  }
+}

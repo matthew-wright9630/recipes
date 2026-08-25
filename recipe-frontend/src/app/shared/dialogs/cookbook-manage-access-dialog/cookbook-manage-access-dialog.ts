@@ -2,32 +2,27 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { MatInput } from '@angular/material/input';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatFormField } from '@angular/material/form-field';
 import { MatListModule } from '@angular/material/list';
 import { RecipeService } from '../../services/recipe-service/recipe.service';
 import { CookbookService } from '../../services/cookbook-service/cookbook.service';
 import { CookbookStateService } from '../../services/cookbook-state/cookbook-state.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import {
-  MatOption,
-  MatSelect,
-  MatSelectModule,
-} from '@angular/material/select';
+  MAT_DIALOG_DATA,
+  MatDialogActions,
+  MatDialogContent,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatOption, MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { SharedUser } from '../../models/shared-user';
 import { CookbookDetailInterface } from '../../models/cookbook-detail-interface';
 import { UserService } from '../../services/user-service/user.service';
 import { UserSummary } from '../../models/user-summary';
 import { ShareRecipient } from '../../models/share-recipient';
-import {
-  MatAutocomplete,
-  MatAutocompleteModule,
-} from '@angular/material/autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UpdateUserPermission } from '../../models/update-user-permission';
 
 @Component({
@@ -36,15 +31,15 @@ import { UpdateUserPermission } from '../../models/update-user-permission';
     MatIcon,
     MatListModule,
     MatFormField,
-    MatLabel,
     ReactiveFormsModule,
     MatButtonModule,
-    MatInput,
     MatOption,
     MatTableModule,
     MatAutocompleteModule,
     MatSelectModule,
     MatCheckboxModule,
+    MatDialogActions,
+    MatDialogContent,
   ],
   templateUrl: './cookbook-manage-access-dialog.html',
   styleUrl: './cookbook-manage-access-dialog.scss',
