@@ -9,4 +9,6 @@ export interface CookbookDetailInterface {
   permission: string;
   recipes: Recipe[];
   type: string;
+  ownerId: number;
+  ownerUsername: string;
 }

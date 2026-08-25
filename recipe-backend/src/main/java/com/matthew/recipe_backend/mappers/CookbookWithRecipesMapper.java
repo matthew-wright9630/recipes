@@ -13,6 +13,7 @@ public class CookbookWithRecipesMapper {
             CookbookPermission permission) {
         boolean isOwner = cookbook.getOwner().getId() == userId;
         return new CookbookWithRecipesDto(cookbook.getId(), cookbook.getName(), cookbook.getDescription(),
-                cookbook.getImageUrl(), cookbook.getUpdatedAt(), permission, recipes, cookbook.getType());
+                cookbook.getImageUrl(), cookbook.getUpdatedAt(), permission, recipes, cookbook.getType(),
+                cookbook.getOwner().getId(), cookbook.getOwner().getDisplayUsername());
     }
 }

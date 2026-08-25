@@ -31,6 +31,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 2vh;
+}
+
+.cookbook-hero__title__div {
+  display: flex;
+  flex-direction: column;
 }
 
 .cookbook-hero__title {
@@ -44,8 +50,8 @@
 }
 
 .cookbook__owner-actions {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 2vh;
   align-items: center;
   justify-content: space-around;
@@ -89,10 +95,6 @@
 @media (max-width: 900px) {
   .cookbook-page {
     padding: 0;
-  }
-
-  .cookbook-hero__content {
-    flex-direction: column;
   }
 
   .cookbook-content {
