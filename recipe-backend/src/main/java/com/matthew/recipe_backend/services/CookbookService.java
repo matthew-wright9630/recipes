@@ -170,7 +170,9 @@ public class CookbookService {
                 return cookbooks.stream()
                                 .map(cookbook -> CookbookRecipeSelectionMapper.toDto(
                                                 cookbook,
-                                                recipeCookbookIds.contains(cookbook.getId())))
+                                                recipeCookbookIds.contains(cookbook.getId()),
+                                                cookbook.getOwner().getId(),
+                                                cookbook.getOwner().getDisplayUsername()))
                                 .toList();
         }
 
@@ -263,7 +265,7 @@ public class CookbookService {
         public List<SharedUserDto> findAllSharedUsers(User user, Long cookbookId) {
                 Cookbook foundCookbook = cookbookRepository.findById(cookbookId)
                                 .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
-                CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, cookbookId, user.getId());
+                CookbookValidator.assertUserHasAccessToCookbook(cookbookAccessRepository, cookbookId, user.getId());
 
                 List<SharedUserDto> sharedUsers = cookbookAccessRepository
                                 .findAllByCookbookIdOrderByGrantedAtAsc(cookbookId).stream()

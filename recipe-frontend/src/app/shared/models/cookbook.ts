@@ -4,4 +4,6 @@ export interface Cookbook {
   imageUrl: string;
   updatedAt: string;
   description: string;
+  ownerId: number;
+  ownerUsername: string;
 }

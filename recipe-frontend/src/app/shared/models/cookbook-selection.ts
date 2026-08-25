@@ -3,4 +3,6 @@ export interface CookbookSelection {
   name: string;
   containsRecipe: boolean;
   type: string;
+  ownerId: number;
+  ownerUsername: string;
 }

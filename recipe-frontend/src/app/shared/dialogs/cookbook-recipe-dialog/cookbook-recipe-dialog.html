@@ -9,9 +9,19 @@
   <div class="cookbook-recipe__content">
     @if (!creatingCookbook) {
     <mat-selection-list (selectionChange)="onSelectionChange($event)">
-      @for(cookbook of listOfCookbooks; track $index) {
+      @for (cookbook of listOfCookbooks; track cookbook.id) {
       <mat-list-option [value]="cookbook" [selected]="cookbook.containsRecipe">
-        {{ cookbook.name }}
+        <div class="cookbook-share__cookbook-option">
+          <span class="cookbook-share__cookbook-name">
+            {{ cookbook.name }}
+          </span>
+
+          @if (cookbook.ownerId !== authState.currentUser()!.id) {
+          <span class="cookbook-share__cookbook-owner">
+            by {{ cookbook.ownerUsername }}
+          </span>
+          }
+        </div>
       </mat-list-option>
       }
     </mat-selection-list>
