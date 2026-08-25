@@ -126,7 +126,9 @@ export class CookbookManageAccessDialog {
       .subscribe({
         next: () => {
           this.dialogRef.close();
-          this.snackbar.open('Your request(s) have been sent!', 'Dismiss');
+          this.snackbar.open('Your request(s) have been sent!', 'Dismiss', {
+            duration: 5000,
+          });
         },
       });
   }

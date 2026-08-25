@@ -126,6 +126,7 @@ export class CookbookShareDialog {
           ? 'User already has access to this cookbook'
           : 'User is already selected',
         'Dismiss',
+        { duration: 5000 },
       );
     } else {
       this.shareRecipients = [
@@ -172,7 +173,9 @@ export class CookbookShareDialog {
     this.cookbookService.shareCookbook(this.data.id, request).subscribe({
       next: () => {
         this.dialogRef.close();
-        this.snackbar.open('Your request(s) have been sent!', 'Dismiss');
+        this.snackbar.open('Your request(s) have been sent!', 'Dismiss', {
+          duration: 5000,
+        });
       },
     });
   }

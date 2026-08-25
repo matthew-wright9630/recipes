@@ -11,7 +11,9 @@ export class AuthPromptService {
   private dialog = inject(MatDialog);
 
   promptLogin(message: string, action?: () => void): void {
-    const snackBarRef = this.snackbar.open(message, 'Login');
+    const snackBarRef = this.snackbar.open(message, 'Login', {
+      duration: 5000,
+    });
 
     snackBarRef.onAction().subscribe(() => {
       const dialogRef = this.dialog.open(LoginDialogComponent, {
