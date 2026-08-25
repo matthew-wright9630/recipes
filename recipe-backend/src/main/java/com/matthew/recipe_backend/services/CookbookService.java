@@ -263,7 +263,8 @@ public class CookbookService {
                                 .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
                 CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, cookbookId, user.getId());
 
-                List<SharedUserDto> sharedUsers = cookbookAccessRepository.findAllByCookbookId(cookbookId).stream()
+                List<SharedUserDto> sharedUsers = cookbookAccessRepository
+                                .findAllByCookbookId(cookbookId).stream()
                                 .map(cookbookAccess -> new SharedUserDto(cookbookAccess.getUser().getId(),
                                                 cookbookAccess.getUser().getDisplayUsername(),
                                                 cookbookAccess.getPermission()))
@@ -279,17 +280,29 @@ public class CookbookService {
                 for (Long userId : request.userIds()) {
                         User userToShare = userRepository.findById(userId)
                                         .orElseThrow(() -> new UserNotFoundException("User does not exist"));
+
+                        if (cookbookAccessRepository.existsByCookbookIdAndUserId(cookbookId, userToShare.getId())) {
+                                continue;
+                        }
+
                         cookbookAccessRepository.save(new CookbookAccess(foundCookbook, userToShare,
                                         CookbookPermission.READ, Instant.now()));
                 }
 
                 for (String email : request.emails()) {
                         userRepository.findByEmail(email)
-                                        .ifPresent(userToShare -> cookbookAccessRepository.save(new CookbookAccess(
-                                                        foundCookbook,
-                                                        userToShare,
-                                                        CookbookPermission.READ,
-                                                        Instant.now())));
+                                        .ifPresent(userToShare -> {
+                                                if (cookbookAccessRepository.existsByCookbookIdAndUserId(
+                                                                cookbookId, userToShare.getId())) {
+                                                        return;
+                                                }
+
+                                                cookbookAccessRepository.save(new CookbookAccess(
+                                                                foundCookbook,
+                                                                userToShare,
+                                                                CookbookPermission.READ,
+                                                                Instant.now()));
+                                        });
                 }
         }
 

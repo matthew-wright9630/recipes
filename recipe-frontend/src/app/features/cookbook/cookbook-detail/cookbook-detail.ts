@@ -21,6 +21,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RecipeService } from '../../../shared/services/recipe-service/recipe.service';
 import { ConfirmationDialog } from '../../../shared/dialogs/confirmation-dialog/confirmation-dialog';
 import { CookbookShareDialog } from '../../../shared/dialogs/cookbook-share-dialog/cookbook-share-dialog';
+import { CookbookManageAccessDialog } from '../../../shared/dialogs/cookbook-manage-access-dialog/cookbook-manage-access-dialog';
 
 @Component({
   selector: 'app-cookbook-detail',
@@ -124,6 +125,15 @@ export class CookbookDetail {
 
   onCookbookShare(): void {
     this.dialog.open(CookbookShareDialog, {
+      width: '800px',
+      maxWidth: '95vw',
+      autoFocus: false,
+      data: this.cookbook(),
+    });
+  }
+
+  onManageAccess(): void {
+    this.dialog.open(CookbookManageAccessDialog, {
       width: '800px',
       maxWidth: '95vw',
       autoFocus: false,

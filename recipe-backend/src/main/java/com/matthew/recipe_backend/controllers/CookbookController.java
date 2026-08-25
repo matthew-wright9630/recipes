@@ -122,4 +122,11 @@ public class CookbookController {
         cookbookService.shareCookbook(id, user, request);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}/access")
+    public String updateUserAccessToCookbook(@PathVariable String id, @RequestBody String entity) {
+        // TODO: process PUT request
+
+        return entity;
+    }
 }

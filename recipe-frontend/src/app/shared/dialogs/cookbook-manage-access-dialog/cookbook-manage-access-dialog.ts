@@ -10,7 +10,11 @@ import { CookbookService } from '../../services/cookbook-service/cookbook.servic
 import { CookbookStateService } from '../../services/cookbook-state/cookbook-state.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatOption, MatSelect } from '@angular/material/select';
+import {
+  MatOption,
+  MatSelect,
+  MatSelectModule,
+} from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { SharedUser } from '../../models/shared-user';
 import { CookbookDetailInterface } from '../../models/cookbook-detail-interface';
@@ -37,11 +41,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatOption,
     MatTableModule,
     MatAutocompleteModule,
+    MatSelectModule,
   ],
-  templateUrl: './cookbook-share-dialog.html',
-  styleUrl: './cookbook-share-dialog.scss',
+  templateUrl: './cookbook-manage-access-dialog.html',
+  styleUrl: './cookbook-manage-access-dialog.scss',
 })
-export class CookbookShareDialog {
+export class CookbookManageAccessDialog {
   private fb = inject(FormBuilder);
   private recipeService = inject(RecipeService);
   private cookbookService = inject(CookbookService);
@@ -53,10 +58,11 @@ export class CookbookShareDialog {
   private snackbar = inject(MatSnackBar);
   data = inject<CookbookDetailInterface>(MAT_DIALOG_DATA);
 
-  displayedColumns = ['user', 'remove'];
+  displayedColumns = ['user', 'access', 'remove'];
   shareRecipients: ShareRecipient[] = [];
   searchControl = new FormControl('');
   searchResults: UserSummary[] = [];
+
   sharedUsers: SharedUser[] = [];
 
   form = this.fb.group({
@@ -68,85 +74,22 @@ export class CookbookShareDialog {
     this.dialogRef.close();
   }
 
+  removeRecipient(recipient: ShareRecipient): void {
+    this.shareRecipients = this.shareRecipients.filter((r) => r !== recipient);
+  }
+
   ngOnInit(): void {
     this.findSharedUsers();
-
-    this.searchControl.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((value) => {
-        // const username = value?.trim() ?? '';
-
-        if (!value) {
-          this.searchResults = [];
-          return;
-        }
-
-        this.userService.searchUsers(value).subscribe({
-          next: (users) => {
-            this.searchResults = users;
-          },
-          error: () => {
-            this.searchResults = [];
-          },
-        });
-      });
   }
 
   findSharedUsers(): void {
     this.cookbookService
       .getSharedUsers(this.data.id)
       .subscribe((response: SharedUser[]) => {
-        console.log(response);
-        this.sharedUsers = response;
+        this.sharedUsers = response.filter(
+          (user) => user.permission !== 'OWNER',
+        );
       });
-  }
-
-  addUserId(user: UserSummary): void {
-    const alreadyHasAccess = this.sharedUsers.some(
-      (sharedUser) => sharedUser.userId === user.id,
-    );
-
-    const alreadySelected = this.shareRecipients.some(
-      (recipient) => recipient.userId === user.id,
-    );
-
-    if (alreadyHasAccess || alreadySelected) {
-      this.snackbar.open(
-        alreadyHasAccess
-          ? 'User already has access to this cookbook'
-          : 'User is already selected',
-        'Dismiss',
-      );
-    } else {
-      this.shareRecipients = [
-        ...this.shareRecipients,
-        {
-          userId: user.id,
-          username: user.username,
-        },
-      ];
-    }
-
-    this.searchControl.setValue('');
-  }
-
-  addEmail(): void {
-    const email = this.form.controls.email.value;
-
-    if (!email) {
-      return;
-    }
-
-    this.shareRecipients = [...this.shareRecipients, { email }];
-    this.form.controls.email.reset();
-  }
-
-  removeRecipient(recipient: ShareRecipient): void {
-    this.shareRecipients = this.shareRecipients.filter((r) => r !== recipient);
   }
 
   shareCookbook(): void {
