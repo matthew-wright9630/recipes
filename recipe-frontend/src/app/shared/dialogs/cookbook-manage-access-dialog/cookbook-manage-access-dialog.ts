@@ -25,8 +25,10 @@ import {
   MatAutocomplete,
   MatAutocompleteModule,
 } from '@angular/material/autocomplete';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UpdateUserPermission } from '../../models/update-user-permission';
 
 @Component({
   selector: 'app-cookbook-share-dialog',
@@ -42,6 +44,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatTableModule,
     MatAutocompleteModule,
     MatSelectModule,
+    MatCheckboxModule,
   ],
   templateUrl: './cookbook-manage-access-dialog.html',
   styleUrl: './cookbook-manage-access-dialog.scss',
@@ -65,6 +68,8 @@ export class CookbookManageAccessDialog {
 
   sharedUsers: SharedUser[] = [];
 
+  userAccessUpdateRequest: UpdateUserPermission[] = [];
+
   form = this.fb.group({
     username: [''],
     email: [''],
@@ -72,10 +77,6 @@ export class CookbookManageAccessDialog {
 
   onClose(): void {
     this.dialogRef.close();
-  }
-
-  removeRecipient(recipient: ShareRecipient): void {
-    this.shareRecipients = this.shareRecipients.filter((r) => r !== recipient);
   }
 
   ngOnInit(): void {
@@ -89,28 +90,49 @@ export class CookbookManageAccessDialog {
         this.sharedUsers = response.filter(
           (user) => user.permission !== 'OWNER',
         );
+
+        console.log('sharedUsers:', this.sharedUsers);
+        console.log(
+          'permissions:',
+          this.sharedUsers.map((u) => u.permission),
+        );
+
+        this.userAccessUpdateRequest = this.sharedUsers.map((user) => ({
+          userId: user.userId,
+          permission: user.permission,
+          removed: false,
+        }));
       });
   }
 
-  shareCookbook(): void {
-    const userIds = this.shareRecipients
-      .filter((recipient) => recipient.userId !== undefined)
-      .map((recipient) => recipient.userId!);
+  updateUserAccess(user: SharedUser): void {
+    const update = this.userAccessUpdateRequest.find(
+      (u) => u.userId === user.userId,
+    );
 
-    const emails = this.shareRecipients
-      .filter((recipient) => recipient.email !== undefined)
-      .map((recipient) => recipient.email!);
+    if (update) {
+      update.permission = user.permission;
+    }
+  }
 
-    const request = {
-      userIds,
-      emails,
-    };
+  removeUser(user: SharedUser, removed: boolean): void {
+    const update = this.userAccessUpdateRequest.find(
+      (u) => u.userId === user.userId,
+    );
 
-    this.cookbookService.updateAccess(this.data.id, request).subscribe({
-      next: () => {
-        this.dialogRef.close();
-        this.snackbar.open('Your request(s) have been sent!', 'Dismiss');
-      },
-    });
+    if (update) {
+      update.removed = removed;
+    }
+  }
+
+  saveChanges(): void {
+    this.cookbookService
+      .updateAccess(this.data.id, this.userAccessUpdateRequest)
+      .subscribe({
+        next: () => {
+          this.dialogRef.close();
+          this.snackbar.open('Your request(s) have been sent!', 'Dismiss');
+        },
+      });
   }
 }

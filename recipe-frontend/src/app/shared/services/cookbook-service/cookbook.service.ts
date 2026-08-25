@@ -9,6 +9,7 @@ import { CookbookSelection } from '../../models/cookbook-selection';
 import { CookbookDetailInterface } from '../../models/cookbook-detail-interface';
 import { SharedUser } from '../../models/shared-user';
 import { ShareRecipient } from '../../models/share-recipient';
+import { UpdateUserPermission } from '../../models/update-user-permission';
 
 @Injectable({
   providedIn: 'root',
@@ -67,10 +68,20 @@ export class CookbookService {
     return this.http.get<SharedUser[]>(this.baseURL + '/' + id + '/shared');
   }
 
-  updateAccess(id: number, request: { userIds: number[]; emails: string[] }) {
+  shareCookbook(id: number, request: { userIds: number[]; emails: string[] }) {
     return this.http.post<ShareRecipient[]>(
       this.baseURL + '/' + id + '/share',
       request,
+      {
+        observe: 'response',
+      },
+    );
+  }
+
+  updateAccess(id: number, request: UpdateUserPermission[]) {
+    return this.http.put<SharedUser[]>(
+      this.baseURL + '/' + id + '/access',
+      { users: request },
       {
         observe: 'response',
       },

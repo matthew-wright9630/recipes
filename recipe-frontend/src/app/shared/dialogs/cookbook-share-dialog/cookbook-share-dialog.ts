@@ -162,7 +162,7 @@ export class CookbookShareDialog {
       emails,
     };
 
-    this.cookbookService.updateAccess(this.data.id, request).subscribe({
+    this.cookbookService.shareCookbook(this.data.id, request).subscribe({
       next: () => {
         this.dialogRef.close();
         this.snackbar.open('Your request(s) have been sent!', 'Dismiss');

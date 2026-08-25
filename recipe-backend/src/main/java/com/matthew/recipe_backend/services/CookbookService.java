@@ -24,6 +24,7 @@ import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.ShareCookbookDto;
 import com.matthew.recipe_backend.dtos.SharedUserDto;
 import com.matthew.recipe_backend.dtos.UpdateCookbookAccessDto;
+import com.matthew.recipe_backend.dtos.UpdateUserPermission;
 import com.matthew.recipe_backend.enums.CookbookPermission;
 import com.matthew.recipe_backend.enums.CookbookType;
 import com.matthew.recipe_backend.enums.RecipeStatus;
@@ -265,7 +266,7 @@ public class CookbookService {
                 CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, cookbookId, user.getId());
 
                 List<SharedUserDto> sharedUsers = cookbookAccessRepository
-                                .findAllByCookbookId(cookbookId).stream()
+                                .findAllByCookbookIdOrderByGrantedAtAsc(cookbookId).stream()
                                 .map(cookbookAccess -> new SharedUserDto(cookbookAccess.getUser().getId(),
                                                 cookbookAccess.getUser().getDisplayUsername(),
                                                 cookbookAccess.getPermission()))
@@ -312,7 +313,7 @@ public class CookbookService {
                                 .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
                 CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, cookbookId, user.getId());
 
-                for (SharedUserDto userUpdate : request.users()) {
+                for (UpdateUserPermission userUpdate : request.users()) {
                         CookbookAccess cookbookAccess = cookbookAccessRepository
                                         .findByCookbookIdAndUserId(cookbookId, userUpdate.userId())
                                         .orElseThrow(() -> new EntityNotFoundException(
@@ -322,11 +323,15 @@ public class CookbookService {
                                 throw new IllegalArgumentException("Cannot modify cookbook owner");
                         }
 
-                        cookbookAccess.setPermission(userUpdate.permission());
+                        if (userUpdate.removed()) {
+                                cookbookAccessRepository.delete(cookbookAccess);
+                        } else {
+                                cookbookAccess.setPermission(userUpdate.permission());
+                        }
                 }
 
                 List<SharedUserDto> sharedUsers = cookbookAccessRepository
-                                .findAllByCookbookId(cookbookId).stream()
+                                .findAllByCookbookIdOrderByGrantedAtAsc(cookbookId).stream()
                                 .map(cookbookAccess -> new SharedUserDto(cookbookAccess.getUser().getId(),
                                                 cookbookAccess.getUser().getDisplayUsername(),
                                                 cookbookAccess.getPermission()))

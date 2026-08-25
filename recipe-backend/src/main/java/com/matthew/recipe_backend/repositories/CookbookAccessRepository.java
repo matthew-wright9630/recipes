@@ -66,7 +66,7 @@ public interface CookbookAccessRepository extends JpaRepository<CookbookAccess, 
       @Param("cookbookId") Long cookbookId,
       @Param("userId") Long userId);
 
-  List<CookbookAccess> findAllByCookbookId(Long cookbookId);
+  List<CookbookAccess> findAllByCookbookIdOrderByGrantedAtAsc(Long cookbookId);
 
   List<CookbookAccess> findAllByCookbookIdAndPermissionNot(
       Long cookbookId,
