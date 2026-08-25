@@ -23,6 +23,7 @@ import com.matthew.recipe_backend.dtos.CreateCookbookDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.ShareCookbookDto;
 import com.matthew.recipe_backend.dtos.SharedUserDto;
+import com.matthew.recipe_backend.dtos.UpdateCookbookAccessDto;
 import com.matthew.recipe_backend.enums.CookbookPermission;
 import com.matthew.recipe_backend.enums.CookbookType;
 import com.matthew.recipe_backend.enums.RecipeStatus;
@@ -275,7 +276,7 @@ public class CookbookService {
         public void shareCookbook(Long cookbookId, User user, ShareCookbookDto request) {
                 Cookbook foundCookbook = cookbookRepository.findById(cookbookId)
                                 .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
-                CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, cookbookId, user.getId());
+                CookbookValidator.assertUserHasEditAccess(cookbookAccessRepository, cookbookId, user.getId());
 
                 for (Long userId : request.userIds()) {
                         User userToShare = userRepository.findById(userId)
@@ -304,6 +305,33 @@ public class CookbookService {
                                                                 Instant.now()));
                                         });
                 }
+        }
+
+        public List<SharedUserDto> updateCookbookAccess(Long cookbookId, User user, UpdateCookbookAccessDto request) {
+                Cookbook foundCookbook = cookbookRepository.findById(cookbookId)
+                                .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
+                CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, cookbookId, user.getId());
+
+                for (SharedUserDto userUpdate : request.users()) {
+                        CookbookAccess cookbookAccess = cookbookAccessRepository
+                                        .findByCookbookIdAndUserId(cookbookId, userUpdate.userId())
+                                        .orElseThrow(() -> new EntityNotFoundException(
+                                                        "User does not have access to this cookbook"));
+
+                        if (cookbookAccess.getPermission() == CookbookPermission.OWNER) {
+                                throw new IllegalArgumentException("Cannot modify cookbook owner");
+                        }
+
+                        cookbookAccess.setPermission(userUpdate.permission());
+                }
+
+                List<SharedUserDto> sharedUsers = cookbookAccessRepository
+                                .findAllByCookbookId(cookbookId).stream()
+                                .map(cookbookAccess -> new SharedUserDto(cookbookAccess.getUser().getId(),
+                                                cookbookAccess.getUser().getDisplayUsername(),
+                                                cookbookAccess.getPermission()))
+                                .toList();
+                return sharedUsers;
         }
 
         private Set<Long> getLikedRecipeIds(List<Long> recipeIds, Long userId) {

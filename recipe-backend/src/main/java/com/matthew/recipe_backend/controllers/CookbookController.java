@@ -12,6 +12,7 @@ import com.matthew.recipe_backend.dtos.CreateCookbookDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.ShareCookbookDto;
 import com.matthew.recipe_backend.dtos.SharedUserDto;
+import com.matthew.recipe_backend.dtos.UpdateCookbookAccessDto;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.services.CookbookService;
 
@@ -124,9 +125,10 @@ public class CookbookController {
     }
 
     @PutMapping("/{id}/access")
-    public String updateUserAccessToCookbook(@PathVariable String id, @RequestBody String entity) {
-        // TODO: process PUT request
-
-        return entity;
+    public ResponseEntity<List<SharedUserDto>> updateUserAccessToCookbook(@PathVariable Long id,
+            @AuthenticationPrincipal User user,
+            @RequestBody UpdateCookbookAccessDto request) {
+        cookbookService.updateCookbookAccess(id, user, request);
+        return ResponseEntity.ok(cookbookService.findAllSharedUsers(user, id));
     }
 }

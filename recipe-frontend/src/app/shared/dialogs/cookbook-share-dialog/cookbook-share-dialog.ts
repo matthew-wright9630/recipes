@@ -100,7 +100,6 @@ export class CookbookShareDialog {
     this.cookbookService
       .getSharedUsers(this.data.id)
       .subscribe((response: SharedUser[]) => {
-        console.log(response);
         this.sharedUsers = response;
       });
   }

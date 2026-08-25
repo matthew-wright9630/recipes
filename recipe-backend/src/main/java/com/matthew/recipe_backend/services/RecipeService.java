@@ -618,7 +618,7 @@ public class RecipeService {
 				.orElseThrow(() -> new RuntimeException("Recipe not found"));
 
 		for (CookbookUpdateDto cookbookUpdate : updateRecipeCookbook.cookbookUpdates()) {
-			CookbookValidator.assertUserHasAccessToCookbook(
+			CookbookValidator.assertUserHasEditAccess(
 					cookbookAccessRepository,
 					cookbookUpdate.cookbookId(),
 					user.getId());

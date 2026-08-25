@@ -2,6 +2,7 @@ package com.matthew.recipe_backend.repositories;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -72,4 +73,6 @@ public interface CookbookAccessRepository extends JpaRepository<CookbookAccess, 
       CookbookPermission permission);
 
   boolean existsByCookbookIdAndUserId(Long cookbookId, Long userId);
+
+  Optional<CookbookAccess> findByCookbookIdAndUserId(Long cookbookId, Long userId);
 }
