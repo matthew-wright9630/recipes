@@ -15,12 +15,9 @@
           <span class="cookbook-share__cookbook-name">
             {{ cookbook.name }}
           </span>
-
-          @if (cookbook.ownerId !== authState.currentUser()!.id) {
           <span class="cookbook-share__cookbook-owner">
             by {{ cookbook.ownerUsername }}
           </span>
-          }
         </div>
       </mat-list-option>
       }

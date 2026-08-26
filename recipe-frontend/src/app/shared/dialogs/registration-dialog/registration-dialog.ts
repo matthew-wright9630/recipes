@@ -55,29 +55,12 @@ export class RegistrationDialog {
   });
 
   ngOnInit(): void {
-    // this.form.valueChanges
-    //   .pipe(takeUntilDestroyed(this.destroyRef))
-    //   .subscribe((values) => {
-    //     this.formState.set({
-    //       username: values.username || '',
-    //       email: values.email || '',
-    //       password: values.password || '',
-    //       confirmPassword: values.confirmPassword || '',
-    //     });
-    //   });
     this.form.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.updateValidators();
       });
   }
-
-  // private formState = signal({
-  //   username: '',
-  //   email: '',
-  //   password: '',
-  //   confirmPassword: '',
-  // });
 
   updateValidators(): void {
     if (this.form.value.password !== this.form.value.confirmPassword) {

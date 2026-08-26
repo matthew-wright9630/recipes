@@ -28,6 +28,7 @@ import {
 } from '@angular/material/autocomplete';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-cookbook-share-dialog',
@@ -65,6 +66,7 @@ export class CookbookShareDialog {
   searchControl = new FormControl('');
   searchResults: UserSummary[] = [];
   sharedUsers: SharedUser[] = [];
+  imageBaseUrl = environment.imageBaseUrl;
 
   form = this.fb.group({
     username: [''],
@@ -134,6 +136,7 @@ export class CookbookShareDialog {
         {
           userId: user.id,
           username: user.username,
+          avatarUrl: user.avatarUrl,
         },
       ];
     }
@@ -154,6 +157,39 @@ export class CookbookShareDialog {
 
   removeRecipient(recipient: ShareRecipient): void {
     this.shareRecipients = this.shareRecipients.filter((r) => r !== recipient);
+  }
+
+  getInitials(name: string): string {
+    if (!name) return '';
+
+    const parts = name.trim().split(' ');
+
+    if (parts.length === 1) {
+      return parts[0].charAt(0).toUpperCase();
+    }
+
+    return (
+      parts[0].charAt(0) + parts[parts.length - 1].charAt(0)
+    ).toUpperCase();
+  }
+
+  getAvatarColor(name: string): string {
+    let hash = 0;
+
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    const colors = [
+      '#1976d2',
+      '#388e3c',
+      '#f57c00',
+      '#7b1fa2',
+      '#c2185b',
+      '#455a64',
+    ];
+
+    return colors[Math.abs(hash) % colors.length];
   }
 
   shareCookbook(): void {

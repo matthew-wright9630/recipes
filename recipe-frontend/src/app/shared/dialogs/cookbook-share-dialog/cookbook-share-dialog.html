@@ -36,7 +36,22 @@
         @for (user of searchResults; track user.id) {
         <mat-option [value]="user">
           <div class="cookbook-share__user-option">
-            <span>{{ user.username }}</span>
+            @if (user.avatarUrl) {
+            <img
+              class="cookbook-share__user-avatar"
+              [src]="imageBaseUrl + 'avatars/' + user.avatarUrl + '-thumb.jpg'"
+              [alt]="user.username"
+            />
+            } @else {
+            <div
+              class="cookbook-share__user-avatar"
+              [style.background]="getAvatarColor(user.username)"
+            >
+              {{ getInitials(user.username) }}
+            </div>
+            }
+
+            <span class="cookbook-share__user-name"> {{ user.username }} </span>
           </div>
         </mat-option>
         }
@@ -64,10 +79,30 @@
         class="cookbook-share__table"
       >
         <ng-container matColumnDef="user">
-          <th mat-header-cell *matHeaderCellDef>User</th>
-
+          <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let recipient">
-            {{ recipient.username ?? recipient.email }}
+            @if (recipient.username) {
+            <div class="cookbook-share__recipient">
+              @if (recipient.avatarUrl) {
+              <img
+                class="cookbook-share__user-avatar"
+                [src]="imageBaseUrl + 'avatars/' + recipient.avatarUrl + '-thumb.jpg'"
+                [alt]="recipient.username"
+              />
+              } @else {
+              <div
+                class="cookbook-share__user-avatar"
+                [style.background]="getAvatarColor(recipient.username)"
+              >
+                {{ getInitials(recipient.username) }}
+              </div>
+              }
+
+              <span>{{ recipient.username }}</span>
+            </div>
+            } @else {
+            <span>{{ recipient.email }}</span>
+            }
           </td>
         </ng-container>
 

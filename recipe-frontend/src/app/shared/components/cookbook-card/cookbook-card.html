@@ -3,11 +3,9 @@
     <mat-card-content class="cookbook-card__content">
       <div class="cookbook-card__title">
         <mat-card-title class="">{{ cookbook.name }} </mat-card-title>
-        @if (cookbook.ownerId !== authState.currentUser()!.id) {
         <span class="cookbook-share__cookbook-owner">
           by {{ cookbook.ownerUsername }}
         </span>
-        }
       </div>
       <img
         [src]="imageUrl + cookbook.imageUrl + '-thumb.jpg'"

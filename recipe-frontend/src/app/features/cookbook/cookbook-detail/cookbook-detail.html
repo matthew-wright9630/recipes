@@ -11,11 +11,9 @@
         <div class="cookbook-hero__header">
           <div class="cookbook-hero__title__div">
             <h1 class="cookbook-hero__title">{{ cookbook.name }}</h1>
-            @if (cookbook.ownerId !== authState.currentUser()!.id) {
             <span class="cookbook-share__cookbook-owner">
               by {{ cookbook.ownerUsername }}
             </span>
-            }
           </div>
           <div class="cookbook__owner-actions">
             @if(cookbook.permission === 'OWNER') {
