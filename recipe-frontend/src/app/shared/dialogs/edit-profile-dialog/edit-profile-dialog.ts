@@ -91,8 +91,6 @@ export class EditProfileDialog {
       return;
     }
 
-    console.log(this.usernameControl.value);
-
     this.userService
       .updateProfile(this.usernameControl.value, this.avatarUrl)
       .subscribe({

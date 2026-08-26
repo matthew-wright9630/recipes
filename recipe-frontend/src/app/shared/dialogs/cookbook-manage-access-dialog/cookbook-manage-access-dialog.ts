@@ -90,8 +90,6 @@ export class CookbookManageAccessDialog {
         this.userAccessUpdateRequest = this.sharedUsers.map((user) => ({
           userId: user.userId,
           permission: user.permission,
-          avatarUrl: user.avatarUrl,
-          removed: false,
         }));
       });
   }
@@ -103,16 +101,6 @@ export class CookbookManageAccessDialog {
 
     if (update) {
       update.permission = user.permission;
-    }
-  }
-
-  removeUser(user: SharedUser, removed: boolean): void {
-    const update = this.userAccessUpdateRequest.find(
-      (u) => u.userId === user.userId,
-    );
-
-    if (update) {
-      update.removed = removed;
     }
   }
 

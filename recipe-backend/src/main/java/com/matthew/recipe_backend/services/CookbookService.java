@@ -325,12 +325,7 @@ public class CookbookService {
                         if (cookbookAccess.getPermission() == CookbookPermission.OWNER) {
                                 throw new IllegalArgumentException("Cannot modify cookbook owner");
                         }
-
-                        if (userUpdate.removed()) {
-                                cookbookAccessRepository.delete(cookbookAccess);
-                        } else {
-                                cookbookAccess.setPermission(userUpdate.permission());
-                        }
+                        cookbookAccess.setPermission(userUpdate.permission());
                 }
 
                 List<SharedUserDto> sharedUsers = cookbookAccessRepository
