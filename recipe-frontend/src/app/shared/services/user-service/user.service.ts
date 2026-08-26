@@ -31,4 +31,11 @@ export class UserService {
       params: { username },
     });
   }
+
+  updateProfile(username: string, avatarUrl: string): Observable<User> {
+    return this.http.put<User>(this.baseURL + '/me', {
+      username,
+      avatarUrl,
+    });
+  }
 }

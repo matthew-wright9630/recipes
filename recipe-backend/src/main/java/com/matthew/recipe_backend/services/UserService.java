@@ -35,9 +35,11 @@ import jakarta.transaction.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ImageService imageService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, ImageService imageService) {
         this.userRepository = userRepository;
+        this.imageService = imageService;
     }
 
     public User findById(Long id) {
@@ -79,9 +81,17 @@ public class UserService {
             throw new UsernameAlreadyExistsException("Username is already in use");
         }
 
+        String oldAvatarUrl = foundUser.getAvatarUrl();
+
         foundUser.setUsername(updateUserDto.username());
+        foundUser.setAvatarUrl(updateUserDto.avatarUrl());
 
         User savedUser = userRepository.save(foundUser);
+
+        if (oldAvatarUrl != null &&
+                !oldAvatarUrl.equals(updateUserDto.avatarUrl())) {
+            imageService.deleteImage(oldAvatarUrl, "avatars");
+        }
         return UserMapper.toDto(savedUser);
     }
 

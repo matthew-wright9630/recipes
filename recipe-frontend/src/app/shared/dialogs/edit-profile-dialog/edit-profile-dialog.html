@@ -1,0 +1,65 @@
+<div class="edit-profile">
+  <div class="edit-profile__header">
+    <h2 mat-dialog-title>Edit Profile</h2>
+
+    <button
+      mat-icon-button
+      type="button"
+      (click)="onClose()"
+      class="edit-profile__close"
+      aria-label="Close"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content class="edit-profile__content">
+    <div class="edit-profile__avatar">
+      @if (avatarUrl) {
+      <img
+        [src]="imageUrl + avatarUrl + '-thumb.jpg'"
+        alt="Profile avatar"
+        class="edit-profile__avatar-image"
+      />
+      } @else {
+      <div class="edit-profile__avatar-placeholder">
+        <mat-icon>person</mat-icon>
+      </div>
+      }
+
+      <label mat-stroked-button class="edit-profile__avatar-button">
+        <mat-icon>photo_camera</mat-icon>
+        Change Photo
+
+        <input
+          type="file"
+          accept="image/*"
+          hidden
+          (change)="onAvatarSelected($event)"
+        />
+      </label>
+    </div>
+
+    <mat-form-field appearance="outline" class="edit-profile__username">
+      <mat-label>Username</mat-label>
+      <input matInput [formControl]="usernameControl" autocomplete="username" />
+
+      @if (usernameControl.hasError('required')) {
+      <mat-error>Username is required</mat-error>
+      }
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="edit-profile__actions" align="end">
+    <button mat-button type="button" (click)="onClose()">Cancel</button>
+
+    <button
+      mat-flat-button
+      type="button"
+      (click)="save()"
+      [disabled]="usernameControl.invalid"
+    >
+      Save Changes
+    </button>
+  </mat-dialog-actions>
+</div>

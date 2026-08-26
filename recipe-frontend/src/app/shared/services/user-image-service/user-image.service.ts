@@ -19,4 +19,10 @@ export class UserImageService {
       responseType: 'text',
     });
   }
+
+  uploadAvatar(formData: FormData): Observable<string> {
+    return this.http.post(this.baseURL + '/upload/avatar', formData, {
+      responseType: 'text',
+    });
+  }
 }
