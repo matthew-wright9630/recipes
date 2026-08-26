@@ -57,7 +57,7 @@ export class CookbookManageAccessDialog {
   private snackbar = inject(MatSnackBar);
   data = inject<CookbookDetailInterface>(MAT_DIALOG_DATA);
 
-  displayedColumns = ['user', 'access', 'remove'];
+  displayedColumns = ['user', 'access'];
   shareRecipients: ShareRecipient[] = [];
   searchControl = new FormControl('');
   searchResults: UserSummary[] = [];

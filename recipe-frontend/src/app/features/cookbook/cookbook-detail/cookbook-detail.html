@@ -20,15 +20,6 @@
             <button mat-raised-button (click)="onEditCookbook()">
               Edit Details
             </button>
-            } @if(cookbook.permission === 'OWNER' || cookbook.permission ===
-            'READ_WRITE'){
-            <button mat-raised-button (click)="onCookbookShare()">
-              Share Cookbook
-            </button>
-            } @if(cookbook.permission === 'OWNER') {
-            <button mat-raised-button (click)="onManageAccess()">
-              Manage Access
-            </button>
             } @if(cookbook.type === "NORMAL" && cookbook.permission === 'OWNER')
             {
             <button
@@ -38,6 +29,15 @@
               (click)="onDelete()"
             >
               Delete Cookbook
+            </button>
+            } @if(cookbook.permission === 'OWNER' || cookbook.permission ===
+            'READ_WRITE'){
+            <button mat-raised-button (click)="onCookbookShare()">
+              Share Cookbook
+            </button>
+            } @if(cookbook.permission === 'OWNER') {
+            <button mat-raised-button (click)="onManageAccess()">
+              Manage Access
             </button>
             }
           </div>
