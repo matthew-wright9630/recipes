@@ -271,6 +271,7 @@ public class CookbookService {
                                 .findAllByCookbookIdOrderByGrantedAtAsc(cookbookId).stream()
                                 .map(cookbookAccess -> new SharedUserDto(cookbookAccess.getUser().getId(),
                                                 cookbookAccess.getUser().getDisplayUsername(),
+                                                cookbookAccess.getUser().getAvatarUrl(),
                                                 cookbookAccess.getPermission()))
                                 .toList();
                 return sharedUsers;
@@ -336,6 +337,7 @@ public class CookbookService {
                                 .findAllByCookbookIdOrderByGrantedAtAsc(cookbookId).stream()
                                 .map(cookbookAccess -> new SharedUserDto(cookbookAccess.getUser().getId(),
                                                 cookbookAccess.getUser().getDisplayUsername(),
+                                                cookbookAccess.getUser().getAvatarUrl(),
                                                 cookbookAccess.getPermission()))
                                 .toList();
                 return sharedUsers;

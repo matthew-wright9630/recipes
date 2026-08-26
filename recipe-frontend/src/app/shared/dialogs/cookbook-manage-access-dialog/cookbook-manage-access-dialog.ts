@@ -24,6 +24,7 @@ import { ShareRecipient } from '../../models/share-recipient';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { UpdateUserPermission } from '../../models/update-user-permission';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-cookbook-share-dialog',
@@ -60,6 +61,7 @@ export class CookbookManageAccessDialog {
   shareRecipients: ShareRecipient[] = [];
   searchControl = new FormControl('');
   searchResults: UserSummary[] = [];
+  imageBaseUrl = environment.imageBaseUrl;
 
   sharedUsers: SharedUser[] = [];
 
@@ -85,16 +87,10 @@ export class CookbookManageAccessDialog {
         this.sharedUsers = response.filter(
           (user) => user.permission !== 'OWNER',
         );
-
-        console.log('sharedUsers:', this.sharedUsers);
-        console.log(
-          'permissions:',
-          this.sharedUsers.map((u) => u.permission),
-        );
-
         this.userAccessUpdateRequest = this.sharedUsers.map((user) => ({
           userId: user.userId,
           permission: user.permission,
+          avatarUrl: user.avatarUrl,
           removed: false,
         }));
       });
@@ -118,6 +114,39 @@ export class CookbookManageAccessDialog {
     if (update) {
       update.removed = removed;
     }
+  }
+
+  getInitials(name: string): string {
+    if (!name) return '';
+
+    const parts = name.trim().split(' ');
+
+    if (parts.length === 1) {
+      return parts[0].charAt(0).toUpperCase();
+    }
+
+    return (
+      parts[0].charAt(0) + parts[parts.length - 1].charAt(0)
+    ).toUpperCase();
+  }
+
+  getAvatarColor(name: string): string {
+    let hash = 0;
+
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    const colors = [
+      '#1976d2',
+      '#388e3c',
+      '#f57c00',
+      '#7b1fa2',
+      '#c2185b',
+      '#455a64',
+    ];
+
+    return colors[Math.abs(hash) % colors.length];
   }
 
   saveChanges(): void {

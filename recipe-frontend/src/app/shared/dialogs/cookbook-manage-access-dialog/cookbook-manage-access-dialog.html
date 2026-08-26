@@ -23,9 +23,31 @@
       >
         <!-- User -->
         <ng-container matColumnDef="user">
-          <th mat-header-cell *matHeaderCellDef>User</th>
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let recipient">
+            @if (recipient.username) {
+            <div class="cookbook-manage-access__recipient">
+              @if (recipient.avatarUrl) {
+              <img
+                class="cookbook-manage-access__user-avatar"
+                [src]="imageBaseUrl + 'avatars/' + recipient.avatarUrl + '-thumb.jpg'"
+                [alt]="recipient.username"
+              />
+              } @else {
+              <div
+                class="cookbook-manage-access__user-avatar"
+                [style.background]="getAvatarColor(recipient.username)"
+              >
+                {{ getInitials(recipient.username) }}
+              </div>
+              }
 
-          <td mat-cell *matCellDef="let user">{{ user.username }}</td>
+              <span>{{ recipient.username }}</span>
+            </div>
+            } @else {
+            <span>{{ recipient.email }}</span>
+            }
+          </td>
         </ng-container>
 
         <!-- Access -->
