@@ -41,6 +41,28 @@
   }
 }
 
+mat-selection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+}
+
+.cookbook-recipe__cookbook-option {
+  display: flex;
+  flex-direction: column;
+}
+
+.cookbook-recipe__cookbook-owner {
+  margin: 0;
+  max-width: 100%;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
 .cookbook-recipe__input {
   width: 100%;
 }
