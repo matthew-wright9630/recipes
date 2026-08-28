@@ -11,8 +11,9 @@ import { RecipeStateService } from '../../../shared/services/recipe-state-servic
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditProfileDialog } from '../../../shared/dialogs/edit-profile-dialog/edit-profile-dialog';
+import { User } from '../../../shared/models/user';
 
 @Component({
   selector: 'app-profile',
@@ -37,8 +38,8 @@ export class Profile {
   private recipeService = inject(RecipeService);
   authState = inject(AuthStateService);
   private recipeStateService = inject(RecipeStateService);
-  private destroyRef = inject(DestroyRef);
   private dialog = inject(MatDialog);
+  private destroyRef = inject(DestroyRef);
 
   likedRecipeError: string = '';
   RecipeHistoryError: string = '';
@@ -91,11 +92,17 @@ export class Profile {
   }
 
   onEditProfile(): void {
-    this.dialog.open(EditProfileDialog, {
+    const editProfile = this.dialog.open(EditProfileDialog, {
       width: '800px',
       maxWidth: '95vw',
       autoFocus: false,
       data: this.authState.currentUser(),
+    });
+
+    editProfile.afterClosed().subscribe((user: User | undefined) => {
+      if (user) {
+        this.authState.setCurrentUser(user);
+      }
     });
   }
 

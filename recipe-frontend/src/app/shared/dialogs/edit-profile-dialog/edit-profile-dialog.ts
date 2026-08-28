@@ -94,11 +94,8 @@ export class EditProfileDialog {
     this.userService
       .updateProfile(this.usernameControl.value, this.avatarUrl)
       .subscribe({
-        next: () => {
-          this.dialogRef.close({
-            username: this.usernameControl.value,
-            avatarUrl: this.avatarUrl,
-          });
+        next: (user) => {
+          this.dialogRef.close(user);
         },
       });
   }

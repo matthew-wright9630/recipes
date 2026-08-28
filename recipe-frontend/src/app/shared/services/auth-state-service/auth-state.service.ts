@@ -86,4 +86,8 @@ export class AuthStateService {
       }),
     );
   }
+
+  setCurrentUser(user: User): void {
+    this._currentUser.set(user);
+  }
 }

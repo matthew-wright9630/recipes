@@ -14,6 +14,7 @@ import { CookbookCard } from '../../../shared/components/cookbook-card/cookbook-
 import { MatButtonModule } from '@angular/material/button';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CookbookStateService } from '../../../shared/services/cookbook-state/cookbook-state.service';
 
 @Component({
   selector: 'app-cookbook',
@@ -36,6 +37,7 @@ export class CookbookComponent {
   private cookbookService = inject(CookbookService);
   private dialog = inject(MatDialog);
   private destroyRef = inject(DestroyRef);
+  private cookbookStateService = inject(CookbookStateService);
 
   currentPage: number = 0;
   searchTerm: string = '';
@@ -46,6 +48,19 @@ export class CookbookComponent {
 
   ngOnInit(): void {
     this.loadCookbooks();
+
+    this.cookbookStateService.cookbookUpdated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((updatedCookbook) => {
+        if (updatedCookbook) {
+          this.loadCookbooks();
+        }
+      });
+
+    this.cookbookStateService.cookbookDeleted$;
+    this.cookbookStateService.cookbookDeleted$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.loadCookbooks());
 
     this.searchControl.valueChanges
       .pipe(
