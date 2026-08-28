@@ -11,11 +11,11 @@
     <mat-selection-list (selectionChange)="onSelectionChange($event)">
       @for (cookbook of listOfCookbooks; track cookbook.id) {
       <mat-list-option [value]="cookbook" [selected]="cookbook.containsRecipe">
-        <div class="cookbook-share__cookbook-option">
-          <span class="cookbook-share__cookbook-name">
+        <div class="cookbook-recipe__cookbook-option">
+          <span class="cookbook-recipe__cookbook-name">
             {{ cookbook.name }}
           </span>
-          <span class="cookbook-share__cookbook-owner">
+          <span class="cookbook-recipe__cookbook-owner">
             by {{ cookbook.ownerUsername }}
           </span>
         </div>
