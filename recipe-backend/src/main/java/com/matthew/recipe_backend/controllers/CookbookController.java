@@ -10,6 +10,9 @@ import com.matthew.recipe_backend.dtos.CookbookWithRecipesDto;
 import com.matthew.recipe_backend.dtos.CookbookRecipeDto;
 import com.matthew.recipe_backend.dtos.CreateCookbookDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
+import com.matthew.recipe_backend.dtos.ShareCookbookDto;
+import com.matthew.recipe_backend.dtos.SharedUserDto;
+import com.matthew.recipe_backend.dtos.UpdateCookbookAccessDto;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.services.CookbookService;
 
@@ -20,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -100,4 +104,31 @@ public class CookbookController {
         return ResponseEntity.ok(cookbook);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteCookbook(@PathVariable long id,
+            @AuthenticationPrincipal User user) {
+        cookbookService.removeCookbook(user, id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/shared")
+    public ResponseEntity<List<SharedUserDto>> getAllSharedUsers(@PathVariable Long id,
+            @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(cookbookService.findAllSharedUsers(user, id));
+    }
+
+    @PostMapping("/{id}/share")
+    public ResponseEntity<Void> updateSharedUserList(@PathVariable Long id, @AuthenticationPrincipal User user,
+            @RequestBody ShareCookbookDto request) {
+        cookbookService.shareCookbook(id, user, request);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/access")
+    public ResponseEntity<List<SharedUserDto>> updateUserAccessToCookbook(@PathVariable Long id,
+            @AuthenticationPrincipal User user,
+            @RequestBody UpdateCookbookAccessDto request) {
+        cookbookService.updateCookbookAccess(id, user, request);
+        return ResponseEntity.ok(cookbookService.findAllSharedUsers(user, id));
+    }
 }

@@ -19,7 +19,7 @@ Find what you're looking for fast, without digging through a single long list.
 - Create, edit, and publish recipes
 - Paginated recipe browsing with live search
 
-![Browse Recipes](browse-homepage.png)
+![Browse Recipes](browse-recipes.png)
 
 ### Create and Edit Recipes
 
@@ -35,6 +35,18 @@ Find what you're looking for fast, without digging through a single long list.
   ![Cookbook](cookbooks.png)
 - Easily add and remove recipes from your cookbooks
   ![Adding recipe to cookbook](cookbook-recipes.png)
+
+### Cookbook Collaboration
+
+Cookbooks can be shared with other users, allowing multiple users to collaborate on the same collection of recipes.
+
+- Share cookbooks with other registered users
+- Owners have full control over the cookbook details, cookbook recipes, and who has access
+- Editors can add recipes to the cookbook and share the cookbook with additional users
+- Viewers can access the cookbook without making changes
+  ![Share Cookbooks](share-cookbooks.png)
+  ![View shared cookbook](shared-cookbook.png)
+  ![Manage Cookbook Access](manage-cookbook-access.png)
 
 ### Users
 
@@ -56,7 +68,8 @@ Find what you're looking for fast, without digging through a single long list.
 
 ## Planned Features
 
-- 📚 **Cookbook Sharing** — Share your cookbook collections with other users
+- 📚 **Cookbook Link** — Create a read-only link for easy sharing.
+- **Notifications** - Notify users when a cookbook has been shared with them or their access has changed.
 
 ---
 
@@ -127,6 +140,35 @@ Recipe browsing uses:
 - Spring Data `Page<T>` for server-side pagination
 - Live Angular search
 - Debounced API requests to reduce unnecessary network traffic
+
+---
+
+## Cookbook Authorization & Collaboration
+
+Cookbook sharing is implemented with role-based access control rather than treating a shared cookbook as simply public or private.
+
+Each cookbook can have multiple users with different levels of access:
+
+| Role   | Permissions                                                              |
+| ------ | ------------------------------------------------------------------------ |
+| Owner  | Full control of the cookbook, including managing recipes and user access |
+| Editor | Add recipes to a cookbook and can grant read-only access to users        |
+| Viewer | View the cookbook and its recipes without making changes                 |
+
+Authorization is enforced on the backend, so permissions are not dependent on the frontend hiding or disabling UI controls.
+
+When a user accesses a shared cookbook, the backend determines their relationship to the cookbook and applies the appropriate permissions before allowing the requested operation. This allows the same cookbook to support both individual ownership and collaborative access without duplicating cookbook data.
+
+---
+
+## Sharing & Account Privacy
+
+The cookbook sharing workflow supports two ways to find recipients:
+
+- **Search by username** — results show matching usernames, and clicking a name confirms whether that user already has access to the cookbook
+- **Search by exact email** — if a matching account exists, access is granted directly; if not, the request is silently ignored
+
+The email flow is intentionally quiet by design: returning "no account found" would let someone probe for which email addresses have accounts on the platform, so the response looks the same whether the account exists or not.
 
 ---
 

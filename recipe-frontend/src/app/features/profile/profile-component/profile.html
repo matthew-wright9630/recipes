@@ -6,12 +6,12 @@
         @if (authState.currentUser()?.avatarUrl) {
         <img
           class="profile__img"
-          [src]="imageBaseUrl + '/user/' + authState.currentUser()?.avatarUrl"
+          [src]="imageBaseUrl + 'avatars/' + authState.currentUser()?.avatarUrl +'-thumb.jpg'"
           alt="avatar"
         />
         } @else {
         <div
-          class="avatar"
+          class="profile__img"
           [style.background]="getAvatarColor(authState.currentUser()!.username)"
         >
           {{ getInitials(authState.currentUser()!.username) }}
@@ -20,13 +20,14 @@
       </div>
 
       <p class="profile__p">{{ authState.currentUser()?.username }}</p>
-      <p class="profile__p">{{ authState.currentUser()?.email }}</p>
+      <p class="profile__email">{{ authState.currentUser()?.email }}</p>
     </div>
 
     <mat-divider></mat-divider>
 
     <div class="profile__footer">
       <!-- <button mat-button>Settings</button> -->
+      <button mat-button (click)="this.onEditProfile()">Edit Profile</button>
       <button mat-button (click)="this.logout()">Sign Out</button>
     </div>
   </mat-card>

@@ -24,6 +24,22 @@ public class CookbookValidator {
         }
     }
 
+    public static void assertUserHasEditAccess(
+            CookbookAccessRepository cookbookAccessRepository,
+            Long cookbookId,
+            Long userId) {
+
+        boolean isOwner = cookbookAccessRepository
+                .existsByCookbookIdAndUserIdAndPermissionIn(
+                        cookbookId,
+                        userId,
+                        List.of(CookbookPermission.OWNER, CookbookPermission.READ_WRITE));
+
+        if (!isOwner) {
+            throw new IllegalStateException("User does not own this cookbook");
+        }
+    }
+
     public static void assertUserHasAccessToCookbook(CookbookAccessRepository cookbookAccessRepository,
             Long cookbookId,
             Long userId) {

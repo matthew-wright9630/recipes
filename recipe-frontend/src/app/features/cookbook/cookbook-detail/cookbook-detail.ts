@@ -9,8 +9,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { AuthStateService } from '../../../shared/services/auth-state-service/auth-state.service';
 import { Cookbook } from '../../../shared/models/cookbook';
 import { environment } from '../../../../environments/environment';
-import { CookbookService } from '../cookbook.service';
-import { ActivatedRoute } from '@angular/router';
+import { CookbookService } from '../../../shared/services/cookbook-service/cookbook.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CookbookDetailInterface } from '../../../shared/models/cookbook-detail-interface';
 import { RecipeComponent } from '../../../shared/components/recipe-card/recipe-card.component';
 import { CookbookStateService } from '../../../shared/services/cookbook-state/cookbook-state.service';
@@ -19,6 +19,9 @@ import { RecipeStateService } from '../../../shared/services/recipe-state-servic
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RecipeService } from '../../../shared/services/recipe-service/recipe.service';
+import { ConfirmationDialog } from '../../../shared/dialogs/confirmation-dialog/confirmation-dialog';
+import { CookbookShareDialog } from '../../../shared/dialogs/cookbook-share-dialog/cookbook-share-dialog';
+import { CookbookManageAccessDialog } from '../../../shared/dialogs/cookbook-manage-access-dialog/cookbook-manage-access-dialog';
 
 @Component({
   selector: 'app-cookbook-detail',
@@ -36,6 +39,7 @@ import { RecipeService } from '../../../shared/services/recipe-service/recipe.se
 })
 export class CookbookDetail {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private dialog = inject(MatDialog);
   private destroyRef = inject(DestroyRef);
   private cookbookService = inject(CookbookService);
@@ -67,7 +71,6 @@ export class CookbookDetail {
         if (updatedRecipe) {
           this.loadCookbook();
         }
-        console.log(this.cookbook()?.type === 'BOOKMARK', updatedRecipe);
         if (
           this.cookbook()?.type === 'BOOKMARK' &&
           !updatedRecipe.bookmarkedByCurrentUser
@@ -116,6 +119,48 @@ export class CookbookDetail {
       maxWidth: '95vw',
       autoFocus: false,
       data: this.cookbook(),
+    });
+  }
+
+  onCookbookShare(): void {
+    this.dialog.open(CookbookShareDialog, {
+      width: '800px',
+      maxWidth: '95vw',
+      autoFocus: false,
+      data: this.cookbook(),
+    });
+  }
+
+  onManageAccess(): void {
+    this.dialog.open(CookbookManageAccessDialog, {
+      width: '800px',
+      maxWidth: '95vw',
+      autoFocus: false,
+      data: this.cookbook(),
+    });
+  }
+
+  onDelete(): void {
+    const confirmRef = this.dialog.open(ConfirmationDialog, {
+      data: {
+        title: `Delete ${this.cookbook.name}`,
+        message:
+          'This will permanently delete your cookbook. If this is shared with other users, they will not be able to access this cookbook. This action is not reversable.',
+        confirmLabel: 'Delete',
+        confirmColor: 'warn',
+      },
+    });
+
+    confirmRef.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) return;
+      this.cookbookService.deleteDraftRecipe(this.cookbook()!.id).subscribe({
+        next: () => {
+          this.cookbookStateService.notifyCookbookDeleted(this.cookbook()!.id);
+          this.router.navigate(['/cookbooks']);
+          this.dialog.closeAll();
+        },
+        error: (err) => console.error(err),
+      });
     });
   }
 }

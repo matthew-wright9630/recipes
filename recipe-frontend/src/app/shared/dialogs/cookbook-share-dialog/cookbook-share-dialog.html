@@ -1,0 +1,144 @@
+<div class="cookbook-share">
+  <div class="cookbook-share__header">
+    <h2 mat-dialog-title>Share Cookbook</h2>
+
+    <button
+      mat-icon-button
+      (click)="onClose()"
+      class="cookbook-share__close"
+      aria-label="Close"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content class="cookbook-share__content">
+    <div class="cookbook-share__private">
+      <mat-form-field
+        class="cookbook-share__search-container"
+        appearance="outline"
+      >
+        <mat-label>Search by username</mat-label>
+
+        <input
+          matInput
+          [formControl]="searchControl"
+          [matAutocomplete]="userAuto"
+        />
+
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-autocomplete
+        #userAuto="matAutocomplete"
+        (optionSelected)="addUserId($event.option.value)"
+      >
+        @for (user of searchResults; track user.id) {
+        <mat-option [value]="user">
+          <div class="cookbook-share__user-option">
+            @if (user.avatarUrl) {
+            <img
+              class="cookbook-share__user-avatar"
+              [src]="imageBaseUrl + 'avatars/' + user.avatarUrl + '-thumb.jpg'"
+              [alt]="user.username"
+            />
+            } @else {
+            <div
+              class="cookbook-share__user-avatar"
+              [style.background]="getAvatarColor(user.username)"
+            >
+              {{ getInitials(user.username) }}
+            </div>
+            }
+
+            <span class="cookbook-share__user-name"> {{ user.username }} </span>
+          </div>
+        </mat-option>
+        }
+      </mat-autocomplete>
+
+      <div class="cookbook-share__email-div" [formGroup]="form">
+        <mat-form-field class="cookbook-share__email" appearance="outline">
+          <mat-label>Email address</mat-label>
+          <input matInput formControlName="email" type="email" />
+        </mat-form-field>
+
+        <button mat-stroked-button type="button" (click)="addEmail()">
+          Add
+        </button>
+      </div>
+    </div>
+
+    @if (shareRecipients.length > 0) {
+    <div class="cookbook-share__recipients">
+      <h3 class="cookbook-share__recipients-title">People to share with</h3>
+
+      <table
+        mat-table
+        [dataSource]="shareRecipients"
+        class="cookbook-share__table"
+      >
+        <ng-container matColumnDef="user">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let recipient">
+            @if (recipient.username) {
+            <div class="cookbook-share__recipient">
+              @if (recipient.avatarUrl) {
+              <img
+                class="cookbook-share__user-avatar"
+                [src]="imageBaseUrl + 'avatars/' + recipient.avatarUrl + '-thumb.jpg'"
+                [alt]="recipient.username"
+              />
+              } @else {
+              <div
+                class="cookbook-share__user-avatar"
+                [style.background]="getAvatarColor(recipient.username)"
+              >
+                {{ getInitials(recipient.username) }}
+              </div>
+              }
+
+              <span>{{ recipient.username }}</span>
+            </div>
+            } @else {
+            <span>{{ recipient.email }}</span>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="remove">
+          <th mat-header-cell *matHeaderCellDef></th>
+
+          <td mat-cell *matCellDef="let recipient">
+            <button
+              mat-icon-button
+              type="button"
+              (click)="removeRecipient(recipient)"
+              aria-label="Remove recipient"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+        <tr mat-row *matRowDef="let recipient; columns: displayedColumns"></tr>
+      </table>
+    </div>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="cookbook-share__actions" align="end">
+    <button mat-button type="button" (click)="onClose()">Cancel</button>
+
+    <button
+      mat-flat-button
+      type="button"
+      (click)="shareCookbook()"
+      [disabled]="shareRecipients.length === 0"
+    >
+      Share
+    </button>
+  </mat-dialog-actions>
+</div>

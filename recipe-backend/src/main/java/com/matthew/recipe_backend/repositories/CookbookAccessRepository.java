@@ -2,6 +2,7 @@ package com.matthew.recipe_backend.repositories;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ public interface CookbookAccessRepository extends JpaRepository<CookbookAccess, 
           FROM CookbookAccess ca
           WHERE ca.user = :user
             AND ca.permission IN :permissions
+            AND ca.cookbook.deleted = false
       """)
   Page<Cookbook> findCookbooksByUserAndPermissions(
       @Param("user") User user,
@@ -32,6 +34,7 @@ public interface CookbookAccessRepository extends JpaRepository<CookbookAccess, 
           FROM CookbookAccess ca
           WHERE ca.user.id = :userId
             AND ca.permission IN :permissions
+            AND ca.cookbook.deleted = false
             AND LOWER(ca.cookbook.name) LIKE LOWER(CONCAT('%', :name, '%'))
       """)
   Page<Cookbook> findCookbooksByUserAndPermissionsAndNameContainingIgnoreCase(@Param("userId") Long userId,
@@ -41,7 +44,8 @@ public interface CookbookAccessRepository extends JpaRepository<CookbookAccess, 
           SELECT ca.cookbook
           FROM CookbookAccess ca
           WHERE ca.user.id = :userId
-            AND ca.permission IN :permissions
+          AND ca.permission IN :permissions
+            AND ca.cookbook.deleted = false
       """)
   List<Cookbook> findCookbooksByUserIdAndPermissionIn(
       @Param("userId") Long userId,
@@ -51,4 +55,24 @@ public interface CookbookAccessRepository extends JpaRepository<CookbookAccess, 
       Long cookbookId,
       Long userId,
       Collection<CookbookPermission> permissions);
+
+  @Query("""
+          SELECT ca.permission
+          FROM CookbookAccess ca
+          WHERE ca.cookbook.id = :cookbookId
+            AND ca.user.id = :userId
+      """)
+  CookbookPermission findPermissionByCookbookIdAndUserId(
+      @Param("cookbookId") Long cookbookId,
+      @Param("userId") Long userId);
+
+  List<CookbookAccess> findAllByCookbookIdOrderByGrantedAtAsc(Long cookbookId);
+
+  List<CookbookAccess> findAllByCookbookIdAndPermissionNot(
+      Long cookbookId,
+      CookbookPermission permission);
+
+  boolean existsByCookbookIdAndUserId(Long cookbookId, Long userId);
+
+  Optional<CookbookAccess> findByCookbookIdAndUserId(Long cookbookId, Long userId);
 }

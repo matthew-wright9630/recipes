@@ -1,6 +1,7 @@
 package com.matthew.recipe_backend.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.matthew.recipe_backend.dtos.ChangePasswordDto;
+import com.matthew.recipe_backend.dtos.SharedUserDto;
 import com.matthew.recipe_backend.dtos.UserDto;
+import com.matthew.recipe_backend.dtos.UserSummaryDto;
 import com.matthew.recipe_backend.dtos.UserUpdateDto;
 import com.matthew.recipe_backend.exceptions.InvalidCredentialsException;
 import com.matthew.recipe_backend.exceptions.InvalidRequestException;
@@ -32,9 +35,11 @@ import jakarta.transaction.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ImageService imageService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, ImageService imageService) {
         this.userRepository = userRepository;
+        this.imageService = imageService;
     }
 
     public User findById(Long id) {
@@ -43,6 +48,12 @@ public class UserService {
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+
+    public UserDto findByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> (new EntityNotFoundException("User not found")));
+        return UserMapper.toDto(user);
     }
 
     public UserDetails loadUserByUsername(String username) {
@@ -70,9 +81,17 @@ public class UserService {
             throw new UsernameAlreadyExistsException("Username is already in use");
         }
 
+        String oldAvatarUrl = foundUser.getAvatarUrl();
+
         foundUser.setUsername(updateUserDto.username());
+        foundUser.setAvatarUrl(updateUserDto.avatarUrl());
 
         User savedUser = userRepository.save(foundUser);
+
+        if (oldAvatarUrl != null &&
+                !oldAvatarUrl.equals(updateUserDto.avatarUrl())) {
+            imageService.deleteImage(oldAvatarUrl, "avatars");
+        }
         return UserMapper.toDto(savedUser);
     }
 
@@ -82,5 +101,16 @@ public class UserService {
         UserDto response = UserMapper.toDto(saved);
 
         return response;
+    }
+
+    public List<UserSummaryDto> searchUsers(String username) {
+        List<User> foundUsers = userRepository.findByUsernameContainingIgnoreCase(username);
+
+        return foundUsers.stream()
+                .map(user -> new UserSummaryDto(
+                        user.getId(),
+                        user.getDisplayUsername(),
+                        user.getAvatarUrl()))
+                .toList();
     }
 }

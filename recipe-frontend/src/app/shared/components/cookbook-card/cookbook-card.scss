@@ -20,10 +20,6 @@
   align-items: center;
 }
 
-mat-card-title {
-  margin-bottom: 8px;
-}
-
 .cookbook-card__title {
   display: -webkit-box;
   line-clamp: 2;
@@ -32,6 +28,7 @@ mat-card-title {
   overflow: hidden;
   height: 3.5rem;
   font-size: clamp(1.1rem, 1.5vw, 1.5rem);
+  margin-bottom: 2vh;
 }
 
 .cookbook-card__img {

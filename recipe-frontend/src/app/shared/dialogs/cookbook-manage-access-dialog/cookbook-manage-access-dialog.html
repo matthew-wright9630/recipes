@@ -1,0 +1,98 @@
+<div class="cookbook-manage-access">
+  <div class="cookbook-manage-access__header">
+    <h2 mat-dialog-title>Manage Access</h2>
+
+    <button
+      mat-icon-button
+      type="button"
+      (click)="onClose()"
+      class="cookbook-manage-access__close"
+      aria-label="Close"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content class="cookbook-manage-access__content">
+    @if (sharedUsers.length > 0) {
+    <div class="cookbook-manage-access__recipients">
+      <table
+        mat-table
+        [dataSource]="sharedUsers"
+        class="cookbook-manage-access__table"
+      >
+        <!-- User -->
+        <ng-container matColumnDef="user">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let recipient">
+            @if (recipient.username) {
+            <div class="cookbook-manage-access__recipient">
+              @if (recipient.avatarUrl) {
+              <img
+                class="cookbook-manage-access__user-avatar"
+                [src]="imageBaseUrl + 'avatars/' + recipient.avatarUrl + '-thumb.jpg'"
+                [alt]="recipient.username"
+              />
+              } @else {
+              <div
+                class="cookbook-manage-access__user-avatar"
+                [style.background]="getAvatarColor(recipient.username)"
+              >
+                {{ getInitials(recipient.username) }}
+              </div>
+              }
+
+              <span>{{ recipient.username }}</span>
+            </div>
+            } @else {
+            <span>{{ recipient.email }}</span>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Access -->
+        <ng-container matColumnDef="access">
+          <th mat-header-cell *matHeaderCellDef>Access</th>
+
+          <td mat-cell *matCellDef="let user">
+            <mat-form-field
+              appearance="outline"
+              class="cookbook-manage-access__access-select"
+            >
+              <mat-select
+                [(value)]="user.permission"
+                (selectionChange)="updateUserAccess(user)"
+              >
+                <mat-option value="READ">Reader</mat-option>
+                <mat-option value="READ_WRITE">Editor</mat-option>
+                <mat-option value="REVOKED">No Access</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+        <tr mat-row *matRowDef="let user; columns: displayedColumns"></tr>
+      </table>
+    </div>
+    } @else {
+    <div class="cookbook-manage-access__empty">
+      No other users currently have access to this cookbook.
+    </div>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="cookbook-manage-access__actions" align="end">
+    <button mat-button type="button" (click)="onClose()">Cancel</button>
+
+    <button
+      mat-flat-button
+      type="button"
+      (click)="saveChanges()"
+      [disabled]="sharedUsers.length === 0"
+    >
+      Save Changes
+    </button>
+  </mat-dialog-actions>
+</div>

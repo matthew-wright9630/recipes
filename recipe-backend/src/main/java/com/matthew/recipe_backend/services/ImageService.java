@@ -21,14 +21,20 @@ import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.models.UserImage;
 import com.matthew.recipe_backend.repositories.UserImageRepository;
 
+import jakarta.transaction.Transactional;
 import net.coobird.thumbnailator.Thumbnails;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.Delete;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Service
+@Transactional
 public class ImageService {
 
     private final UserImageRepository userImageRepository;
@@ -42,7 +48,7 @@ public class ImageService {
         this.environment = environment;
     }
 
-    public String processAndUploadImage(MultipartFile file, User user) throws IOException {
+    public String processAndUploadImage(MultipartFile file, User user, String fileType) throws IOException {
         if (file.isEmpty()) {
             throw new IllegalArgumentException("File is empty");
         }
@@ -75,8 +81,8 @@ public class ImageService {
                 .outputFormat("jpg")
                 .toOutputStream(thumbStream);
 
-        saveImage(mediumStream, baseKey + "-medium.jpg");
-        saveImage(thumbStream, baseKey + "-thumb.jpg");
+        saveImage(mediumStream, baseKey + "-medium.jpg", fileType);
+        saveImage(thumbStream, baseKey + "-thumb.jpg", fileType);
 
         UserImage userImage = new UserImage(user, baseKey, OffsetDateTime.now());
         userImageRepository.save(userImage);
@@ -87,11 +93,11 @@ public class ImageService {
     @Value("${aws.bucket}")
     private String bucket;
 
-    private void saveImage(ByteArrayOutputStream stream, String filename) {
+    private void saveImage(ByteArrayOutputStream stream, String filename, String fileType) {
         if (environment.acceptsProfiles(Profiles.of("dev"))) {
             try {
                 Files.write(
-                        Paths.get("uploads/recipes/", filename),
+                        Paths.get("uploads/", fileType, "/", filename),
                         stream.toByteArray());
             } catch (IOException e) {
                 throw new RuntimeException("Unable to save local image", e);
@@ -100,10 +106,37 @@ public class ImageService {
             s3Client.putObject(
                     PutObjectRequest.builder()
                             .bucket(bucket)
-                            .key("recipes/" + filename)
+                            .key(fileType + "/" + filename)
                             .contentType("image/jpeg")
                             .build(),
                     RequestBody.fromBytes(stream.toByteArray()));
+        }
+    }
+
+    public void deleteImage(String baseKey, String fileType) {
+        if (environment.acceptsProfiles(Profiles.of("dev"))) {
+            try {
+                Files.deleteIfExists(
+                        Paths.get("uploads", fileType, baseKey + "-medium.jpg"));
+                Files.deleteIfExists(
+                        Paths.get("uploads", fileType, baseKey + "-thumb.jpg"));
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to delete local image", e);
+            }
+        } else {
+            s3Client.deleteObjects(
+                    DeleteObjectsRequest.builder()
+                            .bucket(bucket)
+                            .delete(Delete.builder()
+                                    .objects(
+                                            ObjectIdentifier.builder()
+                                                    .key(fileType + "/" + baseKey + "-medium.jpg")
+                                                    .build(),
+                                            ObjectIdentifier.builder()
+                                                    .key(fileType + "/" + baseKey + "-thumb.jpg")
+                                                    .build())
+                                    .build())
+                            .build());
         }
     }
 

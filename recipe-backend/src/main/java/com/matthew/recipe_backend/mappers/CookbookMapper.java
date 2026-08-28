@@ -8,6 +8,6 @@ public class CookbookMapper {
     public static CookbookDto toDto(Cookbook cookbook) {
         return new CookbookDto(
                 cookbook.getId(), cookbook.getName(), cookbook.getDescription(), cookbook.getImageUrl(),
-                cookbook.getUpdatedAt());
+                cookbook.getUpdatedAt(), cookbook.getOwner().getId(), cookbook.getOwner().getDisplayUsername());
     }
 }

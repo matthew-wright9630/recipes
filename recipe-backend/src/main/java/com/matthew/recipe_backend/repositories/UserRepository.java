@@ -1,5 +1,6 @@
 package com.matthew.recipe_backend.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
@@ -19,4 +20,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
 
     Optional<User> findByEmail(String email);
+
+    List<User> findByUsernameContainingIgnoreCase(String username);
 }

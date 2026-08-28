@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RecipeService } from '../../services/recipe-service/recipe.service';
-import { CookbookService } from '../../../features/cookbook/cookbook.service';
+import { CookbookService } from '../../services/cookbook-service/cookbook.service';
 import { CookbookSelection } from '../../models/cookbook-selection';
 import { MatListModule, MatSelectionListChange } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';
@@ -12,6 +12,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInput } from '@angular/material/input';
 import { CookbookStateService } from '../../services/cookbook-state/cookbook-state.service';
+import { AuthStateService } from '../../services/auth-state-service/auth-state.service';
 
 @Component({
   selector: 'app-cookbook-recipe-dialog',
@@ -33,6 +34,7 @@ export class CookbookRecipeDialog {
   private cookbookService = inject(CookbookService);
   private cookbookStateService = inject(CookbookStateService);
 
+  authState = inject(AuthStateService);
   listOfCookbooks: CookbookSelection[] = [];
 
   private dialog = inject(MatDialogRef);
@@ -80,6 +82,8 @@ export class CookbookRecipeDialog {
           name: cookbook.name,
           containsRecipe: true,
           type: 'BOOKMARK',
+          ownerId: this.authState.currentUser()!.id,
+          ownerUsername: this.authState.currentUser()!.username,
         });
       }
 

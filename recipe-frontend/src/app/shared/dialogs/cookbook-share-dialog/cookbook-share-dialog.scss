@@ -1,0 +1,88 @@
+.cookbook-share {
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 2vw;
+  }
+
+  &__close {
+    margin-left: auto;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__private {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__search-container {
+    width: 100%;
+  }
+
+  &__user-option,
+  &__recipient {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__user-avatar {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    border-radius: 50%;
+    object-fit: cover;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+  }
+
+  &__email-div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__email {
+    flex: 1;
+  }
+
+  &__user-option {
+    display: flex;
+    align-items: center;
+  }
+
+  &__recipients {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__recipients-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  &__table {
+    width: 100%;
+  }
+
+  &__actions {
+    padding-top: 16px;
+  }
+}

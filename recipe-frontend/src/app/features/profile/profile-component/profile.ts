@@ -11,6 +11,8 @@ import { RecipeStateService } from '../../../shared/services/recipe-state-servic
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment';
+import { MatDialog } from '@angular/material/dialog';
+import { EditProfileDialog } from '../../../shared/dialogs/edit-profile-dialog/edit-profile-dialog';
 
 @Component({
   selector: 'app-profile',
@@ -36,6 +38,7 @@ export class Profile {
   authState = inject(AuthStateService);
   private recipeStateService = inject(RecipeStateService);
   private destroyRef = inject(DestroyRef);
+  private dialog = inject(MatDialog);
 
   likedRecipeError: string = '';
   RecipeHistoryError: string = '';
@@ -84,6 +87,15 @@ export class Profile {
       error: () => {
         this.RecipeHistoryError = 'We could not load your recipe history';
       },
+    });
+  }
+
+  onEditProfile(): void {
+    this.dialog.open(EditProfileDialog, {
+      width: '800px',
+      maxWidth: '95vw',
+      autoFocus: false,
+      data: this.authState.currentUser(),
     });
   }
 

@@ -12,11 +12,11 @@ export class CookbookStateService {
   private cookbookDeleted = new Subject<number>();
   cookbookDeleted$ = this.cookbookDeleted.asObservable();
 
-  notifycookbookUpdated(cookbook: Cookbook): void {
+  notifyCookbookUpdated(cookbook: Cookbook): void {
     this.cookbookUpdated.next(cookbook);
   }
 
-  notifycookbookDeleted(id: number): void {
+  notifyCookbookDeleted(id: number): void {
     this.cookbookDeleted.next(id);
   }
 }

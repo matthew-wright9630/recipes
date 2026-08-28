@@ -1,10 +1,12 @@
 package com.matthew.recipe_backend.services;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,6 +21,10 @@ import com.matthew.recipe_backend.dtos.CookbookRecipeSelectionDto;
 import com.matthew.recipe_backend.dtos.CookbookWithRecipesDto;
 import com.matthew.recipe_backend.dtos.CreateCookbookDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
+import com.matthew.recipe_backend.dtos.ShareCookbookDto;
+import com.matthew.recipe_backend.dtos.SharedUserDto;
+import com.matthew.recipe_backend.dtos.UpdateCookbookAccessDto;
+import com.matthew.recipe_backend.dtos.UpdateUserPermission;
 import com.matthew.recipe_backend.enums.CookbookPermission;
 import com.matthew.recipe_backend.enums.CookbookType;
 import com.matthew.recipe_backend.enums.RecipeStatus;
@@ -125,7 +131,10 @@ public class CookbookService {
                                 likedIds.contains(recipe.getId()),
                                 bookmarkedIds.contains(recipe.getId()))).toList();
 
-                return CookbookWithRecipesMapper.toDto(foundCookbook, recipeDtos, user.getId());
+                CookbookPermission permission = cookbookAccessRepository.findPermissionByCookbookIdAndUserId(cookbookId,
+                                user.getId());
+
+                return CookbookWithRecipesMapper.toDto(foundCookbook, recipeDtos, user.getId(), permission);
         }
 
         public Page<CookbookDto> findAllAccessibleCookbooks(Pageable pageable, String search, User user) {
@@ -161,11 +170,12 @@ public class CookbookService {
                 return cookbooks.stream()
                                 .map(cookbook -> CookbookRecipeSelectionMapper.toDto(
                                                 cookbook,
-                                                recipeCookbookIds.contains(cookbook.getId())))
+                                                recipeCookbookIds.contains(cookbook.getId()),
+                                                cookbook.getOwner().getId(),
+                                                cookbook.getOwner().getDisplayUsername()))
                                 .toList();
         }
 
-        @Transactional
         public CookbookDto createCookbook(String username, CreateCookbookDto cookbookCreationDto) {
                 User user = userRepository.findByEmail(username.toLowerCase())
                                 .orElseThrow(() -> new UserNotFoundException(username));
@@ -183,7 +193,6 @@ public class CookbookService {
                 return CookbookMapper.toDto(cookbook);
         }
 
-        @Transactional
         public CookbookDto addRecipeToCookbook(String username, Long cookbookId, AddRecipeDto addRecipeDto) {
                 User user = userRepository.findByEmail(username.toLowerCase())
                                 .orElseThrow(() -> new UserNotFoundException(username));
@@ -226,7 +235,6 @@ public class CookbookService {
                                                 CookbookType.BOOKMARK));
         }
 
-        @Transactional
         public CookbookDto editCookbook(User user, Long cookbookId, CreateCookbookDto cookbookEditDto) {
                 Cookbook foundCookbook = cookbookRepository.findById(cookbookId)
                                 .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
@@ -242,6 +250,92 @@ public class CookbookService {
                 foundCookbook.setName(cookbookEditDto.name());
 
                 return CookbookMapper.toDto(foundCookbook);
+        }
+
+        public void removeCookbook(User user, Long cookbookId) {
+                Cookbook foundCookbook = cookbookRepository.findById(cookbookId)
+                                .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
+                CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, cookbookId, user.getId());
+
+                foundCookbook.setDeleted(true);
+                foundCookbook.setUpdatedAt(OffsetDateTime.now());
+                cookbookRepository.save(foundCookbook);
+        }
+
+        public List<SharedUserDto> findAllSharedUsers(User user, Long cookbookId) {
+                Cookbook foundCookbook = cookbookRepository.findById(cookbookId)
+                                .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
+                CookbookValidator.assertUserHasAccessToCookbook(cookbookAccessRepository, cookbookId, user.getId());
+
+                List<SharedUserDto> sharedUsers = cookbookAccessRepository
+                                .findAllByCookbookIdOrderByGrantedAtAsc(cookbookId).stream()
+                                .map(cookbookAccess -> new SharedUserDto(cookbookAccess.getUser().getId(),
+                                                cookbookAccess.getUser().getDisplayUsername(),
+                                                cookbookAccess.getUser().getAvatarUrl(),
+                                                cookbookAccess.getPermission()))
+                                .toList();
+                return sharedUsers;
+        }
+
+        public void shareCookbook(Long cookbookId, User user, ShareCookbookDto request) {
+                Cookbook foundCookbook = cookbookRepository.findById(cookbookId)
+                                .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
+                CookbookValidator.assertUserHasEditAccess(cookbookAccessRepository, cookbookId, user.getId());
+
+                for (Long userId : request.userIds()) {
+                        User userToShare = userRepository.findById(userId)
+                                        .orElseThrow(() -> new UserNotFoundException("User does not exist"));
+
+                        if (cookbookAccessRepository.existsByCookbookIdAndUserId(cookbookId, userToShare.getId())) {
+                                continue;
+                        }
+
+                        cookbookAccessRepository.save(new CookbookAccess(foundCookbook, userToShare,
+                                        CookbookPermission.READ, Instant.now()));
+                }
+
+                for (String email : request.emails()) {
+                        userRepository.findByEmail(email)
+                                        .ifPresent(userToShare -> {
+                                                if (cookbookAccessRepository.existsByCookbookIdAndUserId(
+                                                                cookbookId, userToShare.getId())) {
+                                                        return;
+                                                }
+
+                                                cookbookAccessRepository.save(new CookbookAccess(
+                                                                foundCookbook,
+                                                                userToShare,
+                                                                CookbookPermission.READ,
+                                                                Instant.now()));
+                                        });
+                }
+        }
+
+        public List<SharedUserDto> updateCookbookAccess(Long cookbookId, User user, UpdateCookbookAccessDto request) {
+                Cookbook foundCookbook = cookbookRepository.findById(cookbookId)
+                                .orElseThrow(() -> new EntityNotFoundException("Cookbook not found"));
+                CookbookValidator.assertUserOwnsCookbook(cookbookAccessRepository, cookbookId, user.getId());
+
+                for (UpdateUserPermission userUpdate : request.users()) {
+                        CookbookAccess cookbookAccess = cookbookAccessRepository
+                                        .findByCookbookIdAndUserId(cookbookId, userUpdate.userId())
+                                        .orElseThrow(() -> new EntityNotFoundException(
+                                                        "User does not have access to this cookbook"));
+
+                        if (cookbookAccess.getPermission() == CookbookPermission.OWNER) {
+                                throw new IllegalArgumentException("Cannot modify cookbook owner");
+                        }
+                        cookbookAccess.setPermission(userUpdate.permission());
+                }
+
+                List<SharedUserDto> sharedUsers = cookbookAccessRepository
+                                .findAllByCookbookIdOrderByGrantedAtAsc(cookbookId).stream()
+                                .map(cookbookAccess -> new SharedUserDto(cookbookAccess.getUser().getId(),
+                                                cookbookAccess.getUser().getDisplayUsername(),
+                                                cookbookAccess.getUser().getAvatarUrl(),
+                                                cookbookAccess.getPermission()))
+                                .toList();
+                return sharedUsers;
         }
 
         private Set<Long> getLikedRecipeIds(List<Long> recipeIds, Long userId) {

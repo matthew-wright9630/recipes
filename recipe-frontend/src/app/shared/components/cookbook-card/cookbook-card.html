@@ -1,9 +1,12 @@
 <section class="cookbook-card">
   <mat-card (click)="routeToCookbook()" align="center">
     <mat-card-content class="cookbook-card__content">
-      <mat-card-title class="cookbook-card__title"
-        >{{ cookbook.name }}</mat-card-title
-      >
+      <div class="cookbook-card__title">
+        <mat-card-title class="">{{ cookbook.name }} </mat-card-title>
+        <span class="cookbook-share__cookbook-owner">
+          by {{ cookbook.ownerUsername }}
+        </span>
+      </div>
       <img
         [src]="imageUrl + cookbook.imageUrl + '-thumb.jpg'"
         [alt]="cookbook.name"

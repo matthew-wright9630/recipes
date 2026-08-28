@@ -6,8 +6,9 @@ import com.matthew.recipe_backend.models.Cookbook;
 
 public class CookbookRecipeSelectionMapper {
 
-    public static CookbookRecipeSelectionDto toDto(Cookbook cookbook, boolean containsRecipe) {
+    public static CookbookRecipeSelectionDto toDto(Cookbook cookbook, boolean containsRecipe, Long ownerId,
+            String ownerUsername) {
         return new CookbookRecipeSelectionDto(
-                cookbook.getId(), cookbook.getName(), containsRecipe, cookbook.getType());
+                cookbook.getId(), cookbook.getName(), containsRecipe, cookbook.getType(), ownerId, ownerUsername);
     }
 }

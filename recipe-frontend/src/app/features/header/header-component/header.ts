@@ -52,7 +52,6 @@ export class HeaderComponent {
   }
 
   onMyRecipesClick(): void {
-    console.log('Clicked');
     if (this.authState.currentUser()) {
       this.router.navigate(['/recipes']);
     } else {

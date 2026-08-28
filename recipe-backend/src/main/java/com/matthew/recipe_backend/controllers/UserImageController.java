@@ -34,7 +34,15 @@ public class UserImageController {
     public ResponseEntity<String> uploadImage(
             @RequestParam("file") MultipartFile file,
             @AuthenticationPrincipal User user) throws IOException {
-        String baseKey = imageService.processAndUploadImage(file, user);
+        String baseKey = imageService.processAndUploadImage(file, user, "recipes");
+        return ResponseEntity.ok(baseKey);
+    }
+
+    @PostMapping("/upload/avatar")
+    public ResponseEntity<String> uploadAvatar(
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal User user) throws IOException {
+        String baseKey = imageService.processAndUploadImage(file, user, "avatars");
         return ResponseEntity.ok(baseKey);
     }
 }

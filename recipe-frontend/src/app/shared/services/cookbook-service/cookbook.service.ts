@@ -1,12 +1,15 @@
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { Cookbook } from '../../shared/models/cookbook';
-import { Page } from '../../shared/models/page';
-import { CookbookRequest } from '../../shared/models/cookbook-request';
-import { CookbookSelection } from '../../shared/models/cookbook-selection';
-import { CookbookDetailInterface } from '../../shared/models/cookbook-detail-interface';
+import { Cookbook } from '../../models/cookbook';
+import { Page } from '../../models/page';
+import { CookbookRequest } from '../../models/cookbook-request';
+import { CookbookSelection } from '../../models/cookbook-selection';
+import { CookbookDetailInterface } from '../../models/cookbook-detail-interface';
+import { SharedUser } from '../../models/shared-user';
+import { ShareRecipient } from '../../models/share-recipient';
+import { UpdateUserPermission } from '../../models/update-user-permission';
 
 @Injectable({
   providedIn: 'root',
@@ -53,5 +56,35 @@ export class CookbookService {
 
   getAllRecipesInCookbook(recipeId: number): Observable<CookbookSelection[]> {
     return this.http.get<CookbookSelection[]>(this.baseURL + `/list`, {});
+  }
+
+  deleteDraftRecipe(id: number) {
+    return this.http.delete<Cookbook>(this.baseURL + '/' + id, {
+      observe: 'response',
+    });
+  }
+
+  getSharedUsers(id: number) {
+    return this.http.get<SharedUser[]>(this.baseURL + '/' + id + '/shared');
+  }
+
+  shareCookbook(id: number, request: { userIds: number[]; emails: string[] }) {
+    return this.http.post<ShareRecipient[]>(
+      this.baseURL + '/' + id + '/share',
+      request,
+      {
+        observe: 'response',
+      },
+    );
+  }
+
+  updateAccess(id: number, request: UpdateUserPermission[]) {
+    return this.http.put<SharedUser[]>(
+      this.baseURL + '/' + id + '/access',
+      { users: request },
+      {
+        observe: 'response',
+      },
+    );
   }
 }
