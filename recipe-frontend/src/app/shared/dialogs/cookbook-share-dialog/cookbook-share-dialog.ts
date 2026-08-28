@@ -115,18 +115,32 @@ export class CookbookShareDialog {
 
   addUserId(user: UserSummary): void {
     const alreadyHasAccess = this.sharedUsers.some(
-      (sharedUser) => sharedUser.userId === user.id,
+      (sharedUser) =>
+        sharedUser.userId === user.id && sharedUser.permission !== 'REVOKED',
+    );
+
+    const accessRevoked = this.sharedUsers.some(
+      (sharedUser) =>
+        sharedUser.userId === user.id && sharedUser.permission === 'REVOKED',
     );
 
     const alreadySelected = this.shareRecipients.some(
       (recipient) => recipient.userId === user.id,
     );
 
+    console.log(accessRevoked);
+
     if (alreadyHasAccess || alreadySelected) {
       this.snackbar.open(
         alreadyHasAccess
           ? 'User already has access to this cookbook'
           : 'User is already selected',
+        'Dismiss',
+        { duration: 5000 },
+      );
+    } else if (accessRevoked) {
+      this.snackbar.open(
+        'Access for this user has been revoked. Please contact the cookbook owner to update',
         'Dismiss',
         { duration: 5000 },
       );
