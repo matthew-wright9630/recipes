@@ -46,8 +46,10 @@
 
 .recipe-hero__user-actions {
   display: flex;
-  gap: 10vw;
+  gap: 1rem 10vw;
   margin: 2vh 2vw;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .recipe-hero__like-btn {
