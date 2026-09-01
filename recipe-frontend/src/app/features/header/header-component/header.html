@@ -58,8 +58,9 @@
   </button>
   <mat-menu #menu="matMenu">
     <button mat-menu-item routerLink="/">Recipes</button>
+    <button mat-menu-item (click)="onCookbooksClick()">Cookbooks</button>
+    <button mat-menu-item (click)="onMyRecipesClick()">My Recipes</button>
     <button mat-menu-item (click)="openLogin()">Login</button>
-    <button mat-menu-item (click)="openRegistration()">Register</button>
   </mat-menu>
   }
 </mat-toolbar>
