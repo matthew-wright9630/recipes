@@ -119,6 +119,7 @@
     </mat-card>
   </div>
 
+  @if (r.recipeNotes.length > 0) {
   <mat-card>
     <mat-card-header>
       <mat-card-title class="recipe-content__title"> Notes </mat-card-title>
@@ -134,8 +135,7 @@
       </ol>
     </mat-card-content>
   </mat-card>
-
-  @if (r.notes) {
+  } @if (r.notes) {
 
   <mat-card>
     <mat-card-header>
