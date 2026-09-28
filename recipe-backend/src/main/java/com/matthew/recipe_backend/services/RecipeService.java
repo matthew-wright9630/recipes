@@ -24,6 +24,7 @@ import com.matthew.recipe_backend.dtos.UpdateRecipeCookbooksDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDirectionsDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeIngredientsDto;
+import com.matthew.recipe_backend.dtos.UpdateRecipeNotesDto;
 import com.matthew.recipe_backend.enums.CookbookType;
 import com.matthew.recipe_backend.enums.RecipeStatus;
 import com.matthew.recipe_backend.keys.CookbookRecipeKey;
@@ -35,6 +36,7 @@ import com.matthew.recipe_backend.models.Recipe;
 import com.matthew.recipe_backend.models.RecipeDirection;
 import com.matthew.recipe_backend.models.RecipeIngredient;
 import com.matthew.recipe_backend.models.RecipeLike;
+import com.matthew.recipe_backend.models.RecipeNote;
 import com.matthew.recipe_backend.models.User;
 import com.matthew.recipe_backend.repositories.CookbookAccessRepository;
 import com.matthew.recipe_backend.repositories.IngredientRepository;
@@ -314,6 +316,9 @@ public class RecipeService {
 		// Delete old ingredients and save the new ones
 		updateIngredients(foundRecipe, recipeDto.recipeIngredients());
 
+		// Delete old notes and save the new ones
+		updateNotes(foundRecipe, recipeDto.recipeNotes());
+
 		// Sort the ingredient list.
 		recipeIngredientService.computeAndSaveSortOrder(foundRecipe);
 
@@ -363,6 +368,23 @@ public class RecipeService {
 			recipeIngredientService.computeAndSaveSortOrder(recipe);
 
 			recipe.getRecipeIngredients().add(recipeIngredient);
+		}
+	}
+
+	@Transactional
+	public void updateNotes(
+			Recipe recipe,
+			List<UpdateRecipeNotesDto> notesDto) {
+
+		recipe.getRecipeNotes().clear();
+
+		for (int i = 0; i < notesDto.size(); i++) {
+			UpdateRecipeNotesDto dto = notesDto.get(i);
+			RecipeNote direction = new RecipeNote();
+			direction.setDescription(dto.description());
+			direction.setStepNumber(i + 1);
+			direction.setRecipe(recipe);
+			recipe.getRecipeNotes().add(direction);
 		}
 	}
 

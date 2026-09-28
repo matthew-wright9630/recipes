@@ -72,6 +72,9 @@ public class Recipe {
 	@OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<RecipeDirection> recipeDirections;
 
+	@OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<RecipeNote> recipeNotes;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "root_recipe_id")
 	private Recipe rootRecipe;
@@ -238,6 +241,14 @@ public class Recipe {
 
 	public void setRecipeDirections(List<RecipeDirection> recipeDirections) {
 		this.recipeDirections = recipeDirections;
+	}
+
+	public List<RecipeNote> getRecipeNotes() {
+		return recipeNotes;
+	}
+
+	public void setRecipeNotes(List<RecipeNote> recipeNotes) {
+		this.recipeNotes = recipeNotes;
 	}
 
 	public Recipe getRootRecipe() {

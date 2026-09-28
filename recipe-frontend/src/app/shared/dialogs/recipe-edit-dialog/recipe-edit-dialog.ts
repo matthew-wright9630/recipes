@@ -111,6 +111,15 @@ export class RecipeEditDialog {
           }),
         ),
     ),
+    recipeNotes: this.fb.array(
+      [...this.data.recipeNotes]
+        .sort((a, b) => a.stepNumber - b.stepNumber)
+        .map((note) =>
+          this.fb.group({
+            description: [note.description],
+          }),
+        ),
+    ),
   });
 
   private readonly publishValidators = {
@@ -259,6 +268,10 @@ export class RecipeEditDialog {
     return this.form.get('recipeDirections') as FormArray;
   }
 
+  get notes() {
+    return this.form.get('recipeNotes') as FormArray;
+  }
+
   statuses = Object.values(RecipeStatus).filter(
     (s) => s !== RecipeStatus.REMOVED,
   );
@@ -404,6 +417,18 @@ export class RecipeEditDialog {
 
   removeDirection(index: number): void {
     this.directions.removeAt(index);
+  }
+
+  addNote(): void {
+    this.notes.push(
+      this.fb.group({
+        description: [''],
+      }),
+    );
+  }
+
+  removeNote(index: number): void {
+    this.notes.removeAt(index);
   }
 
   private formState = signal({

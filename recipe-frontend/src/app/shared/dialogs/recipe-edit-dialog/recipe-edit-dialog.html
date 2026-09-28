@@ -254,6 +254,47 @@
       <button mat-button (click)="addDirection()">Add Step</button>
     </div>
   </section>
+
+  <!-- =======================
+       NOTES
+  ======================== -->
+  <section class="section">
+    <h3>Notes</h3>
+    @if (form.controls.recipeNotes.invalid && form.controls.recipeNotes.touched)
+    {
+    <p class="error">At least one step is required to publish</p>
+    }
+
+    <div formArrayName="recipeNotes">
+      @for (noteCtrl of notes.controls; track noteCtrl) {
+      <div [formGroupName]="$index" class="direction-row">
+        <p class="note__number">{{$index + 1}}.</p>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea
+            matInput
+            formControlName="description"
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="3"
+            cdkAutosizeMaxRows="12"
+            (keydown.control.enter)="addNote()"
+          ></textarea>
+        </mat-form-field>
+
+        <button
+          mat-icon-button
+          type="button"
+          aria-label="Remove Note"
+          (click)="removeNote($index)"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      }
+
+      <button mat-button (click)="addNote()">Add Note</button>
+    </div>
+  </section>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

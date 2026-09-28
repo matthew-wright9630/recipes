@@ -9,6 +9,7 @@ import java.util.List;
 import com.matthew.recipe_backend.dtos.RecipeDirectionsDto;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.RecipeIngredientDto;
+import com.matthew.recipe_backend.dtos.RecipeNotesDto;
 
 public class RecipeMapper {
 
@@ -31,11 +32,18 @@ public class RecipeMapper {
 						})
 						.toList();
 
+		List<RecipeNotesDto> notesDtos = recipe.getRecipeNotes() == null ? Collections.emptyList()
+				: recipe.getRecipeNotes().stream()
+						.map(rd -> {
+							return new RecipeNotesDto(rd.getDescription(), rd.getStepNumber());
+						})
+						.toList();
+
 		return new RecipeDto(recipe.getId(), recipe.getName(), recipe.getDescription(), recipe.getImageUrl(),
 				recipe.getNotes(),
 				recipe.getServings(),
 				recipe.getPrepTime(), recipe.getCookTime(), recipe.getVersion(),
-				recipe.getStatus(), directionsDtos, ingredientDtos, recipe.getCreatedAt(),
+				recipe.getStatus(), directionsDtos, ingredientDtos, notesDtos, recipe.getCreatedAt(),
 				recipe.getCreatedBy().getId(), likeCount, viewCount,
 				likedByCurrentUser, bookmarkedByCurrentUser);
 	}

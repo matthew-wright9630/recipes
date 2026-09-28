@@ -9,7 +9,8 @@ public record RecipeDto(Long id, String name, String description, String imageUr
 		Integer prepTime,
 		Integer cookTime, Integer version, RecipeStatus status,
 		List<RecipeDirectionsDto> recipeDirections,
-		List<RecipeIngredientDto> recipeIngredients, OffsetDateTime createdAt, Long createdById, int likeCount,
+		List<RecipeIngredientDto> recipeIngredients,
+		List<RecipeNotesDto> recipeNotes, OffsetDateTime createdAt, Long createdById, int likeCount,
 		int savedCount,
 		boolean likedByCurrentUser, boolean bookmarkedByCurrentUser) {
 
