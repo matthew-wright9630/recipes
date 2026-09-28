@@ -101,7 +101,8 @@
 }
 
 .ingredients-list,
-.directions-list {
+.directions-list,
+.notes-list {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
