@@ -1,5 +1,6 @@
 import { RecipeDirection } from './recipe-direction';
 import { RecipeIngredient } from './recipe-ingredient';
+import { RecipeNote } from './recipe-note';
 import { RecipeStatus } from './recipe-status';
 
 export interface Recipe {
@@ -15,6 +16,7 @@ export interface Recipe {
   status: RecipeStatus;
   recipeDirections: RecipeDirection[];
   recipeIngredients: RecipeIngredient[];
+  recipeNotes: RecipeNote[];
   createdAt: string;
   createdById: number;
   likeCount: number;
