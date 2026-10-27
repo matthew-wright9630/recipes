@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,10 +21,11 @@ public class RecipeImporterController {
         this.recipeImporterService = recipeImporterService;
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> fetchRecipePage() throws IOException {
-        String html = recipeImporterService.fetchPage(
-                "https://wrightrecipes.com/recipe/24");
+    @GetMapping("")
+    public ResponseEntity<String> fetchRecipePage(
+            @RequestParam String url) throws IOException {
+
+        String html = recipeImporterService.fetchPage(url);
 
         return ResponseEntity.ok(html);
     }
