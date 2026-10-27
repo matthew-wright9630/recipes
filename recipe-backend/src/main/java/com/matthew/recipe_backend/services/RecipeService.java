@@ -275,7 +275,7 @@ public class RecipeService {
 	 * @return the newly created {@link RecipeDto}
 	 */
 	public RecipeDto createDraftRecipe(CreateRecipeDto draftRecipe, User user) {
-		Recipe recipe = new Recipe(user, draftRecipe.name(), draftRecipe.description(), draftRecipe.imageUrl());
+		Recipe recipe = new Recipe(user, draftRecipe.name(), draftRecipe.description(), draftRecipe.imageUrl(), null);
 		recipeRepository.save(recipe);
 		return RecipeMapper.toDto(recipe, 0, 0, false, false);
 	}
@@ -519,7 +519,7 @@ public class RecipeService {
 		Recipe newDraftRecipe = new Recipe(foundRecipe.getName(), foundRecipe.getDescription(),
 				foundRecipe.getImageUrl(), foundRecipe.getNotes(),
 				foundRecipe.getServings(), foundRecipe.getPrepTime(), foundRecipe.getCookTime(),
-				foundRecipe.getCreatedBy(), foundRecipe.getVersion() + 1, rootRecipe);
+				foundRecipe.getCreatedBy(), foundRecipe.getVersion() + 1, rootRecipe, foundRecipe.getOriginalUrl());
 
 		List<RecipeDirection> copiedDirections = foundRecipe.getRecipeDirections().stream()
 				.map(d -> new RecipeDirection(newDraftRecipe, d))

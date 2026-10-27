@@ -1,0 +1,1 @@
+ALTER TABLE recipes ADD COLUMN original_url TEXT;

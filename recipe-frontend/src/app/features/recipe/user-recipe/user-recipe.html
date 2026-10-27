@@ -1,18 +1,32 @@
 <article>
-  <div class="user-recipe">
-    <div class="user-recipe__header">
-      <h2 class="user-recipe__header__title">My Recipes</h2>
+  <div class="user-recipe__header">
+    <h2 class="user-recipe__header__title">My Recipes</h2>
 
-      <button
-        mat-flat-button
-        color="primary"
-        class="user-recipe__button"
-        (click)="openCreateRecipe()"
-      >
-        <mat-icon>add</mat-icon>
-        Create Recipe
+    <button
+      mat-flat-button
+      color="primary"
+      [matMenuTriggerFor]="recipeMenu"
+      class="user-recipe__header__action"
+    >
+      <span>Create Recipe</span>
+      <mat-icon class="user-recipe__header__chevron">
+        arrow_drop_down
+      </mat-icon>
+    </button>
+
+    <mat-menu #recipeMenu="matMenu" xPosition="before">
+      <button mat-menu-item (click)="openCreateRecipe()">
+        <mat-icon>post_add</mat-icon>
+        <span>Create Recipe</span>
       </button>
-    </div>
+
+      <button mat-menu-item (click)="openImportRecipe()">
+        <mat-icon>language</mat-icon>
+        <span>Import Recipe from Web</span>
+      </button>
+    </mat-menu>
+  </div>
+  <div>
     @if (this.errorMessage === '') {
 
     <div class="user-recipe__section">

@@ -1,7 +1,13 @@
 package com.matthew.recipe_backend.services;
 
+import java.io.IOException;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
 
+import com.matthew.recipe_backend.dtos.RecipeImportRequest;
+import com.matthew.recipe_backend.dtos.RecipeImportResponse;
 import com.matthew.recipe_backend.repositories.RecipeDirectionRepository;
 import com.matthew.recipe_backend.repositories.RecipeRepository;
 
@@ -19,4 +25,15 @@ public class RecipeImporterService {
         this.recipeIngredientService = recipeIngredientService;
     }
 
+    public String fetchPage(String url) throws IOException {
+        Document document = Jsoup.connect(url)
+                .userAgent("Mozilla/5.0")
+                .timeout(10000)
+                .get();
+
+        return document.html();
+    }
+    // public RecipeImportResponse importRecipe(String url) {
+
+    // }
 }
