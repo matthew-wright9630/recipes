@@ -387,7 +387,7 @@ export class ImportRecipePreview {
       servings: formValue.servings || 0,
       cookTime: formValue.cookTime || 0,
       prepTime: formValue.prepTime || 0,
-      originalUrl: '',
+      originalUrl: this.data.originalUrl,
       imageUrl: 'food-PLACEHOLDER',
     };
 

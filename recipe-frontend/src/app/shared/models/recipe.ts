@@ -23,4 +23,5 @@ export interface Recipe {
   savedCount: number;
   likedByCurrentUser: boolean;
   bookmarkedByCurrentUser: boolean;
+  originalUrl: string;
 }

@@ -80,6 +80,20 @@ export class RecipePreviewDialog {
     [...this.recipe.recipeDirections].sort((a, b) => a.sortOrder - b.sortOrder),
   );
 
+  get originalSource(): string | null {
+    const url = this.recipe.originalUrl;
+
+    if (!url) {
+      return null;
+    }
+
+    try {
+      return new URL(url).hostname.replace(/^www\./, '');
+    } catch {
+      return null;
+    }
+  }
+
   getWholeNumber(quantity: number): number {
     return Math.floor(quantity);
   }

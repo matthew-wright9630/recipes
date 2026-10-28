@@ -7,6 +7,17 @@
   padding: 25px 2vw;
 }
 
+.recipe-dialog__title__div {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+
+.recipe__attribution {
+  display: flex;
+}
+
 .recipe-dialog__title {
   width: 70%;
   font-size: 2.5rem;
