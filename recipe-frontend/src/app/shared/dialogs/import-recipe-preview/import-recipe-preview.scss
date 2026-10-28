@@ -1,0 +1,185 @@
+.edit-recipe {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1vh 3vw 0;
+}
+
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: auto;
+  max-height: 80vh;
+  margin: 0 3vw;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.recipe-edit__image-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3vw;
+}
+
+.recipe-edit__image-section__header {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.recipe-edit__img {
+  width: 400px;
+  height: 300px;
+}
+
+.recipe-edit__image-options {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 95%;
+}
+
+.recipe-edit__image-track-container {
+  overflow: hidden;
+  flex: 1;
+}
+
+.recipe-edit__image-track {
+  display: flex;
+  gap: 8px;
+  transition: transform 0.3s ease;
+}
+
+.recipe-edit__image-options img,
+.recipe-edit__upload-card {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  cursor: pointer;
+  flex-shrink: 0;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &.selected {
+    border-color: blue;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  &.selected:hover {
+    transform: scale(1.05);
+  }
+}
+.full-width {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+}
+
+.ingredient-row {
+  display: grid;
+  grid-template-columns: 0.5fr 0.5fr 1fr 2fr;
+  grid-template-areas:
+    'quantity fraction unit name'
+    'notes notes notes notes'
+    'delete delete delete delete';
+  align-items: center;
+  gap: 1vw;
+  margin-bottom: 5vh;
+  background-color: rgba(255, 255, 242, 0.8);
+}
+
+.ingredient-row mat-form-field:nth-child(1) {
+  grid-area: quantity;
+}
+
+.ingredient-row mat-form-field:nth-child(2) {
+  grid-area: fraction;
+}
+
+.ingredient-row mat-form-field:nth-child(3) {
+  grid-area: unit;
+}
+
+.ingredient-row mat-form-field:nth-child(4) {
+  grid-area: name;
+}
+
+.ingredient__notes {
+  grid-area: notes;
+}
+
+.ingredient-row__delete {
+  grid-area: delete;
+  justify-self: start;
+}
+
+.direction-row {
+  display: grid;
+  grid-template-columns: 0.5fr 4fr 0.5fr;
+  align-items: center;
+  gap: 1vw;
+  margin-bottom: 5vh;
+  background-color: rgba(255, 255, 242, 0.8);
+}
+
+.error {
+  color: #ba1a1a;
+}
+
+mat-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media screen and (max-width: 700px) {
+  .recipe-edit__img {
+    width: 250px;
+    height: 200px;
+  }
+
+  .dialog-content {
+    max-height: 60vh;
+  }
+
+  @media (max-width: 768px) {
+    .ingredient-row {
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        'quantity fraction'
+        'unit unit'
+        'name name'
+        'notes notes'
+        'delete delete';
+    }
+  }
+
+  mat-dialog-actions {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  mat-dialog-actions button {
+    width: 100%;
+  }
+}

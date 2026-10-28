@@ -12,6 +12,7 @@ import { environment } from '../../../../environments/environment';
 import { response } from 'express';
 import { UpdateRecipeCookbookRequest } from '../../models/update-recipe-cookbook-request';
 import { SKIP_GLOBAL_ERROR } from '../../http-context-tokens';
+import { ImportRecipeResponse } from '../../models/import-recipe-response';
 
 @Injectable({
   providedIn: 'root',
@@ -21,12 +22,9 @@ export class ImportRecipeService {
 
   constructor(private http: HttpClient) {}
 
-  fetchRecipePage(url: string): Observable<string> {
+  fetchRecipePage(url: string): Observable<ImportRecipeResponse> {
     const params = new HttpParams().set('url', url);
 
-    return this.http.get(this.baseURL, {
-      params,
-      responseType: 'text',
-    });
+    return this.http.post<ImportRecipeResponse>(this.baseURL, null, { params });
   }
 }

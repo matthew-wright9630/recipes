@@ -1,0 +1,413 @@
+import {
+  Component,
+  computed,
+  DestroyRef,
+  ElementRef,
+  inject,
+  signal,
+  ViewChild,
+} from '@angular/core';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { Recipe } from '../../models/recipe';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogActions,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { RecipeEditDialog } from '../recipe-edit-dialog/recipe-edit-dialog';
+import { RecipeService } from '../../services/recipe-service/recipe.service';
+import { RecipeStateService } from '../../services/recipe-state-service/recipe-state.service';
+import { UserImageService } from '../../services/user-image-service/user-image.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { DEFAULT_RECIPE_IMAGES } from '../../constants/default-images';
+import { UNIT_SUGGESTIONS } from '../../constants/unit-suggestions';
+import { environment } from '../../../../environments/environment';
+import { RecipeStatus } from '../../models/recipe-status';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { debounceTime, map, startWith } from 'rxjs';
+import { ConfirmationDialog } from '../confirmation-dialog/confirmation-dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButton, MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIcon } from '@angular/material/icon';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { AsyncPipe } from '@angular/common';
+import { CreateRecipeFromImport } from '../../models/create-recipe-from-import';
+
+@Component({
+  selector: 'app-import-recipe-preview',
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatSelectModule,
+    MatDialogActions,
+    ReactiveFormsModule,
+    MatIcon,
+    MatAutocompleteModule,
+    AsyncPipe,
+  ],
+  templateUrl: './import-recipe-preview.html',
+  styleUrl: './import-recipe-preview.scss',
+})
+export class ImportRecipePreview {
+  private dialog = inject(MatDialog);
+  private fb = inject(FormBuilder);
+  private dialogRef = inject(MatDialogRef<RecipeEditDialog>);
+  private recipeService = inject(RecipeService);
+  private recipeStateService = inject(RecipeStateService);
+  private imageService = inject(UserImageService);
+  private destroyRef = inject(DestroyRef);
+  private snackbar = inject(MatSnackBar);
+
+  private imageBaseUrl: string = 'uploads';
+
+  data = inject<Recipe>(MAT_DIALOG_DATA);
+  defaultImages = DEFAULT_RECIPE_IMAGES;
+  unitSuggestions = UNIT_SUGGESTIONS;
+  userImages: string[] = [];
+  backendUrl: string = environment.apiUrl + '/uploads/';
+  imageUrl: string = environment.imageBaseUrl + 'recipes/';
+
+  form = this.fb.group({
+    name: [this.data.name ?? ''],
+    imageUrl: [this.data.imageUrl ?? ''],
+    description: [this.data.description ?? ''],
+    notes: [this.data.notes ?? ''],
+    servings: [this.data.servings ?? 0],
+    prepTime: [this.data.prepTime ?? 0],
+    cookTime: [this.data.cookTime ?? 0],
+
+    recipeIngredients: this.fb.array(
+      [...(this.data.recipeIngredients ?? [])]
+        .sort((a, b) => a.sortOrder - b.sortOrder)
+        .map((ingredient) => {
+          const quantity = this.splitQuantity(ingredient.quantity);
+
+          return this.fb.group({
+            name: [ingredient.name ?? ''],
+            quantityWhole: [quantity.whole],
+            quantityFraction: [quantity.fraction],
+            unit: [ingredient.unit ?? ''],
+            notes: [ingredient.notes ?? ''],
+          });
+        }),
+    ),
+
+    recipeDirections: this.fb.array(
+      [...(this.data.recipeDirections ?? [])]
+        .sort((a, b) => a.stepNumber - b.stepNumber)
+        .map((direction) =>
+          this.fb.group({
+            description: [direction.description ?? ''],
+          }),
+        ),
+    ),
+
+    recipeNotes: this.fb.array(
+      [...(this.data.recipeNotes ?? [])]
+        .sort((a, b) => a.stepNumber - b.stepNumber)
+        .map((note) =>
+          this.fb.group({
+            description: [note.description ?? ''],
+          }),
+        ),
+    ),
+  });
+
+  private splitQuantity(quantity: number): {
+    whole: number;
+    fraction: string;
+  } {
+    const whole = Math.floor(quantity);
+    const decimal = Number((quantity - whole).toFixed(3));
+
+    let fraction = '';
+
+    switch (decimal) {
+      case 0.125:
+        fraction = '0.125';
+        break;
+      case 0.25:
+        fraction = '0.25';
+        break;
+      case 0.333:
+        fraction = '0.333';
+        break;
+      case 0.5:
+        fraction = '0.5';
+        break;
+      case 0.667:
+        fraction = '0.667';
+        break;
+      case 0.75:
+        fraction = '0.75';
+        break;
+    }
+
+    return { whole, fraction };
+  }
+
+  ngOnInit(): void {
+    this.form.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((values) => {
+        this.formState.set({
+          name: values.name || '',
+          description: values.description || '',
+          servings: values.servings || 0,
+          cookTime: values.cookTime || 0,
+          prepTime: values.prepTime || 0,
+          ingredientCount: this.ingredients.length,
+          directionCount: this.directions.length,
+        });
+      });
+
+    this.form.valueChanges
+      .pipe(debounceTime(1000), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {});
+
+    this.getListOfImages();
+  }
+
+  onClose(): void {
+    this.dialogRef.close();
+  }
+
+  onCancel(): void {
+    this.dialogRef.close();
+  }
+
+  get ingredients() {
+    return this.form.get('recipeIngredients') as FormArray;
+  }
+
+  get directions() {
+    return this.form.get('recipeDirections') as FormArray;
+  }
+
+  get notes() {
+    return this.form.get('recipeNotes') as FormArray;
+  }
+
+  statuses = Object.values(RecipeStatus).filter(
+    (s) => s !== RecipeStatus.REMOVED,
+  );
+
+  selectImage(image: string): void {
+    this.form.get('imageUrl')?.setValue(image);
+  }
+
+  @ViewChild('imageTrack') imageTrack!: ElementRef;
+  currentOffset = 0;
+  readonly SCROLL_AMOUNT = 133; // image width + gap
+  @ViewChild('imageTrack') imageTrackContainer!: ElementRef;
+  maxOffset = signal(100);
+
+  scrollImages(direction: number): void {
+    const container = this.imageTrackContainer.nativeElement;
+    const track = container.querySelector('.recipe-edit__image-track');
+    this.maxOffset.set(track.scrollWidth - container.clientWidth);
+
+    this.currentOffset = Math.max(
+      0,
+      Math.min(
+        this.currentOffset + direction * this.SCROLL_AMOUNT,
+        this.maxOffset(),
+      ),
+    );
+    track.style.transform = `translateX(-${this.currentOffset}px)`;
+  }
+
+  selectedImageFile: File | null = null;
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files || input.files.length === 0) {
+      return;
+    }
+
+    const file = input.files[0];
+
+    if (!file.type.startsWith('image/')) {
+      return;
+    }
+
+    this.selectedImageFile = file;
+
+    this.form.patchValue({
+      imageUrl: null,
+    });
+
+    this.selectedImageFile = file;
+    this.uploadImage();
+  }
+
+  uploadImage(): void {
+    if (!this.selectedImageFile) return;
+
+    const formData = new FormData();
+    formData.append('file', this.selectedImageFile);
+
+    this.imageService.uploadImage(formData).subscribe({
+      next: (baseKey) => {
+        this.form.get('imageUrl')?.setValue(baseKey);
+        this.selectedImageFile = null;
+        this.getListOfImages();
+      },
+      error: () => {
+        this.snackbar.open(
+          'Image upload failed. Please try again.',
+          'Dismiss',
+          { duration: 5000 },
+        );
+      },
+    });
+  }
+
+  getImageUrl(baseKey: string, size: 'thumb' | 'medium'): string {
+    return `${environment.imageBaseUrl}/${baseKey}-${size}.jpg`;
+  }
+
+  getListOfImages(): void {
+    this.imageService.getImages().subscribe({
+      next: (images) => {
+        this.userImages = images;
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  filteredUnits(index: number) {
+    const control = this.ingredients.at(index).get('unit');
+
+    return control!.valueChanges.pipe(
+      startWith(control?.value ?? ''),
+      map((value) => this.filterUnits(value)),
+    );
+  }
+
+  private filterUnits(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return UNIT_SUGGESTIONS.filter((unit) =>
+      unit.toLowerCase().includes(filterValue),
+    );
+  }
+
+  addIngredient(): void {
+    this.ingredients.push(
+      this.fb.group({
+        name: [''],
+        quantityWhole: [0],
+        quantityFraction: [''],
+        unit: [''],
+        notes: [''],
+      }),
+    );
+
+    setTimeout(() => {
+      const inputs = document.querySelectorAll('.ingredient-row input');
+
+      const lastInput = inputs[inputs.length - 3] as HTMLElement;
+      lastInput?.focus();
+    });
+  }
+
+  onIngredientEnter(index: number): void {
+    if (index === this.ingredients.length - 1) {
+      this.addIngredient();
+    }
+  }
+
+  removeIngredient(index: number): void {
+    this.ingredients.removeAt(index);
+  }
+
+  addDirection(): void {
+    this.directions.push(
+      this.fb.group({
+        description: [''],
+      }),
+    );
+  }
+
+  removeDirection(index: number): void {
+    this.directions.removeAt(index);
+  }
+
+  addNote(): void {
+    this.notes.push(
+      this.fb.group({
+        description: [''],
+      }),
+    );
+  }
+
+  removeNote(index: number): void {
+    this.notes.removeAt(index);
+  }
+
+  private formState = signal({
+    name: this.data.name,
+    description: this.data.description,
+    servings: this.data.servings,
+    cookTime: this.data.cookTime,
+    prepTime: this.data.prepTime,
+    ingredientCount: this.data.recipeIngredients.length,
+    directionCount: this.data.recipeDirections?.length,
+  });
+
+  onSave(): void {
+    const formValue = this.form.getRawValue();
+
+    const updated: CreateRecipeFromImport = {
+      name: formValue.name || '',
+      recipeIngredients: formValue.recipeIngredients.map((ingredient: any) => ({
+        id: 0,
+        name: ingredient.name,
+        unit: ingredient.unit,
+        notes: ingredient.notes,
+        quantity:
+          Number(ingredient.quantityWhole ?? 0) +
+          Number(ingredient.quantityFraction ?? 0),
+        sortOrder: 0,
+      })),
+      servings: formValue.servings || 0,
+      cookTime: formValue.cookTime || 0,
+      prepTime: formValue.prepTime || 0,
+      originalUrl: '',
+      imageUrl: 'food-PLACEHOLDER',
+    };
+
+    this.recipeService.createDraftRecipeFromImport(updated).subscribe({
+      next: (result) => {
+        this.recipeStateService.notifyRecipeUpdated(result.body as Recipe);
+        this.dialogRef.close(result);
+        this.dialogRef.afterClosed().subscribe(() => {
+          this.dialog.open(RecipeEditDialog, {
+            width: '800px',
+            maxWidth: '95vw',
+            autoFocus: false,
+            data: result.body,
+          });
+        });
+      },
+
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
+}

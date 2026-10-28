@@ -5,6 +5,7 @@ import com.matthew.recipe_backend.repositories.CookbookRepository;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import com.matthew.recipe_backend.dtos.CookbookUpdateDto;
 import com.matthew.recipe_backend.dtos.CreateRecipeDto;
+import com.matthew.recipe_backend.dtos.CreateRecipeImportRequest;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeCookbooksDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDirectionsDto;
@@ -280,6 +282,16 @@ public class RecipeService {
 		return RecipeMapper.toDto(recipe, 0, 0, false, false);
 	}
 
+	public RecipeDto createRecipeFromImport(CreateRecipeImportRequest draftRecipe, User user) {
+		Recipe recipe = new Recipe(user, draftRecipe.name(), null, draftRecipe.imageUrl(), draftRecipe.originalUrl());
+		recipe.setServings(draftRecipe.servings());
+		recipe.setPrepTime(draftRecipe.prepTime());
+		recipe.setCookTime(draftRecipe.cookTime());
+		recipeRepository.save(recipe);
+		updateIngredients(recipe, draftRecipe.recipeIngredients());
+		return RecipeMapper.toDto(recipe, 0, 0, false, false);
+	}
+
 	/**
 	 * Updates the editable fields of an existing recipe.
 	 *
@@ -319,7 +331,6 @@ public class RecipeService {
 		// Delete old notes and save the new ones
 		updateNotes(foundRecipe, recipeDto.recipeNotes());
 
-		// Sort the ingredient list.
 		recipeIngredientService.computeAndSaveSortOrder(foundRecipe);
 
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
@@ -348,7 +359,11 @@ public class RecipeService {
 			Recipe recipe,
 			List<UpdateRecipeIngredientsDto> ingredientDtos) {
 
-		recipe.getRecipeIngredients().clear();
+		if (recipe.getRecipeIngredients() == null) {
+			recipe.setRecipeIngredients(new ArrayList<>());
+		} else {
+			recipe.getRecipeIngredients().clear();
+		}
 		entityManager.flush();
 
 		for (UpdateRecipeIngredientsDto dto : ingredientDtos) {
@@ -364,8 +379,6 @@ public class RecipeService {
 			recipeIngredient.setQuantity(dto.quantity());
 			recipeIngredient.setUnit(dto.unit());
 			recipeIngredient.setNotes(dto.notes());
-
-			recipeIngredientService.computeAndSaveSortOrder(recipe);
 
 			recipe.getRecipeIngredients().add(recipeIngredient);
 		}

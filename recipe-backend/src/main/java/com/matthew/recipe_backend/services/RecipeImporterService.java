@@ -60,8 +60,7 @@ public class RecipeImporterService {
     public String extractJsonLd(String html) throws JsonProcessingException {
         Document document = Jsoup.parse(html);
 
-        Elements scripts = document.select(
-                "script[type=application/ld+json]");
+        Elements scripts = document.select("script[type=application/ld+json]");
 
         for (Element script : scripts) {
             String json = script.data();
@@ -71,22 +70,41 @@ public class RecipeImporterService {
             }
 
             JsonNode root = objectMapper.readTree(json);
+            JsonNode recipe = findRecipe(root);
 
-            // Check whether the root object is the recipe.
-            if (isRecipe(root)) {
-                return root.toString();
+            if (recipe != null) {
+                return recipe.toString();
             }
+        }
 
-            // Otherwise, search the @graph array.
-            JsonNode graph = root.path("@graph");
+        return null;
+    }
 
-            if (graph.isArray()) {
-                for (JsonNode node : graph) {
-                    if (isRecipe(node)) {
-                        return node.toString();
-                    }
+    private JsonNode findRecipe(JsonNode node) {
+        if (node.isArray()) {
+            for (JsonNode item : node) {
+                JsonNode recipe = findRecipe(item);
+
+                if (recipe != null) {
+                    return recipe;
                 }
             }
+
+            return null;
+        }
+
+        if (!node.isObject()) {
+            return null;
+        }
+
+        if (isRecipe(node)) {
+            return node;
+        }
+
+        JsonNode graph = node.path("@graph");
+
+        if (graph.isArray() || graph.isObject()) {
+            return findRecipe(graph);
         }
 
         return null;
@@ -101,8 +119,7 @@ public class RecipeImporterService {
 
         if (type.isArray()) {
             for (JsonNode item : type) {
-                if (item.isTextual()
-                        && "Recipe".equals(item.asText())) {
+                if (item.isTextual() && "Recipe".equals(item.asText())) {
                     return true;
                 }
             }
@@ -294,33 +311,53 @@ public class RecipeImporterService {
         return extractUnit(remaining).unit() != null;
     }
 
+    private String normalizeUnit(String unit) {
+        if (unit == null || unit.isBlank()) {
+            return unit;
+        }
+
+        return unit.trim()
+                .toLowerCase(Locale.ROOT)
+                .replaceAll("\\.$", "");
+    }
+
     private static final Set<String> COMMON_UNITS = Set.of(
-            "tsp",
             "teaspoon",
             "teaspoons",
+            "tsp",
+            "tsp.",
             "tbsp",
+            "tbsp.",
             "tablespoon",
             "tablespoons",
             "fl oz",
+            "fl oz.",
             "fluid ounce",
             "fluid ounces",
             "cup",
             "cups",
             "pt",
+            "pt.",
             "pint",
             "pints",
             "qt",
+            "qt.",
             "quart",
             "quarts",
             "gal",
+            "gal.",
             "gallon",
             "gallons",
             "ml",
             "l",
             "oz",
+            "oz.",
             "ounce",
             "ounces",
             "lb",
+            "lbs",
+            "lb.",
+            "lbs.",
             "pound",
             "pounds",
             "g",

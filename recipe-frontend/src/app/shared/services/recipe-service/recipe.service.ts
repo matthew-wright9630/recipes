@@ -12,6 +12,7 @@ import { environment } from '../../../../environments/environment';
 import { response } from 'express';
 import { UpdateRecipeCookbookRequest } from '../../models/update-recipe-cookbook-request';
 import { SKIP_GLOBAL_ERROR } from '../../http-context-tokens';
+import { CreateRecipeFromImport } from '../../models/create-recipe-from-import';
 
 @Injectable({
   providedIn: 'root',
@@ -98,6 +99,12 @@ export class RecipeService {
 
   createDraftRecipe(recipe: Recipe) {
     return this.http.post<Recipe>(this.baseURL, recipe, {
+      observe: 'response',
+    });
+  }
+
+  createDraftRecipeFromImport(recipe: CreateRecipeFromImport) {
+    return this.http.post<Recipe>(this.baseURL + '/import', recipe, {
       observe: 'response',
     });
   }
