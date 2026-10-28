@@ -12,6 +12,7 @@ import { ImportRecipeService } from '../../services/import-recipe/import-recipe.
 import { MatInputModule } from '@angular/material/input';
 import { ImportRecipePreview } from '../import-recipe-preview/import-recipe-preview';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-import-recipe-dialog',
@@ -32,6 +33,7 @@ export class ImportRecipeDialog {
   private importRecipeService = inject(ImportRecipeService);
   private dialogRef = inject(MatDialogRef);
   private dialog = inject(MatDialog);
+  private snackbar = inject(MatSnackBar);
 
   recipeUrl = new FormControl('', {
     nonNullable: true,
@@ -49,7 +51,7 @@ export class ImportRecipeDialog {
 
     const url = this.recipeUrl.value;
 
-    this.importRecipeService.fetchRecipePage(this.recipeUrl.value).subscribe({
+    this.importRecipeService.fetchRecipePage(url).subscribe({
       next: (response) => {
         this.dialogRef.close();
 
@@ -60,8 +62,12 @@ export class ImportRecipeDialog {
           data: response,
         });
       },
-      error: (error) => {
-        console.error('Failed to fetch recipe page:', error);
+      error: () => {
+        this.snackbar.open(
+          'We could not import this recipe. You can enter it manually instead.',
+          '',
+          { duration: 5000 },
+        );
       },
     });
   }
