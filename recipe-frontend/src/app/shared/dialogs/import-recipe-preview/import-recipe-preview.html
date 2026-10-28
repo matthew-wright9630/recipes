@@ -1,0 +1,143 @@
+<div class="edit-recipe">
+  <h2 mat-dialog-title class="edit-recipe__title">Imported Recipe Preview</h2>
+  <button mat-icon-button (click)="onClose()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+<mat-dialog-content [formGroup]="form" class="dialog-content">
+  <!-- =======================
+       BASIC INFO
+  ======================== -->
+  <section class="section">
+    <h3>Basic Info</h3>
+    <p>
+      We've imported the basic recipe details for you! Please review the
+      information for accuracy before creating your draft.
+    </p>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Notes</mat-label>
+      <textarea matInput cdkTextareaAutosize formControlName="notes"></textarea>
+    </mat-form-field>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Servings</mat-label>
+        <input matInput type="number" formControlName="servings" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Prep Time</mat-label>
+        <input matInput type="number" formControlName="prepTime" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Cook Time</mat-label>
+        <input matInput type="number" formControlName="cookTime" />
+      </mat-form-field>
+    </div>
+  </section>
+
+  <mat-divider></mat-divider>
+
+  <!-- =======================
+       INGREDIENTS
+  ======================== -->
+  <section class="section">
+    <h3>Ingredients</h3>
+    @if (form.controls.recipeIngredients.invalid &&
+    form.controls.recipeIngredients.touched) { }
+    <div formArrayName="recipeIngredients">
+      @for (ingredientCtrl of ingredients.controls; track ingredientCtrl; let i=
+      $index) {
+      <div [formGroupName]="$index" class="ingredient-row">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label></mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="quantityWhole"
+            (keydown.enter)="onIngredientEnter($index)"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label></mat-label>
+          <mat-select formControlName="quantityFraction">
+            <mat-option value=""></mat-option>
+            <mat-option value="0.125">⅛</mat-option>
+            <mat-option value="0.25">¼</mat-option>
+            <mat-option value="0.333">⅓</mat-option>
+            <mat-option value="0.5">½</mat-option>
+            <mat-option value="0.667">⅔</mat-option>
+            <mat-option value="0.75">¾</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Unit</mat-label>
+          <input
+            matInput
+            formControlName="unit"
+            type="text"
+            [matAutocomplete]="auto"
+            (keydown.enter)="onIngredientEnter($index)"
+          />
+          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+            @for (unit of filteredUnits($index) | async; track unit) {
+            <mat-option [value]="unit">{{unit}}</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Name</mat-label>
+          <input
+            matInput
+            formControlName="name"
+            (keydown.enter)="onIngredientEnter($index)"
+          />
+        </mat-form-field>
+
+        <mat-form-field
+          appearance="outline"
+          class="ingredient__notes"
+          subscriptSizing="dynamic"
+        >
+          <mat-label>Notes</mat-label>
+          <textarea
+            matInput
+            formControlName="notes"
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="1"
+            cdkAutosizeMaxRows="5"
+            (keydown.enter)="onIngredientEnter($index)"
+          ></textarea>
+        </mat-form-field>
+        <button
+          mat-flat-button
+          type="button"
+          class="ingredient-row__delete"
+          aria-label="Remove ingredient"
+          (click)="removeIngredient($index)"
+        >
+          Remove Ingredient
+        </button>
+      </div>
+      } @empty {
+      <p>No ingredients added yet.</p>
+      }
+      <button mat-button (click)="addIngredient()">Add Ingredient</button>
+    </div>
+  </section>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button color="warn" (click)="onCancel()">Cancel</button>
+  <button mat-flat-button (click)="onSave()">Save Draft</button>
+</mat-dialog-actions>

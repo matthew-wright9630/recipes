@@ -82,11 +82,14 @@ public class Recipe {
 	@OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<RecipeIngredient> recipeIngredients;
 
+	@Column(name = "original_url", nullable = true)
+	private String originalUrl;
+
 	protected Recipe() { // for JPA use
 
 	}
 
-	public Recipe(User createdBy, String name, String description, String imageUrl) {
+	public Recipe(User createdBy, String name, String description, String imageUrl, String originalUrl) {
 		this.name = name;
 		this.description = description;
 		this.imageUrl = imageUrl;
@@ -101,11 +104,12 @@ public class Recipe {
 		this.status = RecipeStatus.DRAFT;
 		this.recipeDirections = null;
 		this.recipeIngredients = null;
+		this.originalUrl = originalUrl;
 	}
 
 	public Recipe(String name, String description, String imageUrl, String notes, Integer servings, Integer prepTime,
 			Integer cookTime,
-			User createdBy, Integer version, Recipe rootRecipe) {
+			User createdBy, Integer version, Recipe rootRecipe, String originalUrl) {
 		this.name = name;
 		this.description = description;
 		this.imageUrl = imageUrl;
@@ -119,11 +123,12 @@ public class Recipe {
 		this.updatedAt = OffsetDateTime.now();
 		this.status = RecipeStatus.DRAFT;
 		this.rootRecipe = rootRecipe;
+		this.originalUrl = originalUrl;
 	}
 
 	public Recipe(String name, String description, String notes, Integer servings, Integer prepTime, Integer cookTime,
 			User createdBy, Integer version, OffsetDateTime createdAt, RecipeStatus status,
-			List<RecipeDirection> recipeDirections, List<RecipeIngredient> recipeIngredients) {
+			List<RecipeDirection> recipeDirections, List<RecipeIngredient> recipeIngredients, String originalUrl) {
 		this.name = name;
 		this.description = description;
 		this.notes = notes;
@@ -137,6 +142,7 @@ public class Recipe {
 		this.status = status;
 		this.recipeDirections = recipeDirections;
 		this.recipeIngredients = recipeIngredients;
+		this.originalUrl = originalUrl;
 	}
 
 	public Long getId() {
@@ -273,6 +279,14 @@ public class Recipe {
 
 	public void setUpdatedAt(OffsetDateTime updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public String getOriginalUrl() {
+		return originalUrl;
+	}
+
+	public void setOriginalUrl(String originalUrl) {
+		this.originalUrl = originalUrl;
 	}
 
 	@Override

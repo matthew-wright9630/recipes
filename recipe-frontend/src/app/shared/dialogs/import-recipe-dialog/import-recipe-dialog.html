@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>Import Recipe from Web</h2>
+
+<mat-dialog-content>
+  <p>Paste the URL of the recipe you'd like to import.</p>
+
+  <mat-form-field appearance="outline" class="recipe-import__url">
+    <mat-label>Recipe URL</mat-label>
+    <input
+      matInput
+      type="url"
+      placeholder="https://example.com/recipe"
+      [formControl]="recipeUrl"
+      required
+    />
+    <mat-icon matSuffix>link</mat-icon>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close (click)="onCancel()">Cancel</button>
+
+  <button
+    mat-flat-button
+    color="primary"
+    [disabled]="!recipeUrl"
+    (click)="importRecipe()"
+  >
+    Import Recipe
+  </button>
+</mat-dialog-actions>

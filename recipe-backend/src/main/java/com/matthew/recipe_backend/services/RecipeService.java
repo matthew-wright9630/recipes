@@ -5,6 +5,7 @@ import com.matthew.recipe_backend.repositories.CookbookRepository;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import com.matthew.recipe_backend.dtos.CookbookUpdateDto;
 import com.matthew.recipe_backend.dtos.CreateRecipeDto;
+import com.matthew.recipe_backend.dtos.CreateRecipeImportRequest;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeCookbooksDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDirectionsDto;
@@ -275,8 +277,18 @@ public class RecipeService {
 	 * @return the newly created {@link RecipeDto}
 	 */
 	public RecipeDto createDraftRecipe(CreateRecipeDto draftRecipe, User user) {
-		Recipe recipe = new Recipe(user, draftRecipe.name(), draftRecipe.description(), draftRecipe.imageUrl());
+		Recipe recipe = new Recipe(user, draftRecipe.name(), draftRecipe.description(), draftRecipe.imageUrl(), null);
 		recipeRepository.save(recipe);
+		return RecipeMapper.toDto(recipe, 0, 0, false, false);
+	}
+
+	public RecipeDto createRecipeFromImport(CreateRecipeImportRequest draftRecipe, User user) {
+		Recipe recipe = new Recipe(user, draftRecipe.name(), null, draftRecipe.imageUrl(), draftRecipe.originalUrl());
+		recipe.setServings(draftRecipe.servings());
+		recipe.setPrepTime(draftRecipe.prepTime());
+		recipe.setCookTime(draftRecipe.cookTime());
+		recipeRepository.save(recipe);
+		updateIngredients(recipe, draftRecipe.recipeIngredients());
 		return RecipeMapper.toDto(recipe, 0, 0, false, false);
 	}
 
@@ -319,7 +331,6 @@ public class RecipeService {
 		// Delete old notes and save the new ones
 		updateNotes(foundRecipe, recipeDto.recipeNotes());
 
-		// Sort the ingredient list.
 		recipeIngredientService.computeAndSaveSortOrder(foundRecipe);
 
 		Recipe savedRecipe = recipeRepository.save(foundRecipe);
@@ -348,7 +359,11 @@ public class RecipeService {
 			Recipe recipe,
 			List<UpdateRecipeIngredientsDto> ingredientDtos) {
 
-		recipe.getRecipeIngredients().clear();
+		if (recipe.getRecipeIngredients() == null) {
+			recipe.setRecipeIngredients(new ArrayList<>());
+		} else {
+			recipe.getRecipeIngredients().clear();
+		}
 		entityManager.flush();
 
 		for (UpdateRecipeIngredientsDto dto : ingredientDtos) {
@@ -364,8 +379,6 @@ public class RecipeService {
 			recipeIngredient.setQuantity(dto.quantity());
 			recipeIngredient.setUnit(dto.unit());
 			recipeIngredient.setNotes(dto.notes());
-
-			recipeIngredientService.computeAndSaveSortOrder(recipe);
 
 			recipe.getRecipeIngredients().add(recipeIngredient);
 		}
@@ -519,7 +532,7 @@ public class RecipeService {
 		Recipe newDraftRecipe = new Recipe(foundRecipe.getName(), foundRecipe.getDescription(),
 				foundRecipe.getImageUrl(), foundRecipe.getNotes(),
 				foundRecipe.getServings(), foundRecipe.getPrepTime(), foundRecipe.getCookTime(),
-				foundRecipe.getCreatedBy(), foundRecipe.getVersion() + 1, rootRecipe);
+				foundRecipe.getCreatedBy(), foundRecipe.getVersion() + 1, rootRecipe, foundRecipe.getOriginalUrl());
 
 		List<RecipeDirection> copiedDirections = foundRecipe.getRecipeDirections().stream()
 				.map(d -> new RecipeDirection(newDraftRecipe, d))

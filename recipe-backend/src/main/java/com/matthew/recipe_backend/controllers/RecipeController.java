@@ -5,12 +5,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matthew.recipe_backend.dtos.CreateRecipeDto;
+import com.matthew.recipe_backend.dtos.CreateRecipeImportRequest;
 import com.matthew.recipe_backend.dtos.RecipeDto;
 import com.matthew.recipe_backend.dtos.StatusUpdateRequestDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeCookbooksDto;
 import com.matthew.recipe_backend.dtos.UpdateRecipeDto;
 import com.matthew.recipe_backend.dtos.UserDto;
 import com.matthew.recipe_backend.models.User;
+import com.matthew.recipe_backend.services.RecipeImporterService;
 import com.matthew.recipe_backend.services.RecipePdfService;
 import com.matthew.recipe_backend.services.RecipeService;
 
@@ -130,6 +132,14 @@ public class RecipeController {
 			@AuthenticationPrincipal User user) {
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(recipeService.createDraftRecipe(newRecipe, user));
+	}
+
+	@PostMapping("/import")
+	public ResponseEntity<RecipeDto> createDraftRecipeFromImport(
+			@RequestBody CreateRecipeImportRequest newRecipe,
+			@AuthenticationPrincipal User user) {
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(recipeService.createRecipeFromImport(newRecipe, user));
 	}
 
 	@PutMapping("/{id}/draft")

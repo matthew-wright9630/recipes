@@ -15,10 +15,19 @@ import { RecipeCreateDialog } from '../../../shared/dialogs/recipe-create-dialog
 import { RecipeStateService } from '../../../shared/services/recipe-state-service/recipe-state.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenu, MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { ImportRecipeDialog } from '../../../shared/dialogs/import-recipe-dialog/import-recipe-dialog';
 
 @Component({
   selector: 'app-user-recipe',
-  imports: [RecipeComponent, MatIcon, MatButtonModule],
+  imports: [
+    RecipeComponent,
+    MatIcon,
+    MatButtonModule,
+    MatMenu,
+    MatMenuTrigger,
+    MatMenuModule,
+  ],
   templateUrl: './user-recipe.html',
   styleUrl: './user-recipe.scss',
 })
@@ -101,6 +110,14 @@ export class UserRecipe {
 
   openCreateRecipe() {
     this.dialog.open(RecipeCreateDialog, {
+      width: '800px',
+      maxWidth: '95vw',
+      autoFocus: false,
+    });
+  }
+
+  openImportRecipe() {
+    this.dialog.open(ImportRecipeDialog, {
       width: '800px',
       maxWidth: '95vw',
       autoFocus: false,

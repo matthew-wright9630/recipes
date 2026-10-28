@@ -45,7 +45,7 @@ public class RecipeMapper {
 				recipe.getPrepTime(), recipe.getCookTime(), recipe.getVersion(),
 				recipe.getStatus(), directionsDtos, ingredientDtos, notesDtos, recipe.getCreatedAt(),
 				recipe.getCreatedBy().getId(), likeCount, viewCount,
-				likedByCurrentUser, bookmarkedByCurrentUser);
+				likedByCurrentUser, bookmarkedByCurrentUser, recipe.getOriginalUrl());
 	}
 
 	private static RecipeIngredientDto toIngredientDto(RecipeIngredient ri) {
