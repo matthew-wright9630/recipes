@@ -1,5 +1,16 @@
 <div class="edit-recipe">
-  <h2 mat-dialog-title class="edit-recipe__title">Edit Recipe</h2>
+  <div class="recipe-dialog__title__div">
+    <h2 mat-dialog-title class="recipe-dialog__title">Edit Recipe</h2>
+    @if (this.data.originalUrl) { Sourced from
+    <a [href]="this.data.originalUrl" target="_blank" rel="noopener noreferrer">
+      {{originalSource}} ↗
+    </a>
+    } @else {
+    <a [href]="this.data.originalUrl" target="_blank" rel="noopener noreferrer">
+      Nothing ↗
+    </a>
+    }
+  </div>
   <button mat-icon-button (click)="onClose()">
     <mat-icon>close</mat-icon>
   </button>

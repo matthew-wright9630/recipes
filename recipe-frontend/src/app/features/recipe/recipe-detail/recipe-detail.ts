@@ -77,6 +77,20 @@ export class RecipeDetail {
     });
   }
 
+  get originalSource(): string | null {
+    const url = this.recipe()?.originalUrl;
+
+    if (!url) {
+      return null;
+    }
+
+    try {
+      return new URL(url).hostname.replace(/^www\./, '');
+    } catch {
+      return null;
+    }
+  }
+
   toggleFavorite(): void {
     const recipe = this.recipe();
 

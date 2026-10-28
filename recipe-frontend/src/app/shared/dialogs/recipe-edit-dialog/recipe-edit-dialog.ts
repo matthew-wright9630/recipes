@@ -128,6 +128,20 @@ export class RecipeEditDialog {
     prepTime: Validators.min(0),
   };
 
+  get originalSource(): string | null {
+    const url = this.data.originalUrl;
+
+    if (!url) {
+      return null;
+    }
+
+    try {
+      return new URL(url).hostname.replace(/^www\./, '');
+    } catch {
+      return null;
+    }
+  }
+
   private splitQuantity(quantity: number): {
     whole: number;
     fraction: string;

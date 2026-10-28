@@ -10,6 +10,18 @@
     <div class="recipe-hero__content">
       <div class="recipe-hero__info">
         <h1 class="recipe-hero__title">{{ recipe()?.name }}</h1>
+        @if (this.recipe()?.originalUrl) {
+        <div class="recipe-attribution">
+          Sourced from
+          <a
+            [href]="this.recipe()?.originalUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{originalSource}} ↗
+          </a>
+        </div>
+        }
         <p class="recipe-description">{{ r.description }}</p>
         <div class="recipe-meta">
           <mat-chip-set>

@@ -1,5 +1,15 @@
 <div class="recipe-dialog__header">
-  <h2 mat-dialog-title class="recipe-dialog__title">{{ recipe.name }}</h2>
+  <div class="recipe-dialog__title__div">
+    <h2 mat-dialog-title class="recipe-dialog__title">{{ recipe.name }}</h2>
+    @if (recipe.originalUrl) {
+    <div class="recipe-attribution">
+      Sourced from
+      <a [href]="recipe.originalUrl" target="_blank" rel="noopener noreferrer">
+        {{originalSource}} ↗
+      </a>
+    </div>
+    }
+  </div>
   <div class="recipe-dialog__header-actions">
     <div class="recipe-dialog__action-btns">
       @if(recipe.status === 'PUBLISHED') {

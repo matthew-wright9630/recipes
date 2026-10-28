@@ -320,6 +320,7 @@ public class RecipeService {
 		foundRecipe.setServings(recipeDto.servings());
 		foundRecipe.setPrepTime(recipeDto.prepTime());
 		foundRecipe.setCookTime(recipeDto.cookTime());
+		foundRecipe.setOriginalUrl(recipeDto.originalUrl());
 		foundRecipe.setUpdatedAt(OffsetDateTime.now());
 
 		// Deletes old steps and saves the new ones
