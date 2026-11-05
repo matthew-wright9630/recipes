@@ -99,7 +99,7 @@ export class RecipeDetail {
     }
 
     if (this.authState.currentUser()) {
-      if (recipe.likedByCurrentUser) {
+      if (!recipe.likedByCurrentUser) {
         this.recipeLikeService.likeRecipe(recipe.id).subscribe({
           next: () => {
             recipe.likedByCurrentUser = true;
